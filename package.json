@@ -7,6 +7,8 @@
   "author": "Creative Mutagens <timon.davis@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "@types/chai": "^4.1.2",
+    "@types/mocha": "^2.2.48",
     "@types/node": "9.3.0",
     "dice-bag": "0.1.2"
   },
@@ -16,7 +18,9 @@
     ]
   },
   "devDependencies": {
+    "chai": "^4.1.2",
     "concurrently": "3.5.1",
+    "mocha": "^5.0.1",
     "nodemon": "1.14.11",
     "ts-node": "4.1.0",
     "typescript": "2.6.2"
@@ -24,6 +28,7 @@
   "scripts": {
     "start": "concurrently \"npm run build:live\" \"npm run build:disk\"",
     "build:live": "nodemon --exec ./node_modules/.bin/ts-node ./src/index.ts",
-    "build:disk": "exec tsc -w"
+    "build:disk": "exec tsc -w",
+    "test": "mocha -r ts-node/register ./src/Test/**/*.ts"
   }
 }
