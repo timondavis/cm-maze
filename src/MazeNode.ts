@@ -1,30 +1,33 @@
-import {isNull} from "util";
-import {MazeCardinality} from "./MazeCardinality";
+import {MazeCoordinates} from "./MazeCoordinates/MazeCoordinates";
+import {CardinalityBehavior} from "./Behavior/CardinalityBehavior";
 
 export class MazeNode {
 
     protected neighbors : MazeNode[];
-    protected cardinality : MazeCardinality;
+    protected cardinality : CardinalityBehavior;
     protected name = "";
+    protected coordinates : MazeCoordinates;
 
-    public constructor( cardinality: MazeCardinality ) {
+    public constructor( cardinality: CardinalityBehavior, coordinates? : MazeCoordinates ) {
 
         this.cardinality = cardinality;
-        this.neighbors = new Array<MazeNode>(cardinality);
+        this.neighbors = new Array<MazeNode>( cardinality.getCardinality() );
+
+        this.coordinates = ( coordinates ) ? coordinates : this.cardinality.generateCoordinates();
     }
 
     /**
      * Connects one MazeNode instance to another.  Implicitly bi-directional, but directed edges between nodes
      * can be crated by passing in the autoConnect parameter as false.
      *
-     * @param {MazeNode} connectTo      The node to connect to this node
+     * @param {MazeNode} node           The node to connect to this node
      * @param {number} exitPoint        The cardinality point you want to connect this node with
      * @param {boolean} autoConnect     Defaults to TRUE.  If true, the connectTo node will point back to this node.
      * @returns {MazeNode}
      */
     public connectTo( node: MazeNode, exitPoint: number, autoConnect: boolean = true ): MazeNode  {
 
-        if ( exitPoint >= this.cardinality || exitPoint < 0 ) {
+        if ( exitPoint >= this.cardinality.getCardinality() || exitPoint < 0 ) {
             throw( "Indicated exitPoint value exceeds maximum MazeNode cardinality range" );
         }
 
@@ -39,12 +42,12 @@ export class MazeNode {
             let entryPoint: number  = exitPoint;
 
             /* @TODO Can't math do this...? */
-            for ( let i = 0 ; i < this.cardinality / 2; i++ ){
+            for ( let i = 0 ; i < this.cardinality.getCardinality() / 2; i++ ){
                 entryPoint -= 1;
 
                 if ( entryPoint < 0 ) {
 
-                   entryPoint = this.cardinality - 1;
+                   entryPoint = this.cardinality.getCardinality() - 1;
                 }
             }
 
@@ -77,7 +80,7 @@ export class MazeNode {
      */
     public getNeighborAt( exitPosition : number ) {
 
-        if ( exitPosition >= this.cardinality || exitPosition < 0 ) {
+        if ( exitPosition >= this.cardinality.getCardinality() || exitPosition < 0 ) {
             throw( "Indicated cardinality point is outside of the valid range" );
         }
 
@@ -114,7 +117,7 @@ export class MazeNode {
      */
     public isNeighborsWith( node: MazeNode ): boolean {
 
-        for ( let i = 0 ; i < this.cardinality ; i++ ) {
+        for ( let i = 0 ; i < this.cardinality.getCardinality() ; i++ ) {
 
             if ( node == this.neighbors[i] ) { return true; }
         }
@@ -132,7 +135,7 @@ export class MazeNode {
         let points: number[] = [];
 
         /* @TODO o(n) where n is cardinality.  Can this be improved? */
-        for ( let i = 0 ; i < this.cardinality ; i++ ) {
+        for ( let i = 0 ; i < this.cardinality.getCardinality() ; i++ ) {
 
             if ( this.neighbors[i] != undefined ) {
 
@@ -153,7 +156,7 @@ export class MazeNode {
         let points: number[] = [];
 
         /* @TODO o(n) where n is cardinality.  Can this be improved? */
-        for ( let i = 0 ; i < this.cardinality ; i++ ) {
+        for ( let i = 0 ; i < this.cardinality.getCardinality() ; i++ ) {
 
            if ( this.neighbors[i] == undefined ) {
                points.push( i );
@@ -174,7 +177,7 @@ export class MazeNode {
         let points: MazeNode[] = [];
 
         /* @TODO o(n) where n is cardinality.  Can this be improved? */
-        for ( let i = 0 ; i < this.cardinality ; i++ ) {
+        for ( let i = 0 ; i < this.cardinality.getCardinality() ; i++ ) {
 
             if ( this.neighbors[i] != undefined ) {
 
@@ -186,5 +189,16 @@ export class MazeNode {
         }
 
         return points;
+    }
+
+    public setCoordinates( coordinates: MazeCoordinates) {
+
+        this.coordinates = coordinates;
+        return this;
+    }
+
+    public getCoordinates() : MazeCoordinates {
+
+        return this.coordinates;
     }
 }

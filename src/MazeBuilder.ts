@@ -1,15 +1,24 @@
 import {MazeNode} from "./MazeNode";
-import {MazeCardinality} from "./MazeCardinality";
+import { CardinalityBehavior } from "./Behavior/CardinalityBehavior"
+import {MazeCoordinates} from "./MazeCoordinates/MazeCoordinates";
+import {CardinalityBehaviorFour2D} from "./Behavior/CardinalityBehaviorFour2D";
 
 export class MazeBuilder {
 
-    cardinality : MazeCardinality = MazeCardinality.FOUR;
-    complexity : number = 5;
+    complexity : number;
     entry : MazeNode;
+    cardinalityBehavior : CardinalityBehavior;
+    occupiedCoordinates: MazeCoordinates
+
+    public constructor( cardinalityBehavior? : CardinalityBehavior, complexity: number = 5 ) {
+
+        this.cardinalityBehavior = ( cardinalityBehavior ) ? cardinalityBehavior : new CardinalityBehaviorFour2D();
+        this.complexity = complexity;
+    }
 
     public buildMaze(): void {
 
-       this.entry = new MazeNode( this.cardinality );
+       this.entry = new MazeNode( this.cardinalityBehavior.getCardinality() );
 
        this.generateRandomPathFrom( this.entry );
 
@@ -30,13 +39,20 @@ export class MazeBuilder {
         let newDirection = -1;
         let openExits: number[];
         let pointer: MazeNode = node;
+        let lastCoordinates: MazeCoordinates;
+        let nextCoordinates: MazeCoordinates;
 
         for ( let i = 0 ; i < depth ; i++ ) {
 
             openExits = pointer.getOpenExitPoints();
             newDirection = openExits[ MazeBuilder.rand( openExits.length - 1, 0 ) ];
-            pointer.connectTo( new MazeNode( this.cardinality ), newDirection );
+
+            lastCoordinates = pointer.getCoordinates();
+            nextCoordinates = this.cardinalityBehavior.getNextCoordinates( lastCoordinates, newDirection );
+
+            pointer.connectTo( new MazeNode( this.cardinalityBehavior.getCardinality() ), newDirection );
             pointer = pointer.getNeighborAt( newDirection );
+            pointer.setCoordinates( nextCoordinates );
         }
 
         return this;
