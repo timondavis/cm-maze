@@ -1,7 +1,6 @@
 import {expect} from 'chai';
 import 'mocha';
 import {MazeNode} from "../MazeNode";
-import {CardinalityBehavior} from "../Behavior/CardinalityBehavior";
 import {CardinalityBehaviorFour2D, CB4_CARD} from "../Behavior/CardinalityBehaviorFour2D";
 import {CardinalityBehaviorEight2D, CB8_CARD} from "../Behavior/CardinalityBehaviorEight2D";
 

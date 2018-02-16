@@ -113,6 +113,24 @@ export abstract class MazeCoordinates {
         return this.dimensions;
     }
 
+    /**
+     * Convert these coordinates into a string representing the values contained inside.
+     * @returns {string}
+     */
+    public toString() : string {
+
+        let s: string = "[";
+
+        for( let i = 0 ; i < this.dimensions - 1; i++ ){
+
+            s += this.position[i] + ",";
+        }
+
+        s += this.position[this.dimensions - 1] + "]"
+
+        return s;
+    }
+
     protected abstract getDimensionValue(): number;
 
 

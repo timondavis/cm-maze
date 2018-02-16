@@ -1,5 +1,8 @@
 import {MazeCoordinates} from "../MazeCoordinates/MazeCoordinates";
 
+/**
+ * @TODO THESE SHOULD BE SINGLETONS - THIS CLASS AND ITS CHILDREN
+ */
 export abstract class CardinalityBehavior {
 
     abstract getNextCoordinates( currentCoordinates: MazeCoordinates, exitPosition: number): MazeCoordinates;

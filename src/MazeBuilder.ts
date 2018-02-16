@@ -1,3 +1,4 @@
+/// <reference path="../node_modules/@types/node/index.d.ts" />
 import {MazeNode} from "./MazeNode";
 import { CardinalityBehavior } from "./Behavior/CardinalityBehavior"
 import {MazeCoordinates} from "./MazeCoordinates/MazeCoordinates";
@@ -8,7 +9,7 @@ export class MazeBuilder {
     complexity : number;
     entry : MazeNode;
     cardinalityBehavior : CardinalityBehavior;
-    occupiedCoordinates: MazeCoordinates
+    occupiedCoordinates : { [key: string] : MazeCoordinates } = {};
 
     public constructor( cardinalityBehavior? : CardinalityBehavior, complexity: number = 5 ) {
 
@@ -18,7 +19,7 @@ export class MazeBuilder {
 
     public buildMaze(): void {
 
-       this.entry = new MazeNode( this.cardinalityBehavior.getCardinality() );
+       this.entry = new MazeNode( this.cardinalityBehavior );
 
        this.generateRandomPathFrom( this.entry );
 
@@ -50,9 +51,11 @@ export class MazeBuilder {
             lastCoordinates = pointer.getCoordinates();
             nextCoordinates = this.cardinalityBehavior.getNextCoordinates( lastCoordinates, newDirection );
 
-            pointer.connectTo( new MazeNode( this.cardinalityBehavior.getCardinality() ), newDirection );
+            pointer.connectTo( new MazeNode( this.cardinalityBehavior ), newDirection );
             pointer = pointer.getNeighborAt( newDirection );
             pointer.setCoordinates( nextCoordinates );
+
+            this.occupiedCoordinates[nextCoordinates.toString()] = nextCoordinates;
         }
 
         return this;
