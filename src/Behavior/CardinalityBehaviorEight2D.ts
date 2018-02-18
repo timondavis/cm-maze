@@ -22,8 +22,8 @@ export class CardinalityBehaviorEight2D extends CardinalityBehavior {
         this.validatePosition( exitPosition );
 
         let nextCoordinates = new MazeCoordinates2D( [
-            currentCoordinates.getDimension( 0 ),
-            currentCoordinates.getDimension( 1 )
+            currentCoordinates.getDimension( D2D.X ),
+            currentCoordinates.getDimension( D2D.Y )
         ]);
 
         switch( exitPosition ) {
@@ -41,7 +41,7 @@ export class CardinalityBehaviorEight2D extends CardinalityBehavior {
             }
 
             case CB8_CARD.EAST : {
-                nextCoordinates.adjustDimension( 1, 1 );
+                nextCoordinates.adjustDimension( D2D.X, 1 );
                 break;
             }
 
@@ -60,8 +60,8 @@ export class CardinalityBehaviorEight2D extends CardinalityBehavior {
 
             case CB8_CARD.SOUTH_WEST : {
                 nextCoordinates
-                    .adjustDimension( D2D.X, 1 )
-                    .adjustDimension( D2D.Y, -1 );
+                    .adjustDimension( D2D.X, -1 )
+                    .adjustDimension( D2D.Y, 1 );
                 break;
             }
 

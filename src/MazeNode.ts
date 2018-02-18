@@ -3,6 +3,7 @@ import {CardinalityBehavior} from "./Behavior/CardinalityBehavior";
 
 export class MazeNode {
 
+    protected static debug: boolean = false;
     protected neighbors : MazeNode[];
     protected cardinality : CardinalityBehavior;
     protected name = "";
@@ -45,6 +46,12 @@ export class MazeNode {
             }
 
             node.connectTo( this, entryPosition, false );
+
+            if ( MazeNode.debug ) {
+
+                console.log( "CONNECTING NODES\n" );
+                console.log( this.getName() + " (" + exitPosition + ")  <=> (" + entryPosition + ") " + node.getName() );
+            }
         }
 
         return this;
@@ -213,4 +220,42 @@ export class MazeNode {
 
         return this.coordinates;
     }
+
+    /**
+     * Stringify the output for human console consumption
+     * @returns {string}
+     */
+    public toString() : string {
+
+        let output: string = "";
+        let occupiedExitPoints = this.getOccupiedExitPoints();
+
+        output += this.getName() + ": \n";
+        output += "Coordinates: " + this.getCoordinates().toString() + "\n";
+        output += "Exits:";
+        for( let i = 0 ; i < occupiedExitPoints.length ; i++ ) {
+
+            output+= " " + occupiedExitPoints[i] + " ";
+        }
+        output += "\n\n";
+
+        return output;
+    }
+
+    /**
+     * Toggle debugging messages
+     *
+     * @param {boolean} toggle
+     */
+    public static toggleDebug( toggle? : boolean ) {
+
+        if ( toggle === undefined ) {
+
+            MazeNode.debug = !MazeNode.debug;
+        }
+        else {
+            MazeNode.debug = toggle;
+        }
+    }
+
 }
