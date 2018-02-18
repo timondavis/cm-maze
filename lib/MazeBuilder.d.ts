@@ -14,6 +14,15 @@ export declare class MazeBuilder {
     generateRandomPathFrom(node: MazeNode, depth?: number): MazeBuilder;
     seekAndGenerateRandomPath(startingNode: MazeNode, maxDepth?: number): MazeBuilder;
     /**
+     * Try every available exit on the node for connection to a new or existing node.  Return the index of the
+     * successful connections exit point when new connection is made.  If no connection is made, returns -1.
+     *
+     * @param {MazeNode} pointer
+     * @param {number[]} openExits
+     * @returns {number}
+     */
+    private tryNodeConnectionFromEveryAvailableExit(pointer, openExits);
+    /**
      * Convenince function to simply get the next node WHEN ALL EXIT POINTS ARE CLAIMED
      *
      * @pre  All exit points on the node must connect to other nodes.  Ignoring this precondition
@@ -33,9 +42,10 @@ export declare class MazeBuilder {
     private getNextNodeAtExit(pointer, exitPoint);
     /**
      * Convenience method for producing (or finding), and then traversing to, the next node on a given path.
+     * Returns the index of the connected path, or -1 if failure took place
      * @param {MazeNode} pointer
      * @param {number} exitPoint
-     * @returns {boolean}
+     * @returns {number}
      */
     private buildNextNodeOnRandomPath(pointer, exitPoint);
 }

@@ -21,37 +21,37 @@ export class MazeNode {
      * can be crated by passing in the autoConnect parameter as false.
      *
      * @param {MazeNode} node           The node to connect to this node
-     * @param {number} exitPoint        The cardinality point you want to connect this node with
-     * @param {boolean} autoConnect     Defaults to TRUE.  If true, the connectTo node will point back to this node.
+     * @param {number} exitPosition     The cardinality position you want to connect this node with
+     * @param {boolean} autoConnect     Defaults to TRUE.  If true, the connectTo node will position back to this node.
      * @returns {MazeNode}
      */
-    public connectTo( node: MazeNode, exitPoint: number, autoConnect: boolean = true ): MazeNode  {
+    public connectTo( node: MazeNode, exitPosition: number, autoConnect: boolean = true ): MazeNode  {
 
-        if ( exitPoint >= this.cardinality.getCardinality() || exitPoint < 0 ) {
-            throw( "Indicated exitPoint value exceeds maximum MazeNode cardinality range" );
+        if ( exitPosition >= this.cardinality.getCardinality() || exitPosition < 0 ) {
+            throw( "Indicated exitPosition value exceeds maximum MazeNode cardinality range" );
         }
 
-        if ( ! this.neighbors[exitPoint] === undefined ) {
-            throw( "Indicated exitPoint position is already occupied.  Two exits/entries may not occupy the same exitPoint" );
+        if ( ! this.neighbors[exitPosition] === undefined ) {
+            throw( "Indicated exitPosition exitPosition is already occupied.  Two exits/entries may not occupy the same exitPosition" );
         }
 
-        this.neighbors[exitPoint] = node;
+        this.neighbors[exitPosition] = node;
 
         if ( autoConnect ) {
 
-            let entryPoint = this.cardinality.getOpposingPoint( exitPoint );
-            if ( autoConnect && node.isPositionOccupied( entryPoint ) ) {
-                throw( "Cannot auto-connect to proposed MazeNode.  The automated connectTo node entry position is occupied." );
+            let entryPosition = this.cardinality.getOpposingPoint( exitPosition );
+            if ( autoConnect && node.isPositionOccupied( entryPosition ) ) {
+                throw( "Cannot auto-connect to proposed MazeNode.  The automated connectTo node entry exitPosition is occupied." );
             }
 
-            node.connectTo( this, entryPoint, false );
+            node.connectTo( this, entryPosition, false );
         }
 
         return this;
     }
 
     /**
-     * Find out of the indicated position of cardinality is occupied on this node
+     * Find out of the indicated exitPosition of cardinality is occupied on this node
      *
      * @param {number} exitPosition
      * @returns {boolean}
@@ -62,7 +62,7 @@ export class MazeNode {
     }
 
     /**
-     * Get a connected node by indicating the exit (cardinality point) that leads to the node.
+     * Get a connected node by indicating the exit (cardinality position) that leads to the node.
      *
      * @param {number} cardinalityPoint
      * @returns {MazeNode}
@@ -70,7 +70,7 @@ export class MazeNode {
     public getNeighborAt( exitPosition : number ) {
 
         if ( exitPosition >= this.cardinality.getCardinality() || exitPosition < 0 ) {
-            throw( "Indicated cardinality point is outside of the valid range" );
+            throw( "Indicated cardinality position is outside of the valid range" );
         }
 
         return this.neighbors[exitPosition];
@@ -115,44 +115,44 @@ export class MazeNode {
     }
 
     /**
-     * Get a list of occupied exit points on the node.
+     * Get a list of occupied exit positions on the node.
      *
      * @returns {MazeNode[]}
      */
     public getOccupiedExitPoints() : number[] {
 
-        let points: number[] = [];
+        let positions: number[] = [];
 
         /* @TODO o(n) where n is cardinality.  Can this be improved? */
         for ( let i = 0 ; i < this.cardinality.getCardinality() ; i++ ) {
 
             if ( this.neighbors[i] != undefined ) {
 
-                points.push( i );
+                positions.push( i );
             }
         }
 
-        return points;
+        return positions;
     }
 
     /**
-     * Get a list of unoccupied exit points on the node
+     * Get a list of unoccupied exit positions on the node
      *
      * @returns {number[]}
      */
     public getOpenExitPoints() : number[] {
 
-        let points: number[] = [];
+        let positions: number[] = [];
 
         /* @TODO o(n) where n is cardinality.  Can this be improved? */
         for ( let i = 0 ; i < this.cardinality.getCardinality() ; i++ ) {
 
            if ( this.neighbors[i] == undefined ) {
-               points.push( i );
+               positions.push( i );
            }
         }
 
-        return points;
+        return positions;
     }
 
     /**
@@ -163,34 +163,34 @@ export class MazeNode {
      */
     public getNeighbors( includeOpenNodes = false ): MazeNode[] {
 
-        let points: MazeNode[] = [];
+        let positions: MazeNode[] = [];
 
         /* @TODO o(n) where n is cardinality.  Can this be improved? */
         for ( let i = 0 ; i < this.cardinality.getCardinality() ; i++ ) {
 
             if ( this.neighbors[i] != undefined ) {
 
-                points.push( this.neighbors[i] );
+                positions.push( this.neighbors[i] );
             } else if ( includeOpenNodes ) {
 
-                points.push( this.neighbors[i] );
+                positions.push( this.neighbors[i] );
             }
         }
 
-        return points;
+        return positions;
     }
 
     /**
-     * Find out whether an entry/exit point on the node is empty.
+     * Find out whether an entry/exit position on the node is empty.
      *
-     * @param {number} point
+     * @param {number} position
      * @returns {boolean}
      */
-    public isPointOpen( point: number ) {
+    public isPointOpen( position: number ) {
 
-        this.cardinality.validatePosition( point );
+        this.cardinality.validatePosition( position );
 
-        return ( this.neighbors[point] === undefined );
+        return ( this.neighbors[position] === undefined );
     }
 
     /**

@@ -11,20 +11,20 @@ export declare class MazeNode {
      * can be crated by passing in the autoConnect parameter as false.
      *
      * @param {MazeNode} node           The node to connect to this node
-     * @param {number} exitPoint        The cardinality point you want to connect this node with
-     * @param {boolean} autoConnect     Defaults to TRUE.  If true, the connectTo node will point back to this node.
+     * @param {number} exitPosition     The cardinality position you want to connect this node with
+     * @param {boolean} autoConnect     Defaults to TRUE.  If true, the connectTo node will position back to this node.
      * @returns {MazeNode}
      */
-    connectTo(node: MazeNode, exitPoint: number, autoConnect?: boolean): MazeNode;
+    connectTo(node: MazeNode, exitPosition: number, autoConnect?: boolean): MazeNode;
     /**
-     * Find out of the indicated position of cardinality is occupied on this node
+     * Find out of the indicated exitPosition of cardinality is occupied on this node
      *
      * @param {number} exitPosition
      * @returns {boolean}
      */
     isPositionOccupied(exitPosition: number): boolean;
     /**
-     * Get a connected node by indicating the exit (cardinality point) that leads to the node.
+     * Get a connected node by indicating the exit (cardinality position) that leads to the node.
      *
      * @param {number} cardinalityPoint
      * @returns {MazeNode}
@@ -51,13 +51,13 @@ export declare class MazeNode {
      */
     isNeighborsWith(node: MazeNode): boolean;
     /**
-     * Get a list of occupied exit points on the node.
+     * Get a list of occupied exit positions on the node.
      *
      * @returns {MazeNode[]}
      */
     getOccupiedExitPoints(): number[];
     /**
-     * Get a list of unoccupied exit points on the node
+     * Get a list of unoccupied exit positions on the node
      *
      * @returns {number[]}
      */
@@ -70,12 +70,12 @@ export declare class MazeNode {
      */
     getNeighbors(includeOpenNodes?: boolean): MazeNode[];
     /**
-     * Find out whether an entry/exit point on the node is empty.
+     * Find out whether an entry/exit position on the node is empty.
      *
-     * @param {number} point
+     * @param {number} position
      * @returns {boolean}
      */
-    isPointOpen(point: number): boolean;
+    isPointOpen(position: number): boolean;
     /**
      * Set the coordinates for this node
      *
