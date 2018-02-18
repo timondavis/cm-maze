@@ -8,11 +8,20 @@ export declare class MazeBuilder {
     occupiedCoordinates: {
         [key: string]: MazeNode;
     };
+    nodeCounter: number;
     constructor(cardinalityBehavior?: CardinalityBehavior, complexity?: number);
     buildMaze(): void;
     static rand(max?: number, min?: number): number;
-    generateRandomPathFrom(node: MazeNode, depth?: number): MazeBuilder;
+    generateRandomPathFrom(pointer: MazeNode, depth?: number): MazeBuilder;
     seekAndGenerateRandomPath(startingNode: MazeNode, maxDepth?: number): MazeBuilder;
+    /**
+     * Get the collection of declared coordinates tracked in the map building process.
+     *
+     * @return {{[key:string] : MazeNode}}
+     */
+    getCoordinatesCollection(): {
+        [key: string]: MazeNode;
+    };
     /**
      * Try every available exit on the node for connection to a new or existing node.  Return the index of the
      * successful connections exit point when new connection is made.  If no connection is made, returns -1.
@@ -41,8 +50,9 @@ export declare class MazeBuilder {
      */
     private getNextNodeAtExit(pointer, exitPoint);
     /**
-     * Convenience method for producing (or finding), and then traversing to, the next node on a given path.
-     * Returns the index of the connected path, or -1 if failure took place
+     * Convenience method for producing (or finding), and then reporting the exit point connecting to,
+     * the next node on a given path. Returns the index of the connected path, or -1 if failure took place
+     *
      * @param {MazeNode} pointer
      * @param {number} exitPoint
      * @returns {number}

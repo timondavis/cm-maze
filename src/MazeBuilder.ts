@@ -192,6 +192,14 @@ export class MazeBuilder {
         } else {
            tempNextNode = new MazeNode( this.cardinalityBehavior );
            tempNextNode.setCoordinates(nextCoordinates);
+
+           tempNextNode.setMaxExits(
+               Math.max(
+                   2,
+                   Math.floor( this.cardinalityBehavior.getCardinality() / 2 )
+               )
+           );
+
            this.nodeCounter++;
            tempNextNode.setName( this.nodeCounter.toString() );
         }

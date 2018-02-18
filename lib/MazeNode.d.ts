@@ -1,10 +1,12 @@
 import { MazeCoordinates } from "./MazeCoordinates/MazeCoordinates";
 import { CardinalityBehavior } from "./Behavior/CardinalityBehavior";
 export declare class MazeNode {
+    protected static debug: boolean;
     protected neighbors: MazeNode[];
     protected cardinality: CardinalityBehavior;
     protected name: string;
     protected coordinates: MazeCoordinates;
+    protected maxExits: number;
     constructor(cardinality: CardinalityBehavior, coordinates?: MazeCoordinates);
     /**
      * Connects one MazeNode instance to another.  Implicitly bi-directional, but directed edges between nodes
@@ -88,4 +90,17 @@ export declare class MazeNode {
      * @returns {MazeCoordinates}
      */
     getCoordinates(): MazeCoordinates;
+    /**
+     * Stringify the output for human console consumption
+     * @returns {string}
+     */
+    toString(): string;
+    setMaxExits(maxExits: number): MazeNode;
+    getMaxExits(): number;
+    /**
+     * Toggle debugging messages
+     *
+     * @param {boolean} toggle
+     */
+    static toggleDebug(toggle?: boolean): void;
 }

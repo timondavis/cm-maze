@@ -8,6 +8,7 @@ export class MazeNode {
     protected cardinality : CardinalityBehavior;
     protected name = "";
     protected coordinates : MazeCoordinates;
+    protected maxExits: number;
 
     public constructor( cardinality: CardinalityBehavior, coordinates? : MazeCoordinates ) {
 
@@ -15,11 +16,12 @@ export class MazeNode {
         this.neighbors = new Array<MazeNode>( cardinality.getCardinality() );
 
         this.coordinates = ( coordinates ) ? coordinates : this.cardinality.generateCoordinates();
+        this.maxExits = -1;
     }
 
     /**
      * Connects one MazeNode instance to another.  Implicitly bi-directional, but directed edges between nodes
-     * can be crated by passing in the autoConnect parameter as false.
+     * can be crated by passing in the autoConnect parameter as false.  If either node is maxed out, no connection will be made.
      *
      * @param {MazeNode} node           The node to connect to this node
      * @param {number} exitPosition     The cardinality position you want to connect this node with
@@ -193,9 +195,15 @@ export class MazeNode {
      * @param {number} position
      * @returns {boolean}
      */
-    public isPointOpen( position: number ) {
+    public isPointOpen( position: number ): boolean {
+
+        if ( this.maxExits >= 0 && this.maxExits + 1 <= this.getOccupiedExitPoints().length ) {
+
+            return false;
+        }
 
         this.cardinality.validatePosition( position );
+
 
         return ( this.neighbors[position] === undefined );
     }
@@ -240,6 +248,17 @@ export class MazeNode {
         output += "\n\n";
 
         return output;
+    }
+
+    public setMaxExits( maxExits: number ) : MazeNode {
+
+        this.maxExits = maxExits;
+        return this;
+    }
+
+    public getMaxExits() : number {
+
+        return this.maxExits;
     }
 
     /**
