@@ -39,18 +39,7 @@ export class MazeNode {
 
         if ( autoConnect ) {
 
-            let entryPoint: number  = exitPoint;
-
-            /* @TODO Can't math do this...? */
-            for ( let i = 0 ; i < this.cardinality.getCardinality() / 2; i++ ){
-                entryPoint -= 1;
-
-                if ( entryPoint < 0 ) {
-
-                   entryPoint = this.cardinality.getCardinality() - 1;
-                }
-            }
-
+            let entryPoint = this.cardinality.getOpposingPoint( exitPoint );
             if ( autoConnect && node.isPositionOccupied( entryPoint ) ) {
                 throw( "Cannot auto-connect to proposed MazeNode.  The automated connectTo node entry position is occupied." );
             }
@@ -191,12 +180,35 @@ export class MazeNode {
         return points;
     }
 
+    /**
+     * Find out whether an entry/exit point on the node is empty.
+     *
+     * @param {number} point
+     * @returns {boolean}
+     */
+    public isPointOpen( point: number ) {
+
+        this.cardinality.validatePosition( point );
+
+        return ( this.neighbors[point] === undefined );
+    }
+
+    /**
+     * Set the coordinates for this node
+     *
+     * @param {MazeCoordinates} coordinates
+     * @returns {this}
+     */
     public setCoordinates( coordinates: MazeCoordinates) {
 
         this.coordinates = coordinates;
         return this;
     }
 
+    /**
+     * Get the coordinates for this node
+     * @returns {MazeCoordinates}
+     */
     public getCoordinates() : MazeCoordinates {
 
         return this.coordinates;

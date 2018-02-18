@@ -1,25 +1,15 @@
-import {MazeCoordinates} from "../MazeCoordinates/MazeCoordinates";
-
+import { MazeCoordinates } from "../MazeCoordinates/MazeCoordinates";
 /**
  * @TODO THESE SHOULD BE SINGLETONS - THIS CLASS AND ITS CHILDREN
  */
-export abstract class CardinalityBehavior {
-
-    abstract getNextCoordinates( currentCoordinates: MazeCoordinates, exitPosition: number): MazeCoordinates;
-    abstract getCardinality() : number;
-
+export declare abstract class CardinalityBehavior {
+    abstract getNextCoordinates(currentCoordinates: MazeCoordinates, exitPosition: number): MazeCoordinates;
+    abstract getCardinality(): number;
     /**
      * Ensure the indicated position is valid given this coordinates cardinality
      * @param {number} position
      */
-    public validatePosition( position: number ) {
-
-        if ( position < 0 || position >= this.getCardinality() ){
-
-            throw( "Indicated position supplied to coordinate is outside of the valid range of its cardinality" );
-        }
-    }
-
+    validatePosition(position: number): void;
     /**
      * Given that each 'point' of cardinality has an opposite point (as long as there is more than one),
      * this function returns the opposing point to the given point.  For instance, on a 4 point cardinality, you'll
@@ -32,24 +22,10 @@ export abstract class CardinalityBehavior {
      * @param {number} point  The point to test against
      * @return {number}
      */
-     public getOpposingPoint( point: number ): number {
-
-        /* @TODO Can't math do this...? */
-        for ( let i = 0 ; i < this.getCardinality() / 2; i++ ){
-            point -= 1;
-
-            if ( point < 0 ) {
-
-               point = this.getCardinality() - 1;
-            }
-        }
-
-        return point;
-    }
-
+    getOpposingPoint(point: number): number;
     /**
      * Generate a new Maze Coordinate at the indicated position (leave empty for default position)
      * @returns {MazeCoordinates}
      */
-    public abstract generateCoordinates( position? : number[]) : MazeCoordinates;
+    abstract generateCoordinates(position?: number[]): MazeCoordinates;
 }
