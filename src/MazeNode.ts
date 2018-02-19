@@ -30,6 +30,13 @@ export class MazeNode {
      */
     public connectTo( node: MazeNode, exitPosition: number, autoConnect: boolean = true ): MazeNode  {
 
+        if ( ! this.isPointOpen( exitPosition ) )  {
+
+            throw( "One-Way connection failed: " +
+                "Indicated node will not tolerate any more additional connections - maximum reached." );
+        }
+
+
         if ( exitPosition >= this.cardinality.getCardinality() || exitPosition < 0 ) {
             throw( "Indicated exitPosition value exceeds maximum MazeNode cardinality range" );
         }
@@ -41,6 +48,12 @@ export class MazeNode {
         this.neighbors[exitPosition] = node;
 
         if ( autoConnect ) {
+
+            if ( ! node.isPointOpen( node.getCardinality().getOpposingPoint( exitPosition ) ) ) {
+
+                throw( "Two-Way conneciton failed.  Indicated node will not tolerate any more additonal connections, " +
+                    "maximum reached.")
+            }
 
             let entryPosition = this.cardinality.getOpposingPoint( exitPosition );
             if ( autoConnect && node.isPositionOccupied( entryPosition ) ) {
@@ -197,7 +210,7 @@ export class MazeNode {
      */
     public isPointOpen( position: number ): boolean {
 
-        if ( this.maxExits >= 0 && this.maxExits + 1 <= this.getOccupiedExitPoints().length ) {
+        if ( this.maxExits >= 0 && this.maxExits <= this.getOccupiedExitPoints().length) {
 
             return false;
         }
@@ -230,7 +243,16 @@ export class MazeNode {
     }
 
     /**
+     * Get the cardinality behavior object associated with this node.
+     * @returns {CardinalityBehavior}
+     */
+    public getCardinality() : CardinalityBehavior {
+        return this.cardinality;
+    }
+
+    /**
      * Stringify the output for human console consumption
+     *
      * @returns {string}
      */
     public toString() : string {
@@ -245,6 +267,9 @@ export class MazeNode {
 
             output+= " " + occupiedExitPoints[i] + " ";
         }
+
+        output += "\n";
+        output += "Max Exits: " + this.getMaxExits();
         output += "\n\n";
 
         return output;

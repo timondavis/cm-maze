@@ -194,11 +194,10 @@ export class MazeBuilder {
            tempNextNode.setCoordinates(nextCoordinates);
 
            tempNextNode.setMaxExits(
-               Math.max(
-                   2,
-                   Math.floor( this.cardinalityBehavior.getCardinality() / 2 )
-               )
+               MazeBuilder.rand( this.cardinalityBehavior.getCardinality(), 1 )
            );
+
+           tempNextNode.setMaxExits( 2 );
 
            this.nodeCounter++;
            tempNextNode.setName( this.nodeCounter.toString() );
@@ -223,7 +222,7 @@ export class MazeBuilder {
 
         // If the logical entry point is open on the next node, we'll connect the nodes and traverse
         // to the next node.
-        if ( tempNextNode.isPointOpen( this.cardinalityBehavior.getOpposingPoint( exitPoint ))) {
+        if ( pointer.isPointOpen( exitPoint ) && tempNextNode.isPointOpen( this.cardinalityBehavior.getOpposingPoint( exitPoint ))) {
 
             pointer.connectTo( tempNextNode, exitPoint );
             pointer = tempNextNode;
