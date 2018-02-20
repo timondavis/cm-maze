@@ -1,6 +1,4 @@
 import {MazeBuilder} from "./MazeBuilder";
 
-module.exports.BuildMaze = function() {
+module.exports.BuildMaze = MazeBuilder;
 
-    return new MazeBuilder();
-};
