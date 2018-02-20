@@ -311,7 +311,7 @@ export class MazeNode {
 
         for ( let i = 0 ; i < neighbors.length ; i++ ) {
 
-            let neighbor = ( neighbors[i] ? neighbors[i].getCoordinates().getPosition : undefined ) ;
+            let neighbor = ( neighbors[i] ? neighbors[i].getCoordinates().getPosition() : undefined ) ;
 
             obj.neighbors.push( neighbor );
         }
