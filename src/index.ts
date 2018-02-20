@@ -1,4 +1,4 @@
 import {MazeBuilder} from "./MazeBuilder";
 
-module.exports.BuildMaze = MazeBuilder;
+module.exports = MazeBuilder;
 
