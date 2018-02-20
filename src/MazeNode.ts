@@ -311,11 +311,11 @@ export class MazeNode {
 
         for ( let i = 0 ; i < neighbors.length ; i++ ) {
 
-            obj.neighbors.push( (neighbors[i]) ? neighbors[i].getCoordinates() : undefined );
+            obj.neighbors.push( (neighbors[i]) ? neighbors[i].getCoordinates().getPosition() : undefined );
         }
 
         obj.cardinality = this.cardinality.getCardinality();
-        obj.coordinates = this.getCoordinates();
+        obj.coordinates = this.getCoordinates().getPosition();
         obj.name = this.name;
         obj.maxExits = this.maxExits;
 
