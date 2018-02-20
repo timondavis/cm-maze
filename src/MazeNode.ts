@@ -313,7 +313,7 @@ export class MazeNode {
 
             let neighbor = ( neighbors[i] ? neighbors[i].getCoordinates().getPosition() : undefined ) ;
 
-            obj.neighbors.push( neighbor );
+            obj.Neighbors.push( neighbor );
         }
 
         obj.Cardinality = this.cardinality.getCardinality();
