@@ -1,1 +1,3 @@
-console.log( 'hello!' );
+import {MazeBuilder} from "./MazeBuilder";
+
+module.exports = MazeBuilder;

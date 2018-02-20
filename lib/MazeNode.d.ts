@@ -10,7 +10,7 @@ export declare class MazeNode {
     constructor(cardinality: CardinalityBehavior, coordinates?: MazeCoordinates);
     /**
      * Connects one MazeNode instance to another.  Implicitly bi-directional, but directed edges between nodes
-     * can be crated by passing in the autoConnect parameter as false.
+     * can be crated by passing in the autoConnect parameter as false.  If either node is maxed out, no connection will be made.
      *
      * @param {MazeNode} node           The node to connect to this node
      * @param {number} exitPosition     The cardinality position you want to connect this node with
@@ -91,7 +91,13 @@ export declare class MazeNode {
      */
     getCoordinates(): MazeCoordinates;
     /**
+     * Get the cardinality behavior object associated with this node.
+     * @returns {CardinalityBehavior}
+     */
+    getCardinality(): CardinalityBehavior;
+    /**
      * Stringify the output for human console consumption
+     *
      * @returns {string}
      */
     toString(): string;
