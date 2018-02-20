@@ -109,4 +109,5 @@ export declare class MazeNode {
      * @param {boolean} toggle
      */
     static toggleDebug(toggle?: boolean): void;
+    toJSON(): string;
 }

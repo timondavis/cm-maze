@@ -302,4 +302,23 @@ export class MazeNode {
         }
     }
 
+    public toJSON(){
+
+        let obj: any = {};
+
+        let neighbors = this.neighbors;
+        obj.neighbors = [];
+
+        for ( let i = 0 ; i < neighbors.length ; i++ ) {
+
+            obj.neighbors.push( (neighbors[i]) ? neighbors[i].getCoordinates() : undefined );
+        }
+
+        obj.cardinality = this.cardinality.getCardinality();
+        obj.coordinates = this.getCoordinates();
+        obj.name = this.name;
+        obj.maxExits = this.maxExits;
+
+        return JSON.stringify( obj );
+    }
 }
