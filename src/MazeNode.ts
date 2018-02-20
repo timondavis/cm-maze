@@ -307,7 +307,7 @@ export class MazeNode {
         let obj: any = {};
 
         let neighbors = this.neighbors;
-        obj.neighbors = [];
+        obj.Neighbors = [];
 
         for ( let i = 0 ; i < neighbors.length ; i++ ) {
 
@@ -316,10 +316,10 @@ export class MazeNode {
             obj.neighbors.push( neighbor );
         }
 
-        obj.cardinality = this.cardinality.getCardinality();
-        obj.coordinates = this.getCoordinates().getPosition();
-        obj.name = this.name;
-        obj.maxExits = this.maxExits;
+        obj.Cardinality = this.cardinality.getCardinality();
+        obj.Coordinates = this.getCoordinates().getPosition();
+        obj.Name = this.name;
+        obj.MaxExits = this.maxExits;
 
         return JSON.stringify( obj );
     }
