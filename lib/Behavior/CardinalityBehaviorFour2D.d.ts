@@ -21,6 +21,9 @@ export declare class CardinalityBehaviorFour2D extends CardinalityBehavior {
     /**
      * Get the cardinality for this behavior
      *
+     * Time Complexity: O(1)
+     * Space Complexity: -
+     *
      * @returns {number}
      */
     getCardinality(): number;
@@ -31,14 +34,21 @@ export declare class CardinalityBehaviorFour2D extends CardinalityBehavior {
      *
      * Example: Going north from [0,0] would result in finding coordinates at position [1,0].
      *
+     * Time Complexity: O(1)
+     * Space Complexity: O(1)
+     *
      * @param {MazeCoordinates2D} currentCoordinates
      * @param {number} exitPosition
      * @returns {MazeCoordinates2D}
+     * @throws Exception
      */
     getNextCoordinates(currentCoordinates: MazeCoordinates2D, exitPosition: number): MazeCoordinates2D;
     /**
      * Generate a new Maze Coordinate at the indicated position (leave empty for default position).  It is safe
      * to cast the returned result as MazeCoordinates2D.
+     *
+     * Time Complexity: O(1)
+     * Space Complexity: O(1)
      *
      * @returns {MazeCoordinates}
      */

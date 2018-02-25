@@ -20,6 +20,9 @@ export class CardinalityBehaviorFour2D extends CardinalityBehavior {
     /**
      * Get the cardinality for this behavior
      *
+     * Time Complexity: O(1)
+     * Space Complexity: -
+     *
      * @returns {number}
      */
     getCardinality(): number { return 4; }
@@ -31,20 +34,27 @@ export class CardinalityBehaviorFour2D extends CardinalityBehavior {
      *
      * Example: Going north from [0,0] would result in finding coordinates at position [1,0].
      *
+     * Time Complexity: O(1)
+     * Space Complexity: O(1)
+     *
      * @param {MazeCoordinates2D} currentCoordinates
      * @param {number} exitPosition
      * @returns {MazeCoordinates2D}
+     * @throws Exception
      */
     getNextCoordinates(currentCoordinates: MazeCoordinates2D, exitPosition: number): MazeCoordinates2D {
 
+        /* O(1) */
         this.validatePosition( exitPosition );
 
+        /* O(1) */
         let nextCoordinates = new MazeCoordinates2D( [
 
             currentCoordinates.getDimension( 0 ),
             currentCoordinates.getDimension( 1 )
         ]);
 
+        /* O(1) */
         switch( exitPosition ) {
 
             case CB4_CARD.NORTH : { nextCoordinates.adjustDimension( D2D.Y, - 1 ); break; }
@@ -60,6 +70,9 @@ export class CardinalityBehaviorFour2D extends CardinalityBehavior {
     /**
      * Generate a new Maze Coordinate at the indicated position (leave empty for default position).  It is safe
      * to cast the returned result as MazeCoordinates2D.
+     *
+     * Time Complexity: O(1)
+     * Space Complexity: O(1)
      *
      * @returns {MazeCoordinates}
      */

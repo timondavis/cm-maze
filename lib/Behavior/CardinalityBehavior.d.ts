@@ -7,6 +7,10 @@ export declare abstract class CardinalityBehavior {
     abstract getCardinality(): number;
     /**
      * Ensure the indicated position is valid given this coordinates cardinality
+     *
+     * Time Complexity: O(1)
+     * Space Complexity: 0
+     *
      * @param {number} position
      */
     validatePosition(position: number): void;
@@ -18,6 +22,8 @@ export declare abstract class CardinalityBehavior {
      *
      * By default, the base class provides an algorithm to find the diametrically opposed point given an even number
      * of points on a 2d plane.:w
+     *
+     * Time Complexity: O(point), let point = @param point
      *
      * @param {number} point  The point to test against
      * @return {number}
