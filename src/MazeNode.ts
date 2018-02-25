@@ -56,9 +56,6 @@ export class MazeNode {
             }
 
             let entryPosition = this.cardinality.getOpposingPoint( exitPosition );
-            if ( autoConnect && node.isPositionOccupied( entryPosition ) ) {
-                throw( "Cannot auto-connect to proposed MazeNode.  The automated connectTo node entry exitPosition is occupied." );
-            }
 
             node.connectTo( this, entryPosition, false );
 
@@ -70,17 +67,6 @@ export class MazeNode {
         }
 
         return this;
-    }
-
-    /**
-     * Find out of the indicated exitPosition of cardinality is occupied on this node
-     *
-     * @param {number} exitPosition
-     * @returns {boolean}
-     */
-    public isPositionOccupied( exitPosition : number ) : boolean {
-
-        return( this.neighbors[exitPosition] === null );
     }
 
     /**
@@ -216,9 +202,13 @@ export class MazeNode {
         }
 
         this.cardinality.validatePosition( position );
-
-
         return ( this.neighbors[position] === undefined );
+    }
+
+    public isPointOccupied( position: number ) : boolean {
+
+        this.cardinality.validatePosition( position );
+        return ( this.neighbors[position] !== undefined );
     }
 
     /**

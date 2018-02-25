@@ -3,19 +3,14 @@ import { expect } from "chai";
 import {MazeBuilder} from "../MazeBuilder";
 import {CardinalityBehaviorEight2D} from "../Behavior/CardinalityBehaviorEight2D";
 import {MazeNode} from "../MazeNode";
+import {Maze} from "../Maze";
 
 describe( 'MazeBuilder', () => {
 
-    it( 'generates node graphs with random layouts', () => {
+    it( 'works', () => {
 
         MazeNode.toggleDebug( true );
-        const M = new MazeBuilder( new CardinalityBehaviorEight2D(), 20 );
-
-        M.buildMaze();
-
-        let mc = M.getCoordinatesCollection();
-
-        Object.keys(mc).forEach( key => console.log( mc[key].toString() ));
+        const M = new MazeBuilder( new CardinalityBehaviorEight2D(), 10 );
     });
 
     it( 'generates random numbers between a requested range', () => {
@@ -29,5 +24,9 @@ describe( 'MazeBuilder', () => {
             expect( number ).to.be.lessThan( 401 );
         }
     });
+
+
+
+
 
 });

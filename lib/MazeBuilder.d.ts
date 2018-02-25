@@ -1,6 +1,6 @@
-/// <reference path="../node_modules/@types/node/index.d.ts" />
 import { MazeNode } from "./MazeNode";
 import { CardinalityBehavior } from "./Behavior/CardinalityBehavior";
+import { Maze } from "./Maze";
 export declare class MazeBuilder {
     complexity: number;
     entry: MazeNode;
@@ -10,7 +10,7 @@ export declare class MazeBuilder {
     };
     nodeCounter: number;
     constructor(cardinalityBehavior?: CardinalityBehavior, complexity?: number);
-    buildMaze(): void;
+    buildMaze(): Maze;
     static rand(max?: number, min?: number): number;
     generateRandomPathFrom(pointer: MazeNode, depth?: number): MazeBuilder;
     seekAndGenerateRandomPath(startingNode: MazeNode, maxDepth?: number): MazeBuilder;
@@ -58,4 +58,6 @@ export declare class MazeBuilder {
      * @returns {number}
      */
     private buildNextNodeOnRandomPath(pointer, exitPoint);
+    private normalizeNodeCoordinates();
+    private getDimensions();
 }

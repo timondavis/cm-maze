@@ -51,6 +51,7 @@ export declare abstract class MazeCoordinates {
      * @returns {string}
      */
     toString(): string;
+    static encodeCoorindateArray(dimensions: number, elements: number[]): string;
     protected abstract getDimensionValue(): number;
     private validateDimensions();
 }

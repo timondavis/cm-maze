@@ -1,9 +1,10 @@
-/// <reference path="../node_modules/@types/node/index.d.ts" />
 import {MazeNode} from "./MazeNode";
 import { CardinalityBehavior } from "./Behavior/CardinalityBehavior"
 import {MazeCoordinates} from "./MazeCoordinates/MazeCoordinates";
 import {CardinalityBehaviorFour2D} from "./Behavior/CardinalityBehaviorFour2D";
 import {MazeCoordinates2D} from "./MazeCoordinates/MazeCoordinates2D";
+import {Maze} from "./Maze";
+import {CardinalityBehaviorEight2D} from "./Behavior/CardinalityBehaviorEight2D";
 
 export class MazeBuilder {
 
@@ -13,13 +14,13 @@ export class MazeBuilder {
     occupiedCoordinates : { [key:string] : MazeNode } = {};
     nodeCounter: number = 0;
 
-    public constructor( cardinalityBehavior? : CardinalityBehavior, complexity: number = 5 ) {
+    public constructor( cardinalityBehavior? : CardinalityBehavior, complexity: number = 100 ) {
 
-        this.cardinalityBehavior = ( cardinalityBehavior ) ? cardinalityBehavior : new CardinalityBehaviorFour2D();
+        this.cardinalityBehavior = ( cardinalityBehavior ) ? cardinalityBehavior : new CardinalityBehaviorEight2D();
         this.complexity = complexity;
     }
 
-    public buildMaze(): void {
+    public buildMaze(): Maze {
 
         let startingCoordinates = this.cardinalityBehavior.generateCoordinates();
         this.entry = new MazeNode( this.cardinalityBehavior );
@@ -33,6 +34,16 @@ export class MazeBuilder {
 
             this.seekAndGenerateRandomPath( this.entry );
         }
+
+        const m: Maze = new Maze();
+
+        m.setCardinalityBehavior( this.cardinalityBehavior );
+        m.setNodes( this.normalizeNodeCoordinates() );
+        m.setCurrentNode( this.entry );
+        m.setStartNode( this.entry );
+        m.setDimensions( this.getDimensions() );
+
+        return m;
     }
 
     public static rand( max: number = 100, min: number = 1 ) : number {
@@ -232,5 +243,81 @@ export class MazeBuilder {
         }
 
         return -1;
+    }
+
+    private normalizeNodeCoordinates(): { [key:string] : MazeNode } {
+
+        let adjustedCoordinates : { [key:string] : MazeNode } = {};
+        let dimensionsUsed = this.getCoordinatesCollection()["[0,0]"].getCoordinates().getDimensions();
+        let minCoordinateValuesInrange: number[] = [];
+        let currentValue: number;
+        let currentMin: number = 0;
+        let adjustmentsByIndex: number[] = [];
+        let currentNode: MazeNode;
+
+        // O(d * n)
+        for ( let i = 0 ; i < dimensionsUsed ; i++ ) {
+
+            Object.keys( this.getCoordinatesCollection() ).forEach( (key) => {
+
+                currentValue = this.getCoordinatesCollection()[key].getCoordinates().getDimension( i );
+                currentMin = ( currentValue < currentMin ) ? currentValue : currentMin;
+            });
+
+            minCoordinateValuesInrange[i] = currentMin;
+        }
+
+        // O(d)
+        for( let i = 0 ; i < dimensionsUsed ; i++ ) {
+
+            adjustmentsByIndex[i] = Math.abs( minCoordinateValuesInrange[i] );
+        }
+
+        // O(d * n)
+        for ( let i = 0 ; i < dimensionsUsed ; i++ ) {
+
+            Object.keys( this.getCoordinatesCollection() ).forEach( (key) => {
+
+                currentNode = this.getCoordinatesCollection()[key];
+                currentNode.getCoordinates().adjustDimension( i, adjustmentsByIndex[i] );
+            });
+        }
+
+        // O(n)
+        Object.keys( this.getCoordinatesCollection() ).forEach( (key) => {
+
+            currentNode = this.getCoordinatesCollection()[key];
+            adjustedCoordinates[currentNode.getCoordinates().toString()] = currentNode;
+        });
+
+        return adjustedCoordinates;
+    }
+
+    private getDimensions() : number[] {
+
+        let dimensionsUsed = this.entry.getCoordinates().getDimensions();
+        let node : MazeNode;
+        let currentValue : number;
+        let maxValue : number;
+        let minValue : number;
+        let dimensions = [];
+
+        for ( let i = 0 ; i < dimensionsUsed ; i++ ) {
+
+            maxValue = 0;
+            minValue = 0;
+
+            Object.keys( this.getCoordinatesCollection() ).forEach( (key: string) => {
+
+                node = this.getCoordinatesCollection()[key];
+                currentValue = node.getCoordinates().getDimension( i );
+                maxValue = ( currentValue > maxValue ) ? currentValue : maxValue;
+                minValue = ( currentValue < minValue ) ? currentValue : minValue;
+            });
+
+            dimensions.push( ( maxValue - minValue ) + 1 );
+        }
+
+        return dimensions;
     }
 }

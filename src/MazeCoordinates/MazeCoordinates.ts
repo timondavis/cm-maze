@@ -119,20 +119,24 @@ export abstract class MazeCoordinates {
      */
     public toString() : string {
 
+        return MazeCoordinates.encodeCoorindateArray( this.dimensions, this.position );
+    }
+
+    public static encodeCoorindateArray( dimensions: number, elements: number[] ) : string {
+
         let s: string = "[";
 
-        for( let i = 0 ; i < this.dimensions - 1; i++ ){
+        for( let i = 0 ; i < dimensions - 1; i++ ){
 
-            s += this.position[i] + ",";
+            s += elements[i] + ",";
         }
 
-        s += this.position[this.dimensions - 1] + "]"
+        s += elements[dimensions - 1] + "]"
 
         return s;
     }
 
     protected abstract getDimensionValue(): number;
-
 
     private validateDimensions() : void {
 
