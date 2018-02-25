@@ -26,6 +26,8 @@ export class MazeRenderer {
 
     public render2D() {
 
+        console.log( "rendering" );
+
         if ( this.maze.getDimensions().length != 2 ) { throw "Cannot render non-2d model in 2d"; }
 
         let context = this.context;
@@ -54,6 +56,7 @@ export class MazeRenderer {
             nodeRadiusPx = (gridUnitWidthPx * 0.75) / 2;
         }
 
+
         nodeRadiusPx = Math.min( 100, nodeRadiusPx );
 
         context.fillStyle = "#ffffff";
@@ -70,27 +73,43 @@ export class MazeRenderer {
 
             for ( let y = 0 ; y < this.maze.getDimensions()[Y] ; y++ ) {
 
-                context.strokeStyle = "#000000";
-                context.fillStyle = "#000000";
 
                 let node = this.maze.getNode( new MazeCoordinates2D( [ x, y ] ) );
                 let neighborNode: MazeNode;
 
                 if ( typeof node === 'undefined' ) { continue; }
 
+                if ( node.getCoordinates() === this.maze.getStartNode().getCoordinates() ) {
+
+                    context.fillStyle = "#00FF00";
+                    context.strokeStyle = "#00FF00";
+                } else if ( this.maze.getFinishNode() && node.getCoordinates() === (<MazeNode> this.maze.getFinishNode()).getCoordinates() ) {
+
+                    context.fillStyle = "#0000FF";
+                    context.strokeStyle = "#0000FF";
+
+                } else {
+
+                    context.strokeStyle = "#000000";
+                    context.fillStyle = "#FFFFFF";
+                }
+
+
                 nodeCenterX = ( gridUnitWidthPx * x + ( gridUnitWidthPx * 0.5 ) );
                 nodeCenterY = ( gridUnitHeightPx * y + ( gridUnitHeightPx * 0.5 ) );
 
                 context.beginPath();
                 context.arc( nodeCenterX, nodeCenterY, nodeRadiusPx,(Math.PI/180)* 0, (Math.PI/180) * 360, false );
+                context.fill();
                 context.stroke();
                 context.closePath();
 
-                context.font = "15px Sans-Serif";
+/*                context.font = "15px Sans-Serif";
                 context.fillText( node.getName(), nodeCenterX - (5 * node.getName().length ), nodeCenterY - (0.25 * nodeRadiusPx) );
 
                 context.font = "11px Sans-Serif";
                 context.fillText( node.getCoordinates().toString(), nodeCenterX - ( ( node.getCoordinates().toString().length / 2 ) * 5 ) , nodeCenterY + ( 0.15 * nodeRadiusPx ) );
+                */
 
                 cardinality = node.getCardinality().getCardinality();
 

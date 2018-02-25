@@ -16,7 +16,7 @@ export class MazeBuilder {
 
     public constructor( cardinalityBehavior? : CardinalityBehavior, complexity: number = 100 ) {
 
-        this.cardinalityBehavior = ( cardinalityBehavior ) ? cardinalityBehavior : new CardinalityBehaviorEight2D();
+        this.cardinalityBehavior = ( cardinalityBehavior ) ? cardinalityBehavior : new CardinalityBehaviorFour2D();
         this.complexity = complexity;
     }
 
@@ -41,6 +41,7 @@ export class MazeBuilder {
         m.setNodes( this.normalizeNodeCoordinates() );
         m.setCurrentNode( this.entry );
         m.setStartNode( this.entry );
+        m.setFinishNode( this.selectRandomNode() );
         m.setDimensions( this.getDimensions() );
 
         return m;
@@ -68,7 +69,7 @@ export class MazeBuilder {
                 pointer = this.hopToNextNode(pointer);
                 continue;
             }
-            newDirection = openExits[MazeBuilder.rand(openExits.length - 1, 0)];
+            newDirection = openExits[MazeBuilder.rand(openExits.length, 0)];
 
             // Start by attempting to connect to a random new or existing node gracefully...
             nextExitPosition = this.buildNextNodeOnRandomPath( pointer, newDirection );
@@ -109,7 +110,7 @@ export class MazeBuilder {
             neighbors = pointer.getNeighbors();
 
             if ( neighbors.length > 0 ) {
-                pointer = neighbors[ MazeBuilder.rand( neighbors.length - 1, 0 ) ];
+                pointer = neighbors[ MazeBuilder.rand( neighbors.length, 0 ) ];
             }
 
             else break;
@@ -146,7 +147,10 @@ export class MazeBuilder {
         let candidateExitPosition = -1;
 
         for ( let i = 0 ; i < openExits.length ; i++ ) {
-            newDirection = openExits[i];
+
+            let index: number = MazeBuilder.rand( openExits.length, 0 );
+            newDirection = openExits[index];
+            openExits = openExits.splice( index, 1 );
 
             candidateExitPosition = this.buildNextNodeOnRandomPath( pointer, newDirection );
 
@@ -171,7 +175,7 @@ export class MazeBuilder {
 
         return pointer.getNeighborAt(
             MazeBuilder.rand(
-                this.cardinalityBehavior.getCardinality() - 1,
+                this.cardinalityBehavior.getCardinality(),
                 0
             )
         );
@@ -207,8 +211,6 @@ export class MazeBuilder {
            tempNextNode.setMaxExits(
                MazeBuilder.rand( this.cardinalityBehavior.getCardinality(), 1 )
            );
-
-           tempNextNode.setMaxExits( 2 );
 
            this.nodeCounter++;
            tempNextNode.setName( this.nodeCounter.toString() );
@@ -319,5 +321,13 @@ export class MazeBuilder {
         }
 
         return dimensions;
+    }
+
+    private selectRandomNode() : MazeNode {
+
+        let coordinateList = Object.keys( this.getCoordinatesCollection() );
+        let index = MazeBuilder.rand( coordinateList.length, 0 );
+
+        return this.getCoordinatesCollection()[coordinateList[index]];
     }
 }

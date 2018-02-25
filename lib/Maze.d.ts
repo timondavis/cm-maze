@@ -22,6 +22,7 @@ export declare class Maze {
     getNode(coordinates: MazeCoordinates): MazeNode;
     setStartNode(node: MazeNode): void;
     getStartNode(): MazeNode;
+    setFinishNode(node: MazeNode): void;
     getFinishNode(): MazeNode | boolean;
     getDimensions(): number[];
     setDimensions(dimensions: number[]): void;

@@ -60,4 +60,5 @@ export declare class MazeBuilder {
     private buildNextNodeOnRandomPath(pointer, exitPoint);
     private normalizeNodeCoordinates();
     private getDimensions();
+    private selectRandomNode();
 }

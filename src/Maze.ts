@@ -45,6 +45,11 @@ export class Maze {
         return this.start;
     }
 
+    public setFinishNode( node: MazeNode ) : void {
+
+        this.finish = node;
+    }
+
     public getFinishNode() : MazeNode | boolean {
 
         if ( typeof this.finish !== 'undefined' ) {
