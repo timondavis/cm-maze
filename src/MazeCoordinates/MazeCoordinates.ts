@@ -124,6 +124,15 @@ export abstract class MazeCoordinates {
         return MazeCoordinates.encodeCoorindateArray( this.dimensions, this.position );
     }
 
+    /**
+     * Convert an array of dimensional positions into a string that reads like the array.  Great for comparisons!
+     * If executing this function on a maze coordinate instance, consider using the .toString() method, which will
+     * give you the same result sourcing from the position on the coordinate.
+     *
+     * @param {number} dimensions
+     * @param {number[]} elements
+     * @returns {string}
+     */
     public static encodeCoorindateArray( dimensions: number, elements: number[] ) : string {
 
         let s: string = "[";
@@ -140,6 +149,11 @@ export abstract class MazeCoordinates {
 
     protected abstract getDimensionValue(): number;
 
+    /**
+     * Validate that the dimensions have been set on this item.  Mainly this is here to bug other developers if they
+     * extend this abstract class without ensuring that the dimension value is defined as a property on the child
+     * class.
+     */
     private validateDimensions() : void {
 
         if ( this.dimensions === undefined ) {
