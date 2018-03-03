@@ -223,6 +223,4 @@ describe( 'MazeNode', () => {
             }
         }
     });
-
-
 });
