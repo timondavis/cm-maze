@@ -14,15 +14,12 @@ export abstract class MazeCoordinates {
 
         if ( ! position ) {
 
+            // Populate default position if not provided
             position = [];
+            for( let i = 0 ; i < this.dimensions ; i++ ) { position[i] = 0; }
 
-            for( let i = 0 ; i < this.dimensions ; i++ ) {
-
-                this.position[i] = 0;
-            }
         }
-
-        if (position.length !== this.dimensions) {
+        else if (position.length !== this.dimensions) {
             throw("Position supplied is of incorrect dimensions for the coordinate");
         }
 
@@ -71,11 +68,16 @@ export abstract class MazeCoordinates {
      */
     public adjustDimension( index : number, amount : number ) : MazeCoordinates {
 
+        let newPosition = [];
+        for( let i = 0 ; i < this.dimensions ; i++ ) { newPosition[i] = this.position[i]; }
+
         if ( index < 0 || index >= this.dimensions ) {
             throw ( "Index out of dimensional range for coordinate" );
         }
 
-        this.position[index] += amount;
+        newPosition[index] += amount;
+
+        this.position = newPosition;
 
         return this;
     }
