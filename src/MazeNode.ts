@@ -205,6 +205,11 @@ export class MazeNode {
         return ( this.neighbors[position] === undefined );
     }
 
+    /**
+     * Find out whether an entry/exit position on the node is occupied
+     * @param {number} position
+     * @returns {boolean}
+     */
     public isPointOccupied( position: number ) : boolean {
 
         this.cardinality.validatePosition( position );

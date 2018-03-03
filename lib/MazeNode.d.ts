@@ -71,6 +71,11 @@ export declare class MazeNode {
      * @returns {boolean}
      */
     isPointOpen(position: number): boolean;
+    /**
+     * Find out whether an entry/exit position on the node is occupied
+     * @param {number} position
+     * @returns {boolean}
+     */
     isPointOccupied(position: number): boolean;
     /**
      * Set the coordinates for this node

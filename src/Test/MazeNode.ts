@@ -3,8 +3,13 @@ import 'mocha';
 import {MazeNode} from "../MazeNode";
 import {CardinalityBehaviorFour2D, CB4_CARD} from "../Behavior/CardinalityBehaviorFour2D";
 import {CardinalityBehaviorEight2D, CB8_CARD} from "../Behavior/CardinalityBehaviorEight2D";
+import {MazeBuilder} from "../MazeBuilder";
+import {MazeCoordinates2D} from "../MazeCoordinates/MazeCoordinates2D";
+import {CardinalityBehavior} from "../Behavior/CardinalityBehavior";
 
 describe( 'MazeNode', () => {
+
+    let r = 10; // Default randomize ceiling
 
     it( 'connects bidirectionally to each node by default, but can be done in directed graph fashion', () => {
 
@@ -96,6 +101,7 @@ describe( 'MazeNode', () => {
     it( 'can report on what its open exit points are', () => {
 
         let exitsOpenOnA : number[];
+        let exitsOccupiedOnA: number[];
         let a = new MazeNode( new CardinalityBehaviorEight2D() );
 
         a.connectTo( new MazeNode( new CardinalityBehaviorEight2D() ), CB8_CARD.N );
@@ -104,13 +110,115 @@ describe( 'MazeNode', () => {
         a.connectTo( new MazeNode( new CardinalityBehaviorEight2D() ), CB8_CARD.W );
 
         exitsOpenOnA = a.getOpenExitPoints();
+        exitsOccupiedOnA = a.getOccupiedExitPoints();
 
         expect( exitsOpenOnA ).to.have.lengthOf( 4 );
         expect( exitsOpenOnA[0] ).to.be.equal( 1 );
         expect( exitsOpenOnA[1] ).to.be.equal( 3 );
         expect( exitsOpenOnA[2] ).to.be.equal( 5 );
         expect( exitsOpenOnA[3] ).to.be.equal( 7 );
+
+        expect( exitsOccupiedOnA[0] ).to.be.equal( 0 );
+        expect( exitsOccupiedOnA[1] ).to.be.equal( 2 );
+        expect( exitsOccupiedOnA[2] ).to.be.equal( 4 );
+        expect( exitsOccupiedOnA[3] ).to.be.equal( 6 );
+
     });
 
-    it( 'can accept and report 2 dimensional coordinates' );
+    it( 'confirms whether another supplied node is neighbors with this node', () => {
+
+        let a = new MazeNode( new CardinalityBehaviorFour2D() );
+        let b = new MazeNode( new CardinalityBehaviorFour2D() );
+        let c = new MazeNode( new CardinalityBehaviorFour2D() );
+        let d = new MazeNode( new CardinalityBehaviorFour2D() );
+
+        a.connectTo( b, CB4_CARD.NORTH );
+        a.connectTo( d, CB4_CARD.WEST );
+        b.connectTo( c, CB4_CARD.WEST );
+        d.connectTo( c, CB4_CARD.NORTH );
+
+        expect( a.isNeighborsWith( b ) ).to.be.true;
+        expect( a.isNeighborsWith( d ) ).to.be.true;
+        expect( c.isNeighborsWith( b ) ).to.be.true;
+        expect( d.isNeighborsWith( c ) ).to.be.true;
+
+        expect( a.isNeighborsWith( c ) ).to.be.false;
+        expect( c.isNeighborsWith( a ) ).to.be.false;
+        expect( b.isNeighborsWith( d ) ).to.be.false;
+    });
+
+    it( 'can accept and report 2 dimensional coordinates (as instances of MazeCoordinates2D objects)', () => {
+
+        let a = new MazeNode( new CardinalityBehaviorEight2D() );
+        const coords = [ MazeBuilder.rand( r ), MazeBuilder.rand( r ) ];
+
+        a.setCoordinates( new MazeCoordinates2D( coords ) );
+        expect( a.getCoordinates().toString() ).to.be.equal( new MazeCoordinates2D( coords ).toString() );
+    });
+
+    it( 'reports on whether a given exit point on the node is occupied or empty (two separate functions)', () => {
+
+        let a = new MazeNode( new CardinalityBehaviorFour2D() );
+        let b = new MazeNode( new CardinalityBehaviorFour2D() );
+        let c = new MazeNode( new CardinalityBehaviorFour2D() );
+
+        a.connectTo( b, CB4_CARD.NORTH );
+        a.connectTo( c, CB4_CARD.SOUTH );
+
+        expect( a.isPointOpen( 0 ) ).to.be.false; expect( a.isPointOpen( 1 ) ).to.be.true;
+        expect( a.isPointOpen( 2 ) ).to.be.false; expect( a.isPointOpen( 3 ) ).to.be.true;
+        expect( a.isPointOccupied( 0 ) ).to.be.true; expect( a.isPointOccupied( 1 ) ).to.be.false;
+        expect( a.isPointOccupied( 2 ) ).to.be.true; expect( a.isPointOccupied( 3 ) ).to.be.false;
+
+        expect( b.isPointOpen( 0 ) ).to.be.true; expect( b.isPointOpen( 1 ) ).to.be.true;
+        expect( b.isPointOpen( 2 ) ).to.be.false; expect( b.isPointOpen( 3 ) ).to.be.true;
+        expect( b.isPointOccupied( 0 ) ).to.be.false; expect( b.isPointOccupied( 1 ) ).to.be.false;
+        expect( b.isPointOccupied( 2 ) ).to.be.true; expect( b.isPointOccupied( 3 ) ).to.be.false;
+
+        expect( c.isPointOpen( 0 ) ).to.be.false; expect( c.isPointOpen( 1 ) ).to.be.true;
+        expect( c.isPointOpen( 2 ) ).to.be.true; expect( c.isPointOpen( 3 ) ).to.be.true;
+        expect( c.isPointOccupied( 0 ) ).to.be.true; expect( c.isPointOccupied( 1 ) ).to.be.false;
+        expect( c.isPointOccupied( 2 ) ).to.be.false; expect( c.isPointOccupied( 3 ) ).to.be.false;
+    });
+
+    it( 'reports the cardinality behavior instance assigned to the node on demand', () => {
+
+        let a = new MazeNode( new CardinalityBehaviorFour2D() );
+
+        expect( a.getCardinality() ).to.be.instanceOf( CardinalityBehavior );
+        expect( a.getCardinality() ).to.be.instanceOf( CardinalityBehaviorFour2D );
+        expect( a.getCardinality() ).not.to.be.instanceOf( CardinalityBehaviorEight2D );
+    });
+
+    it( 'accepts and respects limits to the amount of nodes that the node can be connected to', () => {
+
+        let unlimited = new MazeNode( new CardinalityBehaviorFour2D() );
+        let limitedToOne = new MazeNode( new CardinalityBehaviorFour2D() );
+        let limitedToThree = new MazeNode( new CardinalityBehaviorFour2D() );
+
+        for ( let i = 0 ; i < 4 ; i++ ) {
+
+            expect( () => unlimited.connectTo( new MazeNode( new CardinalityBehaviorFour2D() ), i ) )
+                .not.to.throw;
+
+            if ( i < 1 ) {
+                expect( () => limitedToOne.connectTo( new MazeNode( new CardinalityBehaviorFour2D() ), i ) )
+                    .not.to.throw;
+            } else {
+                expect( () => limitedToOne.connectTo( new MazeNode( new CardinalityBehaviorFour2D() ), i ) )
+                    .to.throw;
+            }
+
+            if ( i < 3 ) {
+
+                expect( () => limitedToThree.connectTo( new MazeNode( new CardinalityBehaviorFour2D() ), i ) )
+                    .not.to.throw;
+            } else {
+                expect( () => limitedToThree.connectTo( new MazeNode( new CardinalityBehaviorFour2D() ), i ) )
+                    .to.throw;
+            }
+        }
+    });
+
+
 });
