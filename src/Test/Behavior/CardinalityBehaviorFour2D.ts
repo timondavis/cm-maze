@@ -29,10 +29,10 @@ describe( 'CardinalityBehaviorFour2D', () => {
     it( 'can validate a position number (referring to an exit on the node), ' +
         'and throw an exception if the position is invalid', () => {
 
-            expect( () => cb4.validatePosition( 0 ) ).not.to.throw;
-            expect( () => cb4.validatePosition( -1 ) ).to.throw;
-            expect( () => cb4.validatePosition( 3 ) ).not.to.throw;
-            expect( () => cb4.validatePosition( 4 ) ).to.throw;
+            expect( () => cb4.validatePosition( 0 ) ).not.to.throw();
+            expect( () => cb4.validatePosition( -1 ) ).to.throw();
+            expect( () => cb4.validatePosition( 3 ) ).not.to.throw();
+            expect( () => cb4.validatePosition( 4 ) ).to.throw();
     });
 
     it( 'can provide a given exit position\'s diametrically opposed position index', () => {

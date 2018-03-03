@@ -42,10 +42,10 @@ describe( 'CardinalityBehaviorEight2D', () => {
     it( 'can validate a position number (referring to an exit on the node), ' +
         'and throw an exception if the position is invalid', () => {
 
-            expect( () => cb8.validatePosition( 0 ) ).not.to.throw;
-            expect( () => cb8.validatePosition( -1 ) ).to.throw;
-            expect( () => cb8.validatePosition( 7) ).not.to.throw;
-            expect( () => cb8.validatePosition( 8 ) ).to.throw;
+            expect( () => cb8.validatePosition( 0 ) ).not.to.throw();
+            expect( () => cb8.validatePosition( -1 ) ).to.throw();
+            expect( () => cb8.validatePosition( 7) ).not.to.throw();
+            expect( () => cb8.validatePosition( 8 ) ).to.throw();
     });
 
     it( 'can provide a given exit position\'s diametrically opposed position index', () => {

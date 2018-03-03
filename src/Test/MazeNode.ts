@@ -190,32 +190,36 @@ describe( 'MazeNode', () => {
         expect( a.getCardinality() ).not.to.be.instanceOf( CardinalityBehaviorEight2D );
     });
 
-    it( 'accepts and respects limits to the amount of nodes that the node can be connected to', () => {
+    it( 'accepts and respects limits to the amount of nodes that this node can be connected to', () => {
 
         let unlimited = new MazeNode( new CardinalityBehaviorFour2D() );
         let limitedToOne = new MazeNode( new CardinalityBehaviorFour2D() );
         let limitedToThree = new MazeNode( new CardinalityBehaviorFour2D() );
 
+        limitedToOne.setMaxExits( 1 );
+        limitedToThree.setMaxExits( 3 );
+
         for ( let i = 0 ; i < 4 ; i++ ) {
 
-            expect( () => unlimited.connectTo( new MazeNode( new CardinalityBehaviorFour2D() ), i ) )
-                .not.to.throw;
+            expect( () => { unlimited.connectTo( new MazeNode( new CardinalityBehaviorFour2D() ), i ) } )
+                .not.to.throw();
 
+            //
             if ( i < 1 ) {
-                expect( () => limitedToOne.connectTo( new MazeNode( new CardinalityBehaviorFour2D() ), i ) )
-                    .not.to.throw;
+                expect( () => { limitedToOne.connectTo( new MazeNode( new CardinalityBehaviorFour2D() ), i ) } )
+                    .not.to.throw();
             } else {
-                expect( () => limitedToOne.connectTo( new MazeNode( new CardinalityBehaviorFour2D() ), i ) )
-                    .to.throw;
+                expect( () => { limitedToOne.connectTo( new MazeNode( new CardinalityBehaviorFour2D() ), i ) } )
+                    .to.throw();
             }
 
             if ( i < 3 ) {
 
-                expect( () => limitedToThree.connectTo( new MazeNode( new CardinalityBehaviorFour2D() ), i ) )
-                    .not.to.throw;
+                expect( () => { limitedToThree.connectTo( new MazeNode( new CardinalityBehaviorFour2D() ), i ) } )
+                    .not.to.throw();
             } else {
-                expect( () => limitedToThree.connectTo( new MazeNode( new CardinalityBehaviorFour2D() ), i ) )
-                    .to.throw;
+                expect( () => { limitedToThree.connectTo( new MazeNode( new CardinalityBehaviorFour2D() ), i ) } )
+                    .to.throw();
             }
         }
     });
