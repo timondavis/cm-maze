@@ -3,6 +3,8 @@ import {D2D, MazeCoordinates2D} from "../MazeCoordinates/MazeCoordinates2D";
 import {MazeCoordinates} from "../MazeCoordinates/MazeCoordinates";
 
 /**
+ * @enum CB4_CARD
+ *
  * Represents cardinality points (compass ponints) on a 4 directional 2D plane.
  */
 export enum CB4_CARD {
@@ -13,6 +15,8 @@ export enum CB4_CARD {
 }
 
 /**
+ * @class CardinalityBehaviorFour2D
+ *
  * Provides behavioral logic and services for working with 4 cardinality points on a 2d plane
  */
 export class CardinalityBehaviorFour2D extends CardinalityBehavior {

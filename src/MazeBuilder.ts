@@ -6,12 +6,48 @@ import {MazeCoordinates2D} from "./MazeCoordinates/MazeCoordinates2D";
 import {Maze} from "./Maze";
 import {CardinalityBehaviorEight2D} from "./Behavior/CardinalityBehaviorEight2D";
 
+/**
+ * @class MazeBuilder
+ *
+ * Instanceable builder class which generates randomized Mazes in their most basic form.  This class can be
+ * extended to handle the creation of a specialized maze or a derivative thereof.
+ */
 export class MazeBuilder {
 
-    complexity : number;
-    entry : MazeNode;
+    /**
+     * Complexity factor of the maze to be generated
+     *
+     * @type {number}
+     */
+    protected complexity : number;
+
+    /**
+     * The 'entry' point of the generated maze (will not be poplated until buildMaze() is run).
+     *
+     * @type {MazeNode}
+     */
+    protected entry : MazeNode;
+
+    /**
+     *  An instance of the CardinalityBehavior instance responsible for facilitating node connection and traversal
+     *  logic.
+     *
+     *  @type {CardinalityBehavior}
+     */
     cardinalityBehavior : CardinalityBehavior;
+
+    /**
+     * A "Dictionary" of nodes in the generated maze, referenced by a string (@see MazeCoordinates.toString() );
+     * @type {{ [key:stirng] : MazeNode }}
+     */
     occupiedCoordinates : { [key:string] : MazeNode } = {};
+
+    /**
+     * Inrementing count of how many -considerations- have been made to build nodes.  Here for convenience (namely
+     * in labelling).  Don't rely on this value for anything consistent.
+     *
+     * @type {number}
+     */
     nodeCounter: number = 0;
 
     public constructor( cardinalityBehavior? : CardinalityBehavior, complexity: number = 100 ) {
@@ -20,6 +56,11 @@ export class MazeBuilder {
         this.complexity = complexity;
     }
 
+    /**
+     * Build a new randomized maze instance based on local instance configurations
+     *
+     * @returns {Maze}
+     */
     public buildMaze(): Maze {
 
         let startingCoordinates = this.cardinalityBehavior.generateCoordinates();
@@ -47,12 +88,29 @@ export class MazeBuilder {
         return m;
     }
 
+    /**
+     * Convenience function (static) for shorthand randomization.
+     *
+     * @TODO !BUG! max cannot be reached by this algorithm, but instead max - 1
+     *
+     * @param {number} max
+     * @param {number} min
+     * @returns {number}
+     */
     public static rand( max: number = 100, min: number = 1 ) : number {
 
        const number =  Math.floor( Math.random() * max ) + min;
        return Math.min( max, number );
     }
 
+
+    /**
+     * Generate a new random path sourcing from the indicated node.
+     *
+     * @param {MazeNode} pointer
+     * @param {number} depth
+     * @returns {MazeBuilder}
+     */
     public generateRandomPathFrom( pointer : MazeNode, depth: number = this.complexity ) : MazeBuilder {
 
         let newDirection = -1;
@@ -99,6 +157,14 @@ export class MazeBuilder {
         return this;
     }
 
+    /**
+     * Builder will seek a random node within the defined parameters.  Once node is identified, it will branch
+     * out a new randomized path of nodes.
+     *
+     * @param {MazeNode} startingNode
+     * @param {number} maxDepth
+     * @returns {MazeBuilder}
+     */
     public seekAndGenerateRandomPath( startingNode : MazeNode, maxDepth: number = this.complexity ) : MazeBuilder {
 
         const depth = MazeBuilder.rand( maxDepth, 0 );
@@ -247,6 +313,14 @@ export class MazeBuilder {
         return -1;
     }
 
+    /**
+     * If the indicated dictionary has negative node values (a natural result of the current version of
+     * the generation process), push all of the node coordinates up so that 0,0 represents the top left.
+     *
+     * This ultimately updates the map so that it will fit nicely within quadrant IV of the cartesian graph.
+     *
+     * @returns {{[p: string]: MazeNode}}
+     */
     private normalizeNodeCoordinates(): { [key:string] : MazeNode } {
 
         let adjustedCoordinates : { [key:string] : MazeNode } = {};
@@ -295,6 +369,12 @@ export class MazeBuilder {
         return adjustedCoordinates;
     }
 
+    /**
+     * Get the size of each dimension of this maze (for example, if
+     * width = 6 and length = 4, this function will return [6, 4]).
+     *
+     * @returns {number[]}
+     */
     private getDimensions() : number[] {
 
         let dimensionsUsed = this.entry.getCoordinates().getDimensions();
@@ -323,6 +403,11 @@ export class MazeBuilder {
         return dimensions;
     }
 
+    /**
+     * Select a random node on the existing maze.
+     *
+     * @returns {MazeNode}
+     */
     private selectRandomNode() : MazeNode {
 
         let coordinateList = Object.keys( this.getCoordinatesCollection() );

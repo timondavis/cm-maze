@@ -2,7 +2,9 @@ import { CardinalityBehavior } from "./Behavior/CardinalityBehavior";
 import { MazeNode } from "./MazeNode";
 import { MazeCoordinates } from "./MazeCoordinates/MazeCoordinates";
 /**
- * A traversable maze, which manifests as a graph of interconnected nodes.
+ * @class Maze
+ *
+ * A traverse-able maze, which manifests as a graph of interconnected nodes.
  */
 export declare class Maze {
     /**
@@ -21,10 +23,14 @@ export declare class Maze {
     };
     /**
      *  The pointer to the 'current' node, consistent with standard graph traversal.
+     *
+     *  @type {MazeNode}
      */
     protected currentNode: MazeNode;
     /**
      * The # of nodes in this maze
+     *
+     * @type {number}
      */
     protected size: number;
     /**
@@ -34,10 +40,14 @@ export declare class Maze {
     protected dimensions: number[];
     /**
      * Pointer to the 'starting' node of this maze.  Not required to have a valid value.
+     *
+     * @type {MazeNode}
      */
     protected start: MazeNode;
     /**
      * Pointer to the 'finishing' node of this maze.  Not requried to have a valid value.
+     *
+     * @type {MazeNode}
      */
     protected finish: MazeNode;
     /**

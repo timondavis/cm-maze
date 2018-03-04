@@ -2,6 +2,11 @@ import {CardinalityBehavior} from "./CardinalityBehavior";
 import {D2D, MazeCoordinates2D} from "../MazeCoordinates/MazeCoordinates2D";
 import {MazeCoordinates} from "../MazeCoordinates/MazeCoordinates";
 
+/**
+ * @enum CB8_CARD
+ *
+ * Represents cardinality point directions as named enumerations from integer values.
+ */
 export enum CB8_CARD {
     N = 0, NORTH = 0,
     NE = 1, NORTH_EAST = 1,
@@ -11,15 +16,17 @@ export enum CB8_CARD {
     SW = 5, SOUTH_WEST = 5,
     W = 6, WEST = 6,
     NW = 7, NORTH_WEST = 7
-};
+}
 
+/**
+ * @class CardinalityBehaviorEight2D
+ *
+ * Behavior class for 2D Maze nodes with 8 possible points of cardinality (exit points):w
+ */
 export class CardinalityBehaviorEight2D extends CardinalityBehavior {
 
     /**
      * Get the cardinality for this behavior
-     *
-     * Time Complexity: O(1)
-     * Space Complexity: O(1)
      *
      * @returns {number}
      */
@@ -31,9 +38,6 @@ export class CardinalityBehaviorEight2D extends CardinalityBehavior {
      * represents the theoretical coordinates for the space you would move to.
      *
      * Example: Going north from [0,0] would result in finding coordinates at position [1,0].
-     *
-     * Time Complexity: O(1)
-     * Space Complexity: O(1)
      *
      * @param {MazeCoordinates2D} currentCoordinates
      * @param {number} exitPosition
@@ -112,9 +116,6 @@ export class CardinalityBehaviorEight2D extends CardinalityBehavior {
     /**
      * Generate a new Maze Coordinate at the indicated position (leave empty for default position).  It is safe
      * to cast the returned result as MazeCoordinates2D.
-     *
-     * Time Complexity: O(1)
-     * Space Complexity: O(1)
      *
      * @returns {MazeCoordinates}
      */

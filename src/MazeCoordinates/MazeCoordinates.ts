@@ -1,10 +1,23 @@
+/**
+ * @class MazeCoordinates
+ *
+ * Stores and facilitates mutation of the coordinates of a given point on a cartesian graph (2+ dimensions)
+ */
 export abstract class MazeCoordinates {
 
+    /**
+     * The number of dimensions recorded in these coordinates.
+     */
     protected dimensions: number;
+
+    /**
+     * The actual position of these coordinates on a cartesian graph.
+     */
     public position: number[];
 
     /**
      * Create a new MazeCoordinate, indicating its position
+     *
      * @param {number[]} position
      */
     public constructor(position?: number[]) {
@@ -44,6 +57,7 @@ export abstract class MazeCoordinates {
 
     /**
      * Update a dimensional value of the coordinate's position
+     *
      * @param {number} index
      * @param {number} value
      * @returns {MazeCoordinates}

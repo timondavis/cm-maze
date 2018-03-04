@@ -3,7 +3,9 @@ import {MazeNode} from "./MazeNode";
 import {MazeCoordinates} from "./MazeCoordinates/MazeCoordinates";
 
 /**
- * A traversable maze, which manifests as a graph of interconnected nodes.
+ * @class Maze
+ *
+ * A traverse-able maze, which manifests as a graph of interconnected nodes.
  */
 export class Maze {
 
@@ -23,11 +25,15 @@ export class Maze {
 
     /**
      *  The pointer to the 'current' node, consistent with standard graph traversal.
+     *
+     *  @type {MazeNode}
      */
     protected currentNode : MazeNode;
 
     /**
      * The # of nodes in this maze
+     *
+     * @type {number}
      */
     protected size : number;
 
@@ -39,13 +45,18 @@ export class Maze {
 
     /**
      * Pointer to the 'starting' node of this maze.  Not required to have a valid value.
+     *
+     * @type {MazeNode}
      */
     protected start: MazeNode;
 
     /**
      * Pointer to the 'finishing' node of this maze.  Not requried to have a valid value.
+     *
+     * @type {MazeNode}
      */
     protected finish: MazeNode;
+
 
     /**
      * Set the cardinality behavior for nodes on this maze.
