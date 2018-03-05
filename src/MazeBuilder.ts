@@ -50,6 +50,12 @@ export class MazeBuilder {
      */
     nodeCounter: number = 0;
 
+    /**
+     * Constructor
+     *
+     * @param {CardinalityBehavior} cardinalityBehavior
+     * @param {number} complexity
+     */
     public constructor( cardinalityBehavior? : CardinalityBehavior, complexity: number = 100 ) {
 
         this.cardinalityBehavior = ( cardinalityBehavior ) ? cardinalityBehavior : new CardinalityBehaviorFour2D();
@@ -63,7 +69,10 @@ export class MazeBuilder {
      */
     public buildMaze(): Maze {
 
+        // Start entry node at 0,0
         let startingCoordinates = this.cardinalityBehavior.generateCoordinates();
+
+        this.occupiedCoordinates = {};
         this.entry = new MazeNode( this.cardinalityBehavior );
         this.nodeCounter++;
         this.entry.setName( this.nodeCounter.toString() );
@@ -256,7 +265,7 @@ export class MazeBuilder {
      * @param {number} exitPoint
      * @returns {MazeNode}
      */
-    private getNextNodeAtExit( pointer: MazeNode, exitPoint: number ): MazeNode {
+    private getNextNodeAtExit( pointer: MazeNode, exitPoint: number): MazeNode {
 
         let lastCoordinates: MazeCoordinates;
         let nextCoordinates: MazeCoordinates;

@@ -1,11 +1,11 @@
 import {expect} from 'chai';
 import 'mocha';
-import {MazeNode} from "../MazeNode";
-import {CardinalityBehaviorFour2D, CB4_CARD} from "../Behavior/CardinalityBehaviorFour2D";
-import {CardinalityBehaviorEight2D, CB8_CARD} from "../Behavior/CardinalityBehaviorEight2D";
-import {MazeBuilder} from "../MazeBuilder";
-import {MazeCoordinates2D} from "../MazeCoordinates/MazeCoordinates2D";
-import {CardinalityBehavior} from "../Behavior/CardinalityBehavior";
+import {MazeNode} from "../../MazeNode";
+import {CardinalityBehaviorFour2D, CB4_CARD} from "../../Behavior/CardinalityBehaviorFour2D";
+import {CardinalityBehaviorEight2D, CB8_CARD} from "../../Behavior/CardinalityBehaviorEight2D";
+import {MazeBuilder} from "../../MazeBuilder";
+import {MazeCoordinates2D} from "../../MazeCoordinates/MazeCoordinates2D";
+import {CardinalityBehavior} from "../../Behavior/CardinalityBehavior";
 
 describe( 'MazeNode', () => {
 

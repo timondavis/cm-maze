@@ -1,10 +1,10 @@
-import {MazeBuilder} from "../MazeBuilder";
-import {Maze} from "../Maze";
-import {CardinalityBehaviorFour2D, CB4_CARD} from "../Behavior/CardinalityBehaviorFour2D";
+import {MazeBuilder} from "../../MazeBuilder";
+import {Maze} from "../../Maze";
+import {CardinalityBehaviorFour2D, CB4_CARD} from "../../Behavior/CardinalityBehaviorFour2D";
 import {expect} from 'chai';
 import 'mocha';
-import {MazeNode} from "../MazeNode";
-import {MazeCoordinates2D} from "../MazeCoordinates/MazeCoordinates2D";
+import {MazeNode} from "../../MazeNode";
+import {MazeCoordinates2D} from "../../MazeCoordinates/MazeCoordinates2D";
 
 describe( 'Maze', () => {
 

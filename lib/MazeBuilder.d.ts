@@ -41,6 +41,12 @@ export declare class MazeBuilder {
      * @type {number}
      */
     nodeCounter: number;
+    /**
+     * Constructor
+     *
+     * @param {CardinalityBehavior} cardinalityBehavior
+     * @param {number} complexity
+     */
     constructor(cardinalityBehavior?: CardinalityBehavior, complexity?: number);
     /**
      * Build a new randomized maze instance based on local instance configurations
