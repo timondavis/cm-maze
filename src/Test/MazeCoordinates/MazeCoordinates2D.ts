@@ -1,4 +1,4 @@
-import { MazeCoordinates2D } from "../../../lib/MazeCoordinates/MazeCoordinates2D";
+import { MazeCoordinates2D } from "../../MazeCoordinates/MazeCoordinates2D";
 import { expect } from 'chai';
 import 'mocha';
 import {MazeBuilder} from "../../MazeBuilder";

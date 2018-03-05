@@ -85,6 +85,7 @@ export class Maze {
     public setNodes( nodes: { [key:string] : MazeNode } ) {
 
         this.nodes = nodes;
+        this.size = Object.keys( nodes ).length;
     }
 
     /**
@@ -184,9 +185,18 @@ export class Maze {
      *
      * @param {MazeNode} node
      */
-    public setCurrentNode( node : MazeNode ) {
+    public setCurrentNode( node: MazeNode ) {
 
         this.currentNode = node;
+    }
+
+    /**
+     * Get the 'current' node pointer at the indicated node.
+     * @returns {MazeNode}
+     */
+    public getCurrentNode(): MazeNode {
+
+        return this.currentNode;
     }
 
     /**
@@ -199,7 +209,7 @@ export class Maze {
     public move( direction : number ) : MazeNode | boolean {
 
         if ( this.currentNode.isPointOccupied( direction ) ) {
-            this.currentNode.getNeighborAt( direction );
+            this.currentNode = this.currentNode.getNeighborAt( direction );
             return this.currentNode;
         }
 

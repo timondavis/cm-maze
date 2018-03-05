@@ -134,6 +134,11 @@ export declare class Maze {
      */
     setCurrentNode(node: MazeNode): void;
     /**
+     * Get the 'current' node pointer at the indicated node.
+     * @returns {MazeNode}
+     */
+    getCurrentNode(): MazeNode;
+    /**
      * Move the 'current' node pointer for this maze in the indicated direction, if available.  Returns
      * the new node if successful, or otherwise FALSE
      *

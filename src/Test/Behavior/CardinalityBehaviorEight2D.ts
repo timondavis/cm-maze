@@ -1,7 +1,7 @@
 import {expect} from 'chai';
 import 'mocha';
 import {MazeCoordinates2D} from "../../MazeCoordinates/MazeCoordinates2D";
-import {CB8_CARD} from "../../../lib/Behavior/CardinalityBehaviorEight2D";
+import {CB8_CARD} from "../../Behavior/CardinalityBehaviorEight2D";
 import {CardinalityBehaviorEight2D} from "../../Behavior/CardinalityBehaviorEight2D";
 describe( 'CardinalityBehaviorEight2D', () => {
 

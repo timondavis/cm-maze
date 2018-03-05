@@ -98,4 +98,90 @@ describe( 'Maze', () => {
         expect( m.getStartNode() ).to.be.equal( a );
         expect( m.getFinishNode() ).to.be.equal( c );
     });
+
+    it( 'it should have accurate setters and getters for dimensional size', () => {
+
+        m = new Maze();
+        let size: number[];
+
+        m.setDimensions( [4, 3] );
+        size = m.getDimensions();
+
+        expect( size[0] ).to.be.equal( 4 );
+        expect( size[1] ).to.be.equal( 3 );
+    });
+
+    it( 'it should report on the current amount of nodes included in the maze', () => {
+
+        let mb: MazeBuilder = new MazeBuilder();
+        let maze: Maze = mb.buildMaze();
+
+        let contents = maze.getNodes();
+
+        expect( maze.getSize() ).to.be.equal( Object.keys( contents ).length );
+    });
+
+    it( 'has a working getter/setter for the current node pointer', () => {
+
+        m = new Maze();
+
+        let a = new MazeNode( new CardinalityBehaviorFour2D() );
+        let b = new MazeNode( new CardinalityBehaviorFour2D() );
+        let c = new MazeNode( new CardinalityBehaviorFour2D() );
+
+        let nodeCollection: { [key:string] : MazeNode } = {};
+
+        a.setCoordinates( new MazeCoordinates2D( [1, 1] ));
+        b.setCoordinates( new MazeCoordinates2D( [1, 2] ));
+        c.setCoordinates( new MazeCoordinates2D( [2, 1] ));
+
+        nodeCollection[ a.getCoordinates().toString() ] = a;
+        nodeCollection[ b.getCoordinates().toString() ] = b;
+        nodeCollection[ c.getCoordinates().toString() ] = c;
+
+        m.setNodes( nodeCollection );
+        m.setCurrentNode( b );
+
+        expect( m.getCurrentNode() ).to.be.equal( b );
+    });
+
+    it( 'facilitates traversal through cardinal movement', () => {
+
+        m = new Maze();
+
+        let a = new MazeNode( new CardinalityBehaviorFour2D() );
+        let b = new MazeNode( new CardinalityBehaviorFour2D() );
+        let c = new MazeNode( new CardinalityBehaviorFour2D() );
+        let d = new MazeNode( new CardinalityBehaviorFour2D() );
+        let e = new MazeNode( new CardinalityBehaviorFour2D() );
+
+        let nodeCollection: { [key:string] : MazeNode } = {};
+
+        a.setCoordinates( new MazeCoordinates2D( [1, 1] )).setName( "A" );
+        b.setCoordinates( new MazeCoordinates2D( [1, 2] )).setName( "B" );
+        c.setCoordinates( new MazeCoordinates2D( [2, 1] )).setName( "C" );
+        d.setCoordinates( new MazeCoordinates2D( [2, 0] )).setName( "D" );
+        e.setCoordinates( new MazeCoordinates2D( [0, 1] )).setName( "E" );
+
+        a.connectTo( e, CB4_CARD.N );
+        a.connectTo( c, CB4_CARD.E );
+        a.connectTo( b, CB4_CARD.S );
+        b.connectTo( d, CB4_CARD.W );
+
+        nodeCollection[ a.getCoordinates().toString() ] = a;
+        nodeCollection[ b.getCoordinates().toString() ] = b;
+        nodeCollection[ c.getCoordinates().toString() ] = c;
+        nodeCollection[ d.getCoordinates().toString() ] = d;
+        nodeCollection[ e.getCoordinates().toString() ] = e;
+
+        m.setNodes( nodeCollection );
+        m.setCurrentNode( a );
+
+        expect( m.move( CB4_CARD.N ) ).to.be.equal( e );
+        expect( m.move( CB4_CARD.S ) ).to.be.equal( a );
+        expect( m.move( CB4_CARD.E ) ).to.be.equal( c );
+        expect( m.move( CB4_CARD.W ) ).to.be.equal( a );
+        expect( m.move( CB4_CARD.S ) ).to.be.equal( b );
+        expect( m.move( CB4_CARD.W ) ).to.be.equal( d );
+    });
 });
