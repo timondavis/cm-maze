@@ -1,11 +1,42 @@
 import { MazeCoordinates } from "./MazeCoordinates/MazeCoordinates";
 import { CardinalityBehavior } from "./Behavior/CardinalityBehavior";
+/**
+ * @class MazeNode
+ *
+ * The MazeNode represents a node or 'room' in a maze.  It is designed to facilitate connection and traversal
+ * to other MazeNode instances.
+ */
 export declare class MazeNode {
+    /**
+     * Debug Mode
+     * @type {boolean}
+     */
     protected static debug: boolean;
+    /**
+     * A collection of neighboring nodes, stored by exit point index
+     * @type { MazeNode[] }
+     */
     protected neighbors: MazeNode[];
+    /**
+     * Provides services and constraints allowing for the logical connection and traversal between this and other nodes
+     */
     protected cardinality: CardinalityBehavior;
+    /**
+     * The name of this node
+     *
+     * @type {string}
+     */
     protected name: string;
+    /**
+     * The MazeCoordinates track the location of this node relative to other nodes
+     *
+     * @type { MazeCoordinates }
+     */
     protected coordinates: MazeCoordinates;
+    /**
+     * The maximum number of exits on this node which connect to other nodes.  A node cannot have more neighbors
+     * than what is dictated by this value.
+     */
     protected maxExits: number;
     constructor(cardinality: CardinalityBehavior, coordinates?: MazeCoordinates);
     /**
@@ -71,6 +102,11 @@ export declare class MazeNode {
      * @returns {boolean}
      */
     isPointOpen(position: number): boolean;
+    /**
+     * Find out whether an entry/exit position on the node is occupied
+     * @param {number} position
+     * @returns {boolean}
+     */
     isPointOccupied(position: number): boolean;
     /**
      * Set the coordinates for this node
@@ -95,7 +131,18 @@ export declare class MazeNode {
      * @returns {string}
      */
     toString(): string;
+    /**
+     * Set the maximum amount of nodes that this node can connect to.
+     *
+     * @param {number} maxExits
+     * @returns {MazeNode}
+     */
     setMaxExits(maxExits: number): MazeNode;
+    /**
+     * Get the maximum amount of nodes that this node can connect to.
+     *
+     * @returns {number}
+     */
     getMaxExits(): number;
     /**
      * Toggle debugging messages

@@ -1,8 +1,20 @@
+/**
+ * @class MazeCoordinates
+ *
+ * Stores and facilitates mutation of the coordinates of a given point on a cartesian graph (2+ dimensions)
+ */
 export declare abstract class MazeCoordinates {
+    /**
+     * The number of dimensions recorded in these coordinates.
+     */
     protected dimensions: number;
+    /**
+     * The actual position of these coordinates on a cartesian graph.
+     */
     position: number[];
     /**
      * Create a new MazeCoordinate, indicating its position
+     *
      * @param {number[]} position
      */
     constructor(position?: number[]);
@@ -15,6 +27,7 @@ export declare abstract class MazeCoordinates {
     updatePosition(position: number[]): MazeCoordinates;
     /**
      * Update a dimensional value of the coordinate's position
+     *
      * @param {number} index
      * @param {number} value
      * @returns {MazeCoordinates}
@@ -51,7 +64,21 @@ export declare abstract class MazeCoordinates {
      * @returns {string}
      */
     toString(): string;
+    /**
+     * Convert an array of dimensional positions into a string that reads like the array.  Great for comparisons!
+     * If executing this function on a maze coordinate instance, consider using the .toString() method, which will
+     * give you the same result sourcing from the position on the coordinate.
+     *
+     * @param {number} dimensions
+     * @param {number[]} elements
+     * @returns {string}
+     */
     static encodeCoorindateArray(dimensions: number, elements: number[]): string;
     protected abstract getDimensionValue(): number;
+    /**
+     * Validate that the dimensions have been set on this item.  Mainly this is here to bug other developers if they
+     * extend this abstract class without ensuring that the dimension value is defined as a property on the child
+     * class.
+     */
     private validateDimensions();
 }

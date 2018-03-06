@@ -6,23 +6,73 @@ import {MazeCoordinates2D} from "./MazeCoordinates/MazeCoordinates2D";
 import {Maze} from "./Maze";
 import {CardinalityBehaviorEight2D} from "./Behavior/CardinalityBehaviorEight2D";
 
+/**
+ * @class MazeBuilder
+ *
+ * Instanceable builder class which generates randomized Mazes in their most basic form.  This class can be
+ * extended to handle the creation of a specialized maze or a derivative thereof.
+ */
 export class MazeBuilder {
 
-    complexity : number;
-    entry : MazeNode;
+    /**
+     * Complexity factor of the maze to be generated
+     *
+     * @type {number}
+     */
+    protected complexity : number;
+
+    /**
+     * The 'entry' point of the generated maze (will not be poplated until buildMaze() is run).
+     *
+     * @type {MazeNode}
+     */
+    protected entry : MazeNode;
+
+    /**
+     *  An instance of the CardinalityBehavior instance responsible for facilitating node connection and traversal
+     *  logic.
+     *
+     *  @type {CardinalityBehavior}
+     */
     cardinalityBehavior : CardinalityBehavior;
+
+    /**
+     * A "Dictionary" of nodes in the generated maze, referenced by a string (@see MazeCoordinates.toString() );
+     * @type {{ [key:stirng] : MazeNode }}
+     */
     occupiedCoordinates : { [key:string] : MazeNode } = {};
+
+    /**
+     * Inrementing count of how many -considerations- have been made to build nodes.  Here for convenience (namely
+     * in labelling).  Don't rely on this value for anything consistent.
+     *
+     * @type {number}
+     */
     nodeCounter: number = 0;
 
+    /**
+     * Constructor
+     *
+     * @param {CardinalityBehavior} cardinalityBehavior
+     * @param {number} complexity
+     */
     public constructor( cardinalityBehavior? : CardinalityBehavior, complexity: number = 100 ) {
 
-        this.cardinalityBehavior = ( cardinalityBehavior ) ? cardinalityBehavior : new CardinalityBehaviorEight2D();
+        this.cardinalityBehavior = ( cardinalityBehavior ) ? cardinalityBehavior : new CardinalityBehaviorFour2D();
         this.complexity = complexity;
     }
 
+    /**
+     * Build a new randomized maze instance based on local instance configurations
+     *
+     * @returns {Maze}
+     */
     public buildMaze(): Maze {
 
+        // Start entry node at 0,0
         let startingCoordinates = this.cardinalityBehavior.generateCoordinates();
+
+        this.occupiedCoordinates = {};
         this.entry = new MazeNode( this.cardinalityBehavior );
         this.nodeCounter++;
         this.entry.setName( this.nodeCounter.toString() );
@@ -41,17 +91,35 @@ export class MazeBuilder {
         m.setNodes( this.normalizeNodeCoordinates() );
         m.setCurrentNode( this.entry );
         m.setStartNode( this.entry );
+        m.setFinishNode( this.selectRandomNode() );
         m.setDimensions( this.getDimensions() );
 
         return m;
     }
 
+    /**
+     * Convenience function (static) for shorthand randomization.
+     *
+     * @TODO !BUG! max cannot be reached by this algorithm, but instead max - 1
+     *
+     * @param {number} max
+     * @param {number} min
+     * @returns {number}
+     */
     public static rand( max: number = 100, min: number = 1 ) : number {
 
        const number =  Math.floor( Math.random() * max ) + min;
        return Math.min( max, number );
     }
 
+
+    /**
+     * Generate a new random path sourcing from the indicated node.
+     *
+     * @param {MazeNode} pointer
+     * @param {number} depth
+     * @returns {MazeBuilder}
+     */
     public generateRandomPathFrom( pointer : MazeNode, depth: number = this.complexity ) : MazeBuilder {
 
         let newDirection = -1;
@@ -68,7 +136,7 @@ export class MazeBuilder {
                 pointer = this.hopToNextNode(pointer);
                 continue;
             }
-            newDirection = openExits[MazeBuilder.rand(openExits.length - 1, 0)];
+            newDirection = openExits[MazeBuilder.rand(openExits.length, 0)];
 
             // Start by attempting to connect to a random new or existing node gracefully...
             nextExitPosition = this.buildNextNodeOnRandomPath( pointer, newDirection );
@@ -98,6 +166,14 @@ export class MazeBuilder {
         return this;
     }
 
+    /**
+     * Builder will seek a random node within the defined parameters.  Once node is identified, it will branch
+     * out a new randomized path of nodes.
+     *
+     * @param {MazeNode} startingNode
+     * @param {number} maxDepth
+     * @returns {MazeBuilder}
+     */
     public seekAndGenerateRandomPath( startingNode : MazeNode, maxDepth: number = this.complexity ) : MazeBuilder {
 
         const depth = MazeBuilder.rand( maxDepth, 0 );
@@ -109,7 +185,7 @@ export class MazeBuilder {
             neighbors = pointer.getNeighbors();
 
             if ( neighbors.length > 0 ) {
-                pointer = neighbors[ MazeBuilder.rand( neighbors.length - 1, 0 ) ];
+                pointer = neighbors[ MazeBuilder.rand( neighbors.length, 0 ) ];
             }
 
             else break;
@@ -146,7 +222,10 @@ export class MazeBuilder {
         let candidateExitPosition = -1;
 
         for ( let i = 0 ; i < openExits.length ; i++ ) {
-            newDirection = openExits[i];
+
+            let index: number = MazeBuilder.rand( openExits.length, 0 );
+            newDirection = openExits[index];
+            openExits = openExits.splice( index, 1 );
 
             candidateExitPosition = this.buildNextNodeOnRandomPath( pointer, newDirection );
 
@@ -171,7 +250,7 @@ export class MazeBuilder {
 
         return pointer.getNeighborAt(
             MazeBuilder.rand(
-                this.cardinalityBehavior.getCardinality() - 1,
+                this.cardinalityBehavior.getCardinality(),
                 0
             )
         );
@@ -186,7 +265,7 @@ export class MazeBuilder {
      * @param {number} exitPoint
      * @returns {MazeNode}
      */
-    private getNextNodeAtExit( pointer: MazeNode, exitPoint: number ): MazeNode {
+    private getNextNodeAtExit( pointer: MazeNode, exitPoint: number): MazeNode {
 
         let lastCoordinates: MazeCoordinates;
         let nextCoordinates: MazeCoordinates;
@@ -207,8 +286,6 @@ export class MazeBuilder {
            tempNextNode.setMaxExits(
                MazeBuilder.rand( this.cardinalityBehavior.getCardinality(), 1 )
            );
-
-           tempNextNode.setMaxExits( 2 );
 
            this.nodeCounter++;
            tempNextNode.setName( this.nodeCounter.toString() );
@@ -245,6 +322,14 @@ export class MazeBuilder {
         return -1;
     }
 
+    /**
+     * If the indicated dictionary has negative node values (a natural result of the current version of
+     * the generation process), push all of the node coordinates up so that 0,0 represents the top left.
+     *
+     * This ultimately updates the map so that it will fit nicely within quadrant IV of the cartesian graph.
+     *
+     * @returns {{[p: string]: MazeNode}}
+     */
     private normalizeNodeCoordinates(): { [key:string] : MazeNode } {
 
         let adjustedCoordinates : { [key:string] : MazeNode } = {};
@@ -293,6 +378,12 @@ export class MazeBuilder {
         return adjustedCoordinates;
     }
 
+    /**
+     * Get the size of each dimension of this maze (for example, if
+     * width = 6 and length = 4, this function will return [6, 4]).
+     *
+     * @returns {number[]}
+     */
     private getDimensions() : number[] {
 
         let dimensionsUsed = this.entry.getCoordinates().getDimensions();
@@ -319,5 +410,18 @@ export class MazeBuilder {
         }
 
         return dimensions;
+    }
+
+    /**
+     * Select a random node on the existing maze.
+     *
+     * @returns {MazeNode}
+     */
+    private selectRandomNode() : MazeNode {
+
+        let coordinateList = Object.keys( this.getCoordinatesCollection() );
+        let index = MazeBuilder.rand( coordinateList.length, 0 );
+
+        return this.getCoordinatesCollection()[coordinateList[index]];
     }
 }

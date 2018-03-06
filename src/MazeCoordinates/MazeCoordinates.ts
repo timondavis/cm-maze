@@ -1,10 +1,23 @@
+/**
+ * @class MazeCoordinates
+ *
+ * Stores and facilitates mutation of the coordinates of a given point on a cartesian graph (2+ dimensions)
+ */
 export abstract class MazeCoordinates {
 
+    /**
+     * The number of dimensions recorded in these coordinates.
+     */
     protected dimensions: number;
+
+    /**
+     * The actual position of these coordinates on a cartesian graph.
+     */
     public position: number[];
 
     /**
      * Create a new MazeCoordinate, indicating its position
+     *
      * @param {number[]} position
      */
     public constructor(position?: number[]) {
@@ -14,15 +27,12 @@ export abstract class MazeCoordinates {
 
         if ( ! position ) {
 
+            // Populate default position if not provided
             position = [];
+            for( let i = 0 ; i < this.dimensions ; i++ ) { position[i] = 0; }
 
-            for( let i = 0 ; i < this.dimensions ; i++ ) {
-
-                this.position[i] = 0;
-            }
         }
-
-        if (position.length !== this.dimensions) {
+        else if (position.length !== this.dimensions) {
             throw("Position supplied is of incorrect dimensions for the coordinate");
         }
 
@@ -47,6 +57,7 @@ export abstract class MazeCoordinates {
 
     /**
      * Update a dimensional value of the coordinate's position
+     *
      * @param {number} index
      * @param {number} value
      * @returns {MazeCoordinates}
@@ -71,11 +82,16 @@ export abstract class MazeCoordinates {
      */
     public adjustDimension( index : number, amount : number ) : MazeCoordinates {
 
+        let newPosition = [];
+        for( let i = 0 ; i < this.dimensions ; i++ ) { newPosition[i] = this.position[i]; }
+
         if ( index < 0 || index >= this.dimensions ) {
             throw ( "Index out of dimensional range for coordinate" );
         }
 
-        this.position[index] += amount;
+        newPosition[index] += amount;
+
+        this.position = newPosition;
 
         return this;
     }
@@ -122,6 +138,15 @@ export abstract class MazeCoordinates {
         return MazeCoordinates.encodeCoorindateArray( this.dimensions, this.position );
     }
 
+    /**
+     * Convert an array of dimensional positions into a string that reads like the array.  Great for comparisons!
+     * If executing this function on a maze coordinate instance, consider using the .toString() method, which will
+     * give you the same result sourcing from the position on the coordinate.
+     *
+     * @param {number} dimensions
+     * @param {number[]} elements
+     * @returns {string}
+     */
     public static encodeCoorindateArray( dimensions: number, elements: number[] ) : string {
 
         let s: string = "[";
@@ -138,6 +163,11 @@ export abstract class MazeCoordinates {
 
     protected abstract getDimensionValue(): number;
 
+    /**
+     * Validate that the dimensions have been set on this item.  Mainly this is here to bug other developers if they
+     * extend this abstract class without ensuring that the dimension value is defined as a property on the child
+     * class.
+     */
     private validateDimensions() : void {
 
         if ( this.dimensions === undefined ) {
