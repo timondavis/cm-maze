@@ -1,6 +1,6 @@
-import {CardinalityBehavior} from "./Behavior/CardinalityBehavior";
+import {CardinalityBehavior} from "./Behavior/Cardinality";
 import {MazeNode} from "./MazeNode";
-import {MazeCoordinates} from "./MazeCoordinates/MazeCoordinates";
+import {NodeLocation} from "./MazeCoordinates/NodeLocation";
 
 /**
  * @class Maze
@@ -99,10 +99,10 @@ export class Maze {
     /**
      * Get the MazeNode at the given coordinates, if available.
      *
-     * @param {MazeCoordinates} coordinates
+     * @param {NodeLocation} coordinates
      * @returns {MazeNode}
      */
-    public getNode( coordinates : MazeCoordinates ) : MazeNode {
+    public getNode( coordinates : NodeLocation ) : MazeNode {
 
        return this.nodes[coordinates.toString()];
     }

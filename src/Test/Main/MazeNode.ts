@@ -1,11 +1,11 @@
 import {expect} from 'chai';
 import 'mocha';
 import {MazeNode} from "../../MazeNode";
-import {CardinalityBehaviorFour2D, CB4_CARD} from "../../Behavior/CardinalityBehaviorFour2D";
-import {CardinalityBehaviorEight2D, CB8_CARD} from "../../Behavior/CardinalityBehaviorEight2D";
+import {Compass4, C4} from "../../Behavior/Compass4";
+import {Compass8, C8} from "../../Behavior/Compass8";
 import {MazeBuilder} from "../../MazeBuilder";
-import {MazeCoordinates2D} from "../../MazeCoordinates/MazeCoordinates2D";
-import {CardinalityBehavior} from "../../Behavior/CardinalityBehavior";
+import {NodeLocation2D} from "../../MazeCoordinates/NodeLocation2D";
+import {Cardinality} from "../../Behavior/Cardinality";
 
 describe( 'MazeNode', () => {
 
@@ -13,9 +13,9 @@ describe( 'MazeNode', () => {
 
     it( 'connects bidirectionally to each node by default, but can be done in directed graph fashion', () => {
 
-        let a = new MazeNode( new CardinalityBehaviorEight2D() );
-        let b = new MazeNode( new CardinalityBehaviorEight2D() );
-        let c = new MazeNode( new CardinalityBehaviorEight2D() );
+        let a = new MazeNode( new Compass8() );
+        let b = new MazeNode( new Compass8() );
+        let c = new MazeNode( new Compass8() );
 
         // A < -- > B connect
         a.connectTo( b, 3 );
@@ -38,20 +38,20 @@ describe( 'MazeNode', () => {
 
     it( 'can be explicitly named', () => {
 
-        const a = new MazeNode( new CardinalityBehaviorFour2D );
+        const a = new MazeNode( new Compass4 );
         a.setName( "My Name" );
         expect( a.getName() ).to.be.equal( "My Name" );
     });
 
     it ( 'can report on who its neighboring nodes are', function () {
 
-        let a = new MazeNode( new CardinalityBehaviorFour2D() ).setName("A");
+        let a = new MazeNode( new Compass4() ).setName("A");
         let neighborsOfA: MazeNode[];
         let neighborsOfB: MazeNode[];
 
-        a.connectTo( new MazeNode( new CardinalityBehaviorFour2D()  ).setName( "C" ), CB4_CARD.N, false );
-        a.connectTo( new MazeNode( new CardinalityBehaviorFour2D()  ).setName( "B" ), CB4_CARD.E );
-        a.connectTo( new MazeNode( new CardinalityBehaviorFour2D() ).setName( "D" ), CB4_CARD.S, false );
+        a.connectTo( new MazeNode( new Compass4()  ).setName( "C" ), C4.N, false );
+        a.connectTo( new MazeNode( new Compass4()  ).setName( "B" ), C4.E );
+        a.connectTo( new MazeNode( new Compass4() ).setName( "D" ), C4.S, false );
 
         neighborsOfA = a.getNeighbors();
         neighborsOfB = a.getNeighborAt( 1 ).getNeighbors();
@@ -80,13 +80,13 @@ describe( 'MazeNode', () => {
 
     it ( 'can report on what its occupied exit points are', function() {
 
-        let a = new MazeNode( new CardinalityBehaviorFour2D()  ).setName("A");
+        let a = new MazeNode( new Compass4()  ).setName("A");
         let exitsOfA: number[];
         let exitsOfC: number[];
 
-        a.connectTo( new MazeNode( new CardinalityBehaviorFour2D() ).setName( "B" ), CB4_CARD.W, false );
-        a.connectTo( new MazeNode( new CardinalityBehaviorFour2D() ).setName( "C" ), CB4_CARD.E );
-        a.connectTo( new MazeNode( new CardinalityBehaviorFour2D() ).setName( "D" ), CB4_CARD.S, false );
+        a.connectTo( new MazeNode( new Compass4() ).setName( "B" ), C4.W, false );
+        a.connectTo( new MazeNode( new Compass4() ).setName( "C" ), C4.E );
+        a.connectTo( new MazeNode( new Compass4() ).setName( "D" ), C4.S, false );
 
         exitsOfA = a.getOccupiedExitPoints();
         exitsOfC = a.getNeighborAt( 1 ).getOccupiedExitPoints();
@@ -102,12 +102,12 @@ describe( 'MazeNode', () => {
 
         let exitsOpenOnA : number[];
         let exitsOccupiedOnA: number[];
-        let a = new MazeNode( new CardinalityBehaviorEight2D() );
+        let a = new MazeNode( new Compass8() );
 
-        a.connectTo( new MazeNode( new CardinalityBehaviorEight2D() ), CB8_CARD.N );
-        a.connectTo( new MazeNode( new CardinalityBehaviorEight2D() ), CB8_CARD.E );
-        a.connectTo( new MazeNode( new CardinalityBehaviorEight2D() ), CB8_CARD.S );
-        a.connectTo( new MazeNode( new CardinalityBehaviorEight2D() ), CB8_CARD.W );
+        a.connectTo( new MazeNode( new Compass8() ), C8.N );
+        a.connectTo( new MazeNode( new Compass8() ), C8.E );
+        a.connectTo( new MazeNode( new Compass8() ), C8.S );
+        a.connectTo( new MazeNode( new Compass8() ), C8.W );
 
         exitsOpenOnA = a.getOpenExitPoints();
         exitsOccupiedOnA = a.getOccupiedExitPoints();
@@ -127,15 +127,15 @@ describe( 'MazeNode', () => {
 
     it( 'confirms whether another supplied node is neighbors with this node', () => {
 
-        let a = new MazeNode( new CardinalityBehaviorFour2D() );
-        let b = new MazeNode( new CardinalityBehaviorFour2D() );
-        let c = new MazeNode( new CardinalityBehaviorFour2D() );
-        let d = new MazeNode( new CardinalityBehaviorFour2D() );
+        let a = new MazeNode( new Compass4() );
+        let b = new MazeNode( new Compass4() );
+        let c = new MazeNode( new Compass4() );
+        let d = new MazeNode( new Compass4() );
 
-        a.connectTo( b, CB4_CARD.NORTH );
-        a.connectTo( d, CB4_CARD.WEST );
-        b.connectTo( c, CB4_CARD.WEST );
-        d.connectTo( c, CB4_CARD.NORTH );
+        a.connectTo( b, C4.NORTH );
+        a.connectTo( d, C4.WEST );
+        b.connectTo( c, C4.WEST );
+        d.connectTo( c, C4.NORTH );
 
         expect( a.isNeighborsWith( b ) ).to.be.true;
         expect( a.isNeighborsWith( d ) ).to.be.true;
@@ -147,23 +147,23 @@ describe( 'MazeNode', () => {
         expect( b.isNeighborsWith( d ) ).to.be.false;
     });
 
-    it( 'can accept and report 2 dimensional coordinates (as instances of MazeCoordinates2D objects)', () => {
+    it( 'can accept and report 2 dimensional coordinates (as instances of NodeLocation2D objects)', () => {
 
-        let a = new MazeNode( new CardinalityBehaviorEight2D() );
+        let a = new MazeNode( new Compass8() );
         const coords = [ MazeBuilder.rand( r ), MazeBuilder.rand( r ) ];
 
-        a.setCoordinates( new MazeCoordinates2D( coords ) );
-        expect( a.getCoordinates().toString() ).to.be.equal( new MazeCoordinates2D( coords ).toString() );
+        a.setCoordinates( new NodeLocation2D( coords ) );
+        expect( a.getCoordinates().toString() ).to.be.equal( new NodeLocation2D( coords ).toString() );
     });
 
     it( 'reports on whether a given exit point on the node is occupied or empty (two separate functions)', () => {
 
-        let a = new MazeNode( new CardinalityBehaviorFour2D() );
-        let b = new MazeNode( new CardinalityBehaviorFour2D() );
-        let c = new MazeNode( new CardinalityBehaviorFour2D() );
+        let a = new MazeNode( new Compass4() );
+        let b = new MazeNode( new Compass4() );
+        let c = new MazeNode( new Compass4() );
 
-        a.connectTo( b, CB4_CARD.NORTH );
-        a.connectTo( c, CB4_CARD.SOUTH );
+        a.connectTo( b, C4.NORTH );
+        a.connectTo( c, C4.SOUTH );
 
         expect( a.isPointOpen( 0 ) ).to.be.false; expect( a.isPointOpen( 1 ) ).to.be.true;
         expect( a.isPointOpen( 2 ) ).to.be.false; expect( a.isPointOpen( 3 ) ).to.be.true;
@@ -183,42 +183,42 @@ describe( 'MazeNode', () => {
 
     it( 'reports the cardinality behavior instance assigned to the node on demand', () => {
 
-        let a = new MazeNode( new CardinalityBehaviorFour2D() );
+        let a = new MazeNode( new Compass4() );
 
-        expect( a.getCardinality() ).to.be.instanceOf( CardinalityBehavior );
-        expect( a.getCardinality() ).to.be.instanceOf( CardinalityBehaviorFour2D );
-        expect( a.getCardinality() ).not.to.be.instanceOf( CardinalityBehaviorEight2D );
+        expect( a.getCardinality() ).to.be.instanceOf( Cardinality );
+        expect( a.getCardinality() ).to.be.instanceOf( Compass4 );
+        expect( a.getCardinality() ).not.to.be.instanceOf( Compass8 );
     });
 
     it( 'accepts and respects limits to the amount of nodes that this node can be connected to', () => {
 
-        let unlimited = new MazeNode( new CardinalityBehaviorFour2D() );
-        let limitedToOne = new MazeNode( new CardinalityBehaviorFour2D() );
-        let limitedToThree = new MazeNode( new CardinalityBehaviorFour2D() );
+        let unlimited = new MazeNode( new Compass4() );
+        let limitedToOne = new MazeNode( new Compass4() );
+        let limitedToThree = new MazeNode( new Compass4() );
 
         limitedToOne.setMaxExits( 1 );
         limitedToThree.setMaxExits( 3 );
 
         for ( let i = 0 ; i < 4 ; i++ ) {
 
-            expect( () => { unlimited.connectTo( new MazeNode( new CardinalityBehaviorFour2D() ), i ) } )
+            expect( () => { unlimited.connectTo( new MazeNode( new Compass4() ), i ) } )
                 .not.to.throw();
 
             //
             if ( i < 1 ) {
-                expect( () => { limitedToOne.connectTo( new MazeNode( new CardinalityBehaviorFour2D() ), i ) } )
+                expect( () => { limitedToOne.connectTo( new MazeNode( new Compass4() ), i ) } )
                     .not.to.throw();
             } else {
-                expect( () => { limitedToOne.connectTo( new MazeNode( new CardinalityBehaviorFour2D() ), i ) } )
+                expect( () => { limitedToOne.connectTo( new MazeNode( new Compass4() ), i ) } )
                     .to.throw();
             }
 
             if ( i < 3 ) {
 
-                expect( () => { limitedToThree.connectTo( new MazeNode( new CardinalityBehaviorFour2D() ), i ) } )
+                expect( () => { limitedToThree.connectTo( new MazeNode( new Compass4() ), i ) } )
                     .not.to.throw();
             } else {
-                expect( () => { limitedToThree.connectTo( new MazeNode( new CardinalityBehaviorFour2D() ), i ) } )
+                expect( () => { limitedToThree.connectTo( new MazeNode( new Compass4() ), i ) } )
                     .to.throw();
             }
         }

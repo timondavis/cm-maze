@@ -1,5 +1,5 @@
 import {Maze} from "../Maze";
-import {MazeCoordinates2D} from "../MazeCoordinates/MazeCoordinates2D";
+import {NodeLocation2D} from "../MazeCoordinates/NodeLocation2D";
 import {MazeNode} from "../MazeNode";
 export class MazeRenderer {
 
@@ -74,7 +74,7 @@ export class MazeRenderer {
             for ( let y = 0 ; y < this.maze.getDimensions()[Y] ; y++ ) {
 
 
-                let node = this.maze.getNode( new MazeCoordinates2D( [ x, y ] ) );
+                let node = this.maze.getNode( new NodeLocation2D( [ x, y ] ) );
                 let neighborNode: MazeNode;
 
                 if ( typeof node === 'undefined' ) { continue; }
@@ -111,7 +111,7 @@ export class MazeRenderer {
                 context.fillText( node.getCoordinates().toString(), nodeCenterX - ( ( node.getCoordinates().toString().length / 2 ) * 5 ) , nodeCenterY + ( 0.15 * nodeRadiusPx ) );
                 */
 
-                cardinality = node.getCardinality().getCardinality();
+                cardinality = node.getCardinality().getConnectionPointCount();
 
                 for ( let i = 0 ; i < cardinality ; i++ ) {
 
@@ -132,9 +132,9 @@ export class MazeRenderer {
                     neighborNodeCenterY = ( gridUnitHeightPx * neighborCoordinates[Y] + ( gridUnitHeightPx * 0.5 ) );
 
                     lineDestinationX = neighborNodeCenterX +
-                        Math.cos( (Math.PI/180) * (( neighborNode.getCardinality().getOpposingPoint(i) / neighborNode.getCardinality().getCardinality() * 360 ) - 90 ) ) * nodeRadiusPx;
+                        Math.cos( (Math.PI/180) * (( neighborNode.getCardinality().getOpposingConnectionPoint(i) / neighborNode.getCardinality().getConnectionPointCount() * 360 ) - 90 ) ) * nodeRadiusPx;
                     lineDestinationY = neighborNodeCenterY +
-                        Math.sin( (Math.PI/180) * (( neighborNode.getCardinality().getOpposingPoint(i) / neighborNode.getCardinality().getCardinality() * 360 ) - 90 ) ) * nodeRadiusPx;
+                        Math.sin( (Math.PI/180) * (( neighborNode.getCardinality().getOpposingConnectionPoint(i) / neighborNode.getCardinality().getConnectionPointCount() * 360 ) - 90 ) ) * nodeRadiusPx;
 
                     context.beginPath();
                     context.moveTo( lineOriginX, lineOriginY );

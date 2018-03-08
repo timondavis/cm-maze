@@ -2,8 +2,8 @@ import 'mocha';
 import { expect } from "chai";
 import {MazeBuilder} from "../../MazeBuilder";
 import {Maze} from "../../Maze";
-import {CardinalityBehaviorEight2D} from "../../Behavior/CardinalityBehaviorEight2D";
-import {CardinalityBehaviorFour2D} from "../../Behavior/CardinalityBehaviorFour2D";
+import {Compass8} from "../../Behavior/Compass8";
+import {Compass4} from "../../Behavior/Compass4";
 
 describe( 'MazeBuilder', () => {
 
@@ -24,13 +24,13 @@ describe( 'MazeBuilder', () => {
 
     it( 'can enforce cardinality behaviors to all MazeNodes by applying an instance of CardinalityBehavior', () => {
 
-        MB = new MazeBuilder( new CardinalityBehaviorEight2D() );
+        MB = new MazeBuilder( new Compass8() );
         let a: Maze = MB.buildMaze();
-        expect( a.getStartNode().getCardinality() ).to.be.an.instanceOf( CardinalityBehaviorEight2D );
+        expect( a.getStartNode().getCardinality() ).to.be.an.instanceOf( Compass8 );
 
-        MB = new MazeBuilder( new CardinalityBehaviorFour2D() );
+        MB = new MazeBuilder( new Compass4() );
         let b: Maze = MB.buildMaze();
-        expect( b.getStartNode().getCardinality() ).to.be.an.instanceOf( CardinalityBehaviorFour2D );
+        expect( b.getStartNode().getCardinality() ).to.be.an.instanceOf( Compass4 );
     });
 
     it( 'facilitates integer randomization as a static convenience service', () => { //@TODO Known Bug - fix!

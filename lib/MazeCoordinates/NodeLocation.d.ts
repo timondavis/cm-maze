@@ -3,7 +3,7 @@
  *
  * Stores and facilitates mutation of the coordinates of a given point on a cartesian graph (2+ dimensions)
  */
-export declare abstract class MazeCoordinates {
+export declare abstract class NodeLocation {
     /**
      * The number of dimensions recorded in these coordinates.
      */
@@ -24,7 +24,7 @@ export declare abstract class MazeCoordinates {
      * @param {number[]} position
      * @returns {NodeLocation}
      */
-    updatePosition(position: number[]): MazeCoordinates;
+    updatePosition(position: number[]): NodeLocation;
     /**
      * Update a dimensional value of the coordinate's position
      *
@@ -32,7 +32,7 @@ export declare abstract class MazeCoordinates {
      * @param {number} value
      * @returns {NodeLocation}
      */
-    updateDimension(index: number, value: number): MazeCoordinates;
+    updateDimension(index: number, value: number): NodeLocation;
     /**
      * Adjust the indicated dimension on the coordinate position.  Changes by amount indicated.
      *
@@ -40,7 +40,7 @@ export declare abstract class MazeCoordinates {
      * @param {number} amount
      * @returns {NodeLocation}
      */
-    adjustDimension(index: number, amount: number): MazeCoordinates;
+    adjustDimension(index: number, amount: number): NodeLocation;
     /**
      * Get this value at the given index (index represents dimension)
      *

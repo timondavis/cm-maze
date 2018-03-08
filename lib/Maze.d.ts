@@ -1,6 +1,6 @@
-import { CardinalityBehavior } from "./Behavior/CardinalityBehavior";
+import { CardinalityBehavior } from "./Behavior/Cardinality";
 import { MazeNode } from "./MazeNode";
-import { MazeCoordinates } from "./MazeCoordinates/MazeCoordinates";
+import { NodeLocation } from "./MazeCoordinates/NodeLocation";
 /**
  * @class Maze
  *
@@ -80,10 +80,10 @@ export declare class Maze {
     /**
      * Get the MazeNode at the given coordinates, if available.
      *
-     * @param {MazeCoordinates} coordinates
+     * @param {NodeLocation} coordinates
      * @returns {MazeNode}
      */
-    getNode(coordinates: MazeCoordinates): MazeNode;
+    getNode(coordinates: NodeLocation): MazeNode;
     /**
      * Assign the indicated node a 'starting point' status.
      *

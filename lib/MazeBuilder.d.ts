@@ -1,5 +1,5 @@
 import { MazeNode } from "./MazeNode";
-import { CardinalityBehavior } from "./Behavior/CardinalityBehavior";
+import { Cardinality } from "./Behavior/Cardinality";
 import { Maze } from "./Maze";
 /**
  * @class MazeBuilder
@@ -21,14 +21,14 @@ export declare class MazeBuilder {
      */
     protected entry: MazeNode;
     /**
-     *  An instance of the CardinalityBehavior instance responsible for facilitating node connection and traversal
+     *  An instance of the Cardinality instance responsible for facilitating node connection and traversal
      *  logic.
      *
-     *  @type {CardinalityBehavior}
+     *  @type {Cardinality}
      */
-    cardinalityBehavior: CardinalityBehavior;
+    cardinality: Cardinality;
     /**
-     * A "Dictionary" of nodes in the generated maze, referenced by a string (@see MazeCoordinates.toString() );
+     * A "Dictionary" of nodes in the generated maze, referenced by a string (@see NodeLocation.toString() );
      * @type {{ [key:stirng] : MazeNode }}
      */
     occupiedCoordinates: {
@@ -44,10 +44,10 @@ export declare class MazeBuilder {
     /**
      * Constructor
      *
-     * @param {CardinalityBehavior} cardinalityBehavior
+     * @param {Cardinality} cardinality
      * @param {number} complexity
      */
-    constructor(cardinalityBehavior?: CardinalityBehavior, complexity?: number);
+    constructor(cardinality?: Cardinality, complexity?: number);
     /**
      * Build a new randomized maze instance based on local instance configurations
      *

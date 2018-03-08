@@ -1,4 +1,4 @@
-import {MazeCoordinates} from "./MazeCoordinates";
+import {NodeLocation} from "./NodeLocation";
 
 /**
  * Quick reference for X and Y indexes in MazeCoordinate positions.
@@ -6,11 +6,11 @@ import {MazeCoordinates} from "./MazeCoordinates";
 export enum D2D { X = 0, Y = 1 };
 
 /**
- * @class MazeCoordinates2D
+ * @class NodeLocation2D
  *
  * Tracks coordinates on a 2 dimensional plane
  */
-export class MazeCoordinates2D extends MazeCoordinates {
+export class NodeLocation2D extends NodeLocation {
 
     /**
      * Get the number of dimensions belonging to this coordinate

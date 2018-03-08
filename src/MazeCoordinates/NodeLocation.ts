@@ -1,9 +1,9 @@
 /**
- * @class MazeCoordinates
+ * @class NodeLocation
  *
  * Stores and facilitates mutation of the coordinates of a given point on a cartesian graph (2+ dimensions)
  */
-export abstract class MazeCoordinates {
+export abstract class NodeLocation {
 
     /**
      * The number of dimensions recorded in these coordinates.
@@ -43,9 +43,9 @@ export abstract class MazeCoordinates {
      * Update the position on this coordinate
      *
      * @param {number[]} position
-     * @returns {MazeCoordinates}
+     * @returns {NodeLocation}
      */
-    public updatePosition(position: number[]): MazeCoordinates {
+    public updatePosition(position: number[]): NodeLocation {
 
         if ( position.length !== this.dimensions ) {
             throw("Position supplied is of incorrect dimensions for the coordinate");
@@ -60,9 +60,9 @@ export abstract class MazeCoordinates {
      *
      * @param {number} index
      * @param {number} value
-     * @returns {MazeCoordinates}
+     * @returns {NodeLocation}
      */
-    public updateDimension( index : number, value : number ) : MazeCoordinates {
+    public updateDimension( index : number, value : number ) : NodeLocation {
 
         if ( index < 0 || index >= this.dimensions ) {
             throw ( "Index out of dimensional range for coordinate" );
@@ -78,9 +78,9 @@ export abstract class MazeCoordinates {
      *
      * @param {number} index
      * @param {number} amount
-     * @returns {MazeCoordinates}
+     * @returns {NodeLocation}
      */
-    public adjustDimension( index : number, amount : number ) : MazeCoordinates {
+    public adjustDimension( index : number, amount : number ) : NodeLocation {
 
         let newPosition = [];
         for( let i = 0 ; i < this.dimensions ; i++ ) { newPosition[i] = this.position[i]; }
@@ -135,7 +135,7 @@ export abstract class MazeCoordinates {
      */
     public toString() : string {
 
-        return MazeCoordinates.encodeCoorindateArray( this.dimensions, this.position );
+        return NodeLocation.encodeCoorindateArray( this.dimensions, this.position );
     }
 
     /**

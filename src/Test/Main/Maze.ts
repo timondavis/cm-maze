@@ -1,10 +1,10 @@
 import {MazeBuilder} from "../../MazeBuilder";
 import {Maze} from "../../Maze";
-import {CardinalityBehaviorFour2D, CB4_CARD} from "../../Behavior/CardinalityBehaviorFour2D";
+import {Compass4, C4} from "../../Behavior/Compass4";
 import {expect} from 'chai';
 import 'mocha';
 import {MazeNode} from "../../MazeNode";
-import {MazeCoordinates2D} from "../../MazeCoordinates/MazeCoordinates2D";
+import {NodeLocation2D} from "../../MazeCoordinates/NodeLocation2D";
 
 describe( 'Maze', () => {
 
@@ -13,29 +13,29 @@ describe( 'Maze', () => {
     it( 'allows CardinalityBehavior to be set and reported on the Maze', () => {
 
         m = new Maze();
-        m.setCardinalityBehavior( new CardinalityBehaviorFour2D() );
+        m.setCardinalityBehavior( new Compass4() );
 
-       expect( m.getCardinalityBehavior() ).to.be.instanceOf( CardinalityBehaviorFour2D );
+       expect( m.getCardinalityBehavior() ).to.be.instanceOf( Compass4 );
     });
 
     it( 'can be assigned a node dictionary, and it can report the dictionary back to a caller', () => {
 
         m = new Maze();
 
-        let a = new MazeNode( new CardinalityBehaviorFour2D() );
-        let b = new MazeNode( new CardinalityBehaviorFour2D() );
-        let c = new MazeNode( new CardinalityBehaviorFour2D() );
-        let d = new MazeNode( new CardinalityBehaviorFour2D() );
-        let e = new MazeNode( new CardinalityBehaviorFour2D() );
+        let a = new MazeNode( new Compass4() );
+        let b = new MazeNode( new Compass4() );
+        let c = new MazeNode( new Compass4() );
+        let d = new MazeNode( new Compass4() );
+        let e = new MazeNode( new Compass4() );
 
         let nodeCollection: { [key:string] : MazeNode } = {};
         let capturedNodeCollection: { [key:string] : MazeNode };
 
-        a.setCoordinates( new MazeCoordinates2D( [1, 1] ));
-        b.setCoordinates( new MazeCoordinates2D( [1, 2] ));
-        c.setCoordinates( new MazeCoordinates2D( [2, 1] ));
-        d.setCoordinates( new MazeCoordinates2D( [2, 0] ));
-        e.setCoordinates( new MazeCoordinates2D( [0, 1] ));
+        a.setCoordinates( new NodeLocation2D( [1, 1] ));
+        b.setCoordinates( new NodeLocation2D( [1, 2] ));
+        c.setCoordinates( new NodeLocation2D( [2, 1] ));
+        d.setCoordinates( new NodeLocation2D( [2, 0] ));
+        e.setCoordinates( new NodeLocation2D( [0, 1] ));
 
         nodeCollection[ a.getCoordinates().toString() ] = a;
         nodeCollection[ b.getCoordinates().toString() ] = b;
@@ -57,34 +57,34 @@ describe( 'Maze', () => {
 
         m = new Maze();
 
-        let a = new MazeNode( new CardinalityBehaviorFour2D() );
-        let b = new MazeNode( new CardinalityBehaviorFour2D() );
+        let a = new MazeNode( new Compass4() );
+        let b = new MazeNode( new Compass4() );
 
         let nodeCollection: { [key:string] : MazeNode } = {};
 
-        a.setCoordinates( new MazeCoordinates2D( [1, 1] ));
-        b.setCoordinates( new MazeCoordinates2D( [1, 2] ));
+        a.setCoordinates( new NodeLocation2D( [1, 1] ));
+        b.setCoordinates( new NodeLocation2D( [1, 2] ));
 
         nodeCollection[ a.getCoordinates().toString() ] = a;
         nodeCollection[ b.getCoordinates().toString() ] = b;
 
         m.setNodes( nodeCollection );
 
-        expect( m.getNode( new MazeCoordinates2D( [1,2] ))).to.be.equal( b );
+        expect( m.getNode( new NodeLocation2D( [1,2] ))).to.be.equal( b );
     });
 
     it( 'facilitates definition of "starting" and "ending" nodes', () =>  {
         m = new Maze();
 
-        let a = new MazeNode( new CardinalityBehaviorFour2D() );
-        let b = new MazeNode( new CardinalityBehaviorFour2D() );
-        let c = new MazeNode( new CardinalityBehaviorFour2D() );
+        let a = new MazeNode( new Compass4() );
+        let b = new MazeNode( new Compass4() );
+        let c = new MazeNode( new Compass4() );
 
         let nodeCollection: { [key:string] : MazeNode } = {};
 
-        a.setCoordinates( new MazeCoordinates2D( [1, 1] ));
-        b.setCoordinates( new MazeCoordinates2D( [1, 2] ));
-        c.setCoordinates( new MazeCoordinates2D( [2, 1] ));
+        a.setCoordinates( new NodeLocation2D( [1, 1] ));
+        b.setCoordinates( new NodeLocation2D( [1, 2] ));
+        c.setCoordinates( new NodeLocation2D( [2, 1] ));
 
         m.setStartNode( a );
         m.setFinishNode( c );
@@ -125,15 +125,15 @@ describe( 'Maze', () => {
 
         m = new Maze();
 
-        let a = new MazeNode( new CardinalityBehaviorFour2D() );
-        let b = new MazeNode( new CardinalityBehaviorFour2D() );
-        let c = new MazeNode( new CardinalityBehaviorFour2D() );
+        let a = new MazeNode( new Compass4() );
+        let b = new MazeNode( new Compass4() );
+        let c = new MazeNode( new Compass4() );
 
         let nodeCollection: { [key:string] : MazeNode } = {};
 
-        a.setCoordinates( new MazeCoordinates2D( [1, 1] ));
-        b.setCoordinates( new MazeCoordinates2D( [1, 2] ));
-        c.setCoordinates( new MazeCoordinates2D( [2, 1] ));
+        a.setCoordinates( new NodeLocation2D( [1, 1] ));
+        b.setCoordinates( new NodeLocation2D( [1, 2] ));
+        c.setCoordinates( new NodeLocation2D( [2, 1] ));
 
         nodeCollection[ a.getCoordinates().toString() ] = a;
         nodeCollection[ b.getCoordinates().toString() ] = b;
@@ -149,24 +149,24 @@ describe( 'Maze', () => {
 
         m = new Maze();
 
-        let a = new MazeNode( new CardinalityBehaviorFour2D() );
-        let b = new MazeNode( new CardinalityBehaviorFour2D() );
-        let c = new MazeNode( new CardinalityBehaviorFour2D() );
-        let d = new MazeNode( new CardinalityBehaviorFour2D() );
-        let e = new MazeNode( new CardinalityBehaviorFour2D() );
+        let a = new MazeNode( new Compass4() );
+        let b = new MazeNode( new Compass4() );
+        let c = new MazeNode( new Compass4() );
+        let d = new MazeNode( new Compass4() );
+        let e = new MazeNode( new Compass4() );
 
         let nodeCollection: { [key:string] : MazeNode } = {};
 
-        a.setCoordinates( new MazeCoordinates2D( [1, 1] )).setName( "A" );
-        b.setCoordinates( new MazeCoordinates2D( [1, 2] )).setName( "B" );
-        c.setCoordinates( new MazeCoordinates2D( [2, 1] )).setName( "C" );
-        d.setCoordinates( new MazeCoordinates2D( [2, 0] )).setName( "D" );
-        e.setCoordinates( new MazeCoordinates2D( [0, 1] )).setName( "E" );
+        a.setCoordinates( new NodeLocation2D( [1, 1] )).setName( "A" );
+        b.setCoordinates( new NodeLocation2D( [1, 2] )).setName( "B" );
+        c.setCoordinates( new NodeLocation2D( [2, 1] )).setName( "C" );
+        d.setCoordinates( new NodeLocation2D( [2, 0] )).setName( "D" );
+        e.setCoordinates( new NodeLocation2D( [0, 1] )).setName( "E" );
 
-        a.connectTo( e, CB4_CARD.N );
-        a.connectTo( c, CB4_CARD.E );
-        a.connectTo( b, CB4_CARD.S );
-        b.connectTo( d, CB4_CARD.W );
+        a.connectTo( e, C4.N );
+        a.connectTo( c, C4.E );
+        a.connectTo( b, C4.S );
+        b.connectTo( d, C4.W );
 
         nodeCollection[ a.getCoordinates().toString() ] = a;
         nodeCollection[ b.getCoordinates().toString() ] = b;
@@ -177,11 +177,11 @@ describe( 'Maze', () => {
         m.setNodes( nodeCollection );
         m.setCurrentNode( a );
 
-        expect( m.move( CB4_CARD.N ) ).to.be.equal( e );
-        expect( m.move( CB4_CARD.S ) ).to.be.equal( a );
-        expect( m.move( CB4_CARD.E ) ).to.be.equal( c );
-        expect( m.move( CB4_CARD.W ) ).to.be.equal( a );
-        expect( m.move( CB4_CARD.S ) ).to.be.equal( b );
-        expect( m.move( CB4_CARD.W ) ).to.be.equal( d );
+        expect( m.move( C4.N ) ).to.be.equal( e );
+        expect( m.move( C4.S ) ).to.be.equal( a );
+        expect( m.move( C4.E ) ).to.be.equal( c );
+        expect( m.move( C4.W ) ).to.be.equal( a );
+        expect( m.move( C4.S ) ).to.be.equal( b );
+        expect( m.move( C4.W ) ).to.be.equal( d );
     });
 });

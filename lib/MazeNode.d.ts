@@ -1,5 +1,5 @@
-import { MazeCoordinates } from "./MazeCoordinates/MazeCoordinates";
-import { CardinalityBehavior } from "./Behavior/CardinalityBehavior";
+import { NodeLocation } from "./MazeCoordinates/NodeLocation";
+import { Cardinality } from "./Behavior/Cardinality";
 /**
  * @class MazeNode
  *
@@ -20,7 +20,7 @@ export declare class MazeNode {
     /**
      * Provides services and constraints allowing for the logical connection and traversal between this and other nodes
      */
-    protected cardinality: CardinalityBehavior;
+    protected cardinality: Cardinality;
     /**
      * The name of this node
      *
@@ -28,17 +28,17 @@ export declare class MazeNode {
      */
     protected name: string;
     /**
-     * The MazeCoordinates track the location of this node relative to other nodes
+     * The NodeLocation track the location of this node relative to other nodes
      *
-     * @type { MazeCoordinates }
+     * @type { NodeLocation }
      */
-    protected coordinates: MazeCoordinates;
+    protected coordinates: NodeLocation;
     /**
      * The maximum number of exits on this node which connect to other nodes.  A node cannot have more neighbors
      * than what is dictated by this value.
      */
     protected maxExits: number;
-    constructor(cardinality: CardinalityBehavior, coordinates?: MazeCoordinates);
+    constructor(cardinality: Cardinality, coordinates?: NodeLocation);
     /**
      * Connects one MazeNode instance to another.  Implicitly bi-directional, but directed edges between nodes
      * can be crated by passing in the autoConnect parameter as false.  If either node is maxed out, no connection will be made.
@@ -111,20 +111,20 @@ export declare class MazeNode {
     /**
      * Set the coordinates for this node
      *
-     * @param {MazeCoordinates} coordinates
+     * @param {NodeLocation} coordinates
      * @returns {this}
      */
-    setCoordinates(coordinates: MazeCoordinates): this;
+    setCoordinates(coordinates: NodeLocation): this;
     /**
      * Get the coordinates for this node
-     * @returns {MazeCoordinates}
+     * @returns {NodeLocation}
      */
-    getCoordinates(): MazeCoordinates;
+    getCoordinates(): NodeLocation;
     /**
      * Get the cardinality behavior object associated with this node.
-     * @returns {CardinalityBehavior}
+     * @returns {Cardinality}
      */
-    getCardinality(): CardinalityBehavior;
+    getCardinality(): Cardinality;
     /**
      * Stringify the output for human console consumption
      *

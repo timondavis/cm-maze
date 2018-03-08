@@ -1,10 +1,10 @@
 import {MazeNode} from "./MazeNode";
-import { CardinalityBehavior } from "./Behavior/CardinalityBehavior"
-import {MazeCoordinates} from "./MazeCoordinates/MazeCoordinates";
-import {CardinalityBehaviorFour2D} from "./Behavior/CardinalityBehaviorFour2D";
-import {MazeCoordinates2D} from "./MazeCoordinates/MazeCoordinates2D";
+import {Cardinality} from "./Behavior/Cardinality"
+import {NodeLocation} from "./MazeCoordinates/NodeLocation";
+import {Compass4} from "./Behavior/Compass4";
+import {NodeLocation2D} from "./MazeCoordinates/NodeLocation2D";
 import {Maze} from "./Maze";
-import {CardinalityBehaviorEight2D} from "./Behavior/CardinalityBehaviorEight2D";
+import {Compass8} from "./Behavior/Compass8";
 
 /**
  * @class MazeBuilder
@@ -29,15 +29,15 @@ export class MazeBuilder {
     protected entry : MazeNode;
 
     /**
-     *  An instance of the CardinalityBehavior instance responsible for facilitating node connection and traversal
+     *  An instance of the Cardinality instance responsible for facilitating node connection and traversal
      *  logic.
      *
-     *  @type {CardinalityBehavior}
+     *  @type {Cardinality}
      */
-    cardinalityBehavior : CardinalityBehavior;
+    cardinality : Cardinality;
 
     /**
-     * A "Dictionary" of nodes in the generated maze, referenced by a string (@see MazeCoordinates.toString() );
+     * A "Dictionary" of nodes in the generated maze, referenced by a string (@see NodeLocation.toString() );
      * @type {{ [key:stirng] : MazeNode }}
      */
     occupiedCoordinates : { [key:string] : MazeNode } = {};
@@ -53,12 +53,12 @@ export class MazeBuilder {
     /**
      * Constructor
      *
-     * @param {CardinalityBehavior} cardinalityBehavior
+     * @param {Cardinality} cardinality
      * @param {number} complexity
      */
-    public constructor( cardinalityBehavior? : CardinalityBehavior, complexity: number = 100 ) {
+    public constructor( cardinality? : Cardinality, complexity: number = 100 ) {
 
-        this.cardinalityBehavior = ( cardinalityBehavior ) ? cardinalityBehavior : new CardinalityBehaviorFour2D();
+        this.cardinality = ( cardinality ) ? cardinality : new Compass4();
         this.complexity = complexity;
     }
 
@@ -70,10 +70,10 @@ export class MazeBuilder {
     public buildMaze(): Maze {
 
         // Start entry node at 0,0
-        let startingCoordinates = this.cardinalityBehavior.generateCoordinates();
+        let startingCoordinates = this.cardinality.generateNodeLocation();
 
         this.occupiedCoordinates = {};
-        this.entry = new MazeNode( this.cardinalityBehavior );
+        this.entry = new MazeNode( this.cardinality );
         this.nodeCounter++;
         this.entry.setName( this.nodeCounter.toString() );
         this.occupiedCoordinates[startingCoordinates.toString()] = this.entry;
@@ -87,7 +87,7 @@ export class MazeBuilder {
 
         const m: Maze = new Maze();
 
-        m.setCardinalityBehavior( this.cardinalityBehavior );
+        m.setCardinalityBehavior( this.cardinality );
         m.setNodes( this.normalizeNodeCoordinates() );
         m.setCurrentNode( this.entry );
         m.setStartNode( this.entry );
@@ -250,7 +250,7 @@ export class MazeBuilder {
 
         return pointer.getNeighborAt(
             MazeBuilder.rand(
-                this.cardinalityBehavior.getCardinality(),
+                this.cardinality.getConnectionPointCount(),
                 0
             )
         );
@@ -267,24 +267,24 @@ export class MazeBuilder {
      */
     private getNextNodeAtExit( pointer: MazeNode, exitPoint: number): MazeNode {
 
-        let lastCoordinates: MazeCoordinates;
-        let nextCoordinates: MazeCoordinates;
+        let lastCoordinates: NodeLocation;
+        let nextCoordinates: NodeLocation;
         let tempNextNode: MazeNode;
 
         // Determine coordinates for the new and existing nodes
         lastCoordinates = pointer.getCoordinates();
-        nextCoordinates = this.cardinalityBehavior.getNextCoordinates( lastCoordinates, exitPoint );
+        nextCoordinates = this.cardinality.getNextLocation(lastCoordinates, exitPoint);
 
         // If the next node's coordinate is already taken point our Next Node to that node.  Otherwise,
         // if the space in unoccupied, create a new node.
         if( this.occupiedCoordinates.hasOwnProperty(nextCoordinates.toString() ) ) {
            tempNextNode = this.occupiedCoordinates[ nextCoordinates.toString() ];
         } else {
-           tempNextNode = new MazeNode( this.cardinalityBehavior );
+           tempNextNode = new MazeNode( this.cardinality );
            tempNextNode.setCoordinates(nextCoordinates);
 
            tempNextNode.setMaxExits(
-               MazeBuilder.rand( this.cardinalityBehavior.getCardinality(), 1 )
+               MazeBuilder.rand( this.cardinality.getConnectionPointCount(), 1 )
            );
 
            this.nodeCounter++;
@@ -310,7 +310,7 @@ export class MazeBuilder {
 
         // If the logical entry point is open on the next node, we'll connect the nodes and traverse
         // to the next node.
-        if ( pointer.isPointOpen( exitPoint ) && tempNextNode.isPointOpen( this.cardinalityBehavior.getOpposingPoint( exitPoint ))) {
+        if ( pointer.isPointOpen( exitPoint ) && tempNextNode.isPointOpen( this.cardinality.getOpposingConnectionPoint( exitPoint ))) {
 
             pointer.connectTo( tempNextNode, exitPoint );
             pointer = tempNextNode;

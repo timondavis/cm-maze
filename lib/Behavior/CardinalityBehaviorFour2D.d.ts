@@ -17,7 +17,7 @@ export declare enum CB4_CARD {
     WEST = 3,
 }
 /**
- * @class CardinalityBehaviorFour2D
+ * @class Compass4
  *
  * Provides behavioral logic and services for working with 4 cardinality points on a 2d plane
  */
@@ -33,7 +33,7 @@ export declare class CardinalityBehaviorFour2D extends CardinalityBehavior {
     getCardinality(): number;
     /**
      * Given a position on a 2D plane, and given an intended 'exit' point of cardinality (describing in which direction
-     * we want to "move" from our current coordinates), this function will return an new MazeCoordinates2D object which
+     * we want to "move" from our current coordinates), this function will return an new NodeLocation2D object which
      * represents the theoretical coordinates for the space you would move to.
      *
      * Example: Going north from [0,0] would result in finding coordinates at position [1,0].
@@ -49,7 +49,7 @@ export declare class CardinalityBehaviorFour2D extends CardinalityBehavior {
     getNextCoordinates(currentCoordinates: MazeCoordinates2D, exitPosition: number): MazeCoordinates2D;
     /**
      * Generate a new Maze Coordinate at the indicated position (leave empty for default position).  It is safe
-     * to cast the returned result as MazeCoordinates2D.
+     * to cast the returned result as NodeLocation2D.
      *
      * Time Complexity: O(1)
      * Space Complexity: O(1)

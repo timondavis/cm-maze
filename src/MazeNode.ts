@@ -1,5 +1,5 @@
-import {MazeCoordinates} from "./MazeCoordinates/MazeCoordinates";
-import {CardinalityBehavior} from "./Behavior/CardinalityBehavior";
+import {NodeLocation} from "./MazeCoordinates/NodeLocation";
+import {Cardinality} from "./Behavior/Cardinality";
 
 /**
  * @class MazeNode
@@ -24,7 +24,7 @@ export class MazeNode {
     /**
      * Provides services and constraints allowing for the logical connection and traversal between this and other nodes
      */
-    protected cardinality : CardinalityBehavior;
+    protected cardinality : Cardinality;
 
     /**
      * The name of this node
@@ -34,11 +34,11 @@ export class MazeNode {
     protected name = "";
 
     /**
-     * The MazeCoordinates track the location of this node relative to other nodes
+     * The NodeLocation track the location of this node relative to other nodes
      *
-     * @type { MazeCoordinates }
+     * @type { NodeLocation }
      */
-    protected coordinates : MazeCoordinates;
+    protected coordinates : NodeLocation;
 
     /**
      * The maximum number of exits on this node which connect to other nodes.  A node cannot have more neighbors
@@ -46,12 +46,12 @@ export class MazeNode {
      */
     protected maxExits: number;
 
-    public constructor( cardinality: CardinalityBehavior, coordinates? : MazeCoordinates ) {
+    public constructor( cardinality: Cardinality, coordinates? : NodeLocation ) {
 
         this.cardinality = cardinality;
-        this.neighbors = new Array<MazeNode>( cardinality.getCardinality() );
+        this.neighbors = new Array<MazeNode>( cardinality.getConnectionPointCount() );
 
-        this.coordinates = ( coordinates ) ? coordinates : this.cardinality.generateCoordinates();
+        this.coordinates = ( coordinates ) ? coordinates : this.cardinality.generateNodeLocation();
         this.maxExits = -1;
     }
 
@@ -73,7 +73,7 @@ export class MazeNode {
         }
 
 
-        if ( exitPosition >= this.cardinality.getCardinality() || exitPosition < 0 ) {
+        if ( exitPosition >= this.cardinality.getConnectionPointCount() || exitPosition < 0 ) {
             throw( "Indicated exitPosition value exceeds maximum MazeNode cardinality range" );
         }
 
@@ -85,13 +85,13 @@ export class MazeNode {
 
         if ( autoConnect ) {
 
-            if ( ! node.isPointOpen( node.getCardinality().getOpposingPoint( exitPosition ) ) ) {
+            if ( ! node.isPointOpen( node.getCardinality().getOpposingConnectionPoint( exitPosition ) ) ) {
 
                 throw( "Two-Way conneciton failed.  Indicated node will not tolerate any more additonal connections, " +
                     "maximum reached.")
             }
 
-            let entryPosition = this.cardinality.getOpposingPoint( exitPosition );
+            let entryPosition = this.cardinality.getOpposingConnectionPoint( exitPosition );
 
             node.connectTo( this, entryPosition, false );
 
@@ -113,7 +113,7 @@ export class MazeNode {
      */
     public getNeighborAt( exitPosition : number ) {
 
-        if ( exitPosition >= this.cardinality.getCardinality() || exitPosition < 0 ) {
+        if ( exitPosition >= this.cardinality.getConnectionPointCount() || exitPosition < 0 ) {
             throw( "Indicated cardinality position is outside of the valid range" );
         }
 
@@ -150,7 +150,7 @@ export class MazeNode {
      */
     public isNeighborsWith( node: MazeNode ): boolean {
 
-        for ( let i = 0 ; i < this.cardinality.getCardinality() ; i++ ) {
+        for (let i = 0 ; i < this.cardinality.getConnectionPointCount() ; i++ ) {
 
             if ( node == this.neighbors[i] ) { return true; }
         }
@@ -168,7 +168,7 @@ export class MazeNode {
         let positions: number[] = [];
 
         /* @TODO o(n) where n is cardinality.  Can this be improved? */
-        for ( let i = 0 ; i < this.cardinality.getCardinality() ; i++ ) {
+        for (let i = 0 ; i < this.cardinality.getConnectionPointCount() ; i++ ) {
 
             if ( this.neighbors[i] != undefined ) {
 
@@ -189,7 +189,7 @@ export class MazeNode {
         let positions: number[] = [];
 
         /* @TODO o(n) where n is cardinality.  Can this be improved? */
-        for ( let i = 0 ; i < this.cardinality.getCardinality() ; i++ ) {
+        for (let i = 0 ; i < this.cardinality.getConnectionPointCount() ; i++ ) {
 
            if ( this.neighbors[i] == undefined ) {
                positions.push( i );
@@ -210,7 +210,7 @@ export class MazeNode {
         let positions: MazeNode[] = [];
 
         /* @TODO o(n) where n is cardinality.  Can this be improved? */
-        for ( let i = 0 ; i < this.cardinality.getCardinality() ; i++ ) {
+        for (let i = 0 ; i < this.cardinality.getConnectionPointCount() ; i++ ) {
 
             if ( this.neighbors[i] != undefined ) {
 
@@ -237,7 +237,7 @@ export class MazeNode {
             return false;
         }
 
-        this.cardinality.validatePosition( position );
+        this.cardinality.validateConnectionPoint(position);
         return ( this.neighbors[position] === undefined );
     }
 
@@ -248,17 +248,17 @@ export class MazeNode {
      */
     public isPointOccupied( position: number ) : boolean {
 
-        this.cardinality.validatePosition( position );
+        this.cardinality.validateConnectionPoint(position);
         return ( this.neighbors[position] !== undefined );
     }
 
     /**
      * Set the coordinates for this node
      *
-     * @param {MazeCoordinates} coordinates
+     * @param {NodeLocation} coordinates
      * @returns {this}
      */
-    public setCoordinates( coordinates: MazeCoordinates) {
+    public setCoordinates( coordinates: NodeLocation) {
 
         this.coordinates = coordinates;
         return this;
@@ -266,18 +266,18 @@ export class MazeNode {
 
     /**
      * Get the coordinates for this node
-     * @returns {MazeCoordinates}
+     * @returns {NodeLocation}
      */
-    public getCoordinates() : MazeCoordinates {
+    public getCoordinates() : NodeLocation {
 
         return this.coordinates;
     }
 
     /**
      * Get the cardinality behavior object associated with this node.
-     * @returns {CardinalityBehavior}
+     * @returns {Cardinality}
      */
-    public getCardinality() : CardinalityBehavior {
+    public getCardinality() : Cardinality {
         return this.cardinality;
     }
 
