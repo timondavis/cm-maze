@@ -56,7 +56,7 @@ describe( 'MazeBuilder', () => {
         MB = new MazeBuilder();
         let maze = MB.buildMaze();
 
-        expect( Object.keys( MB.getCoordinatesCollection() ) ).to.have.length.greaterThan( 0 );
+        expect( Object.keys( MB.getNodeCollection() ) ).to.have.length.greaterThan( 0 );
     });
 
     // Tricky/expensive to prove without a search algorithm.  Will implement this on the official.  Mean while, these tests are pending.

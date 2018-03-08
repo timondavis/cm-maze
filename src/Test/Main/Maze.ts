@@ -13,9 +13,9 @@ describe( 'Maze', () => {
     it( 'allows CardinalityBehavior to be set and reported on the Maze', () => {
 
         m = new Maze();
-        m.setCardinalityBehavior( new Compass4() );
+        m.setCardinality( new Compass4() );
 
-       expect( m.getCardinalityBehavior() ).to.be.instanceOf( Compass4 );
+       expect( m.getCardinality() ).to.be.instanceOf( Compass4 );
     });
 
     it( 'can be assigned a node dictionary, and it can report the dictionary back to a caller', () => {

@@ -97,7 +97,7 @@ export abstract class NodeLocation {
     }
 
     /**
-     * Get this value at the given index (index represents dimension)
+     * Get the axis point value on the indicated axis
      *
      * @param {number} axisIndex
      * @returns {number}
@@ -112,7 +112,7 @@ export abstract class NodeLocation {
     }
 
     /**
-     * Get the position of this coordinate.
+     * Get the position of this location.
      * @returns {number[]}
      */
     public getPosition(): number[] {
@@ -120,7 +120,7 @@ export abstract class NodeLocation {
     }
 
     /**
-     * Get the dimensions of this coordinate.  A 2 dimensional coordinate is an array with 2 elements, 3 for 3, etc.
+     * Get the # of dimensions or axis tracking the position of this location
      *
      * @returns {number}
      */
@@ -139,7 +139,7 @@ export abstract class NodeLocation {
     }
 
     /**
-     * Convert an array of dimensional positions into a string that reads like the array.  Great for comparisons!
+     * Convert an array representing a position into a string that reads like the array.  Great for comparisons!
      * If executing this function on a maze coordinate instance, consider using the .toString() method, which will
      * give you the same result sourcing from the position on the coordinate.
      *
@@ -164,16 +164,16 @@ export abstract class NodeLocation {
     protected abstract getDimensionValue(): number;
 
     /**
-     * Validate that the dimensions have been set on this item.  Mainly this is here to bug other developers if they
+     * Validate that the dimensions have been set on this item.  Mainly this is here to bug other developers - if you
      * extend this abstract class without ensuring that the dimension value is defined as a property on the child
-     * class.
+     * class, it will fail.
      */
     private validateDimensions() : void {
 
         if ( this.dimensions === undefined ) {
-            throw ( "Coordinate cannot be instantiated because it has no dimensions.  When extending the " +
-                "MazeCoordinate class, please be sure to set the value for dimensions before invoking the parent " +
-                "by returning the proper value in the implementation of the getDimensionValue() method" );
+            throw ( "NodeLocation cannot be instantiated because it has no dimensions.  When extending the " +
+                "NodeLocation class, please be sure to set the value for dimensions before invoking the parent " +
+                "by returning the proper value in the concrete implementation of the getDimensionValue() method" );
         }
 
     }

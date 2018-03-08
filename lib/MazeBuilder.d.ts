@@ -21,7 +21,7 @@ export declare class MazeBuilder {
      */
     protected entry: MazeNode;
     /**
-     *  An instance of the Cardinality instance responsible for facilitating node connection and traversal
+     *  A Cardinality instance responsible for facilitating node connection and traversal
      *  logic.
      *
      *  @type {Cardinality}
@@ -31,7 +31,7 @@ export declare class MazeBuilder {
      * A "Dictionary" of nodes in the generated maze, referenced by a string (@see NodeLocation.toString() );
      * @type {{ [key:stirng] : MazeNode }}
      */
-    occupiedCoordinates: {
+    occupiedLocations: {
         [key: string]: MazeNode;
     };
     /**
@@ -86,18 +86,19 @@ export declare class MazeBuilder {
      *
      * @return {{[key:string] : MazeNode}}
      */
-    getCoordinatesCollection(): {
+    getNodeCollection(): {
         [key: string]: MazeNode;
     };
     /**
-     * Try every available exit on the node for connection to a new or existing node.  Return the index of the
-     * successful connections exit point when new connection is made.  If no connection is made, returns -1.
+     * Try every available connection point on the node and attempt to connect to a new or existing node.
+     * Return the index of the successful connections connection point when new connection is made.
+     * If no connection is made, returns -1.
      *
      * @param {MazeNode} pointer
-     * @param {number[]} openExits
+     * @param {number[]} openConnectionPoints
      * @returns {number}
      */
-    private tryNodeConnectionFromEveryAvailableExit(pointer, openExits);
+    private tryNodeConnectionFromEveryAvailableExit(pointer, openConnectionPoints);
     /**
      * Convenince function to simply get the next node WHEN ALL EXIT POINTS ARE CLAIMED
      *
