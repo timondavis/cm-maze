@@ -51,59 +51,59 @@ export class Compass8 extends Cardinality {
         this.validateConnectionPoint( exitConnectionPoint );
 
         let nextLocation = new NodeLocation2D( [
-            currentLocation.getDimension( D2D.X ),
-            currentLocation.getDimension( D2D.Y )
+            currentLocation.getAxisPoint(D2D.X),
+            currentLocation.getAxisPoint(D2D.Y)
         ]);
 
         /* O(1) */
         switch( exitConnectionPoint ) {
 
             case C8.NORTH : {
-                nextLocation.adjustDimension( D2D.Y, -1 );
+                nextLocation.adjustAxisPoint(D2D.Y, -1);
                 break;
             }
 
             case C8.NORTH_EAST : {
                 nextLocation
-                    .adjustDimension( D2D.X, 1 )
-                    .adjustDimension( D2D.Y, -1 );
+                    .adjustAxisPoint(D2D.X, 1)
+                    .adjustAxisPoint(D2D.Y, -1);
                 break;
             }
 
             case C8.EAST : {
-                nextLocation.adjustDimension( D2D.X, 1 );
+                nextLocation.adjustAxisPoint(D2D.X, 1);
                 break;
             }
 
             case C8.SOUTH_EAST : {
                 nextLocation
-                    .adjustDimension( D2D.X, 1 )
-                    .adjustDimension( D2D.Y, 1 );
+                    .adjustAxisPoint(D2D.X, 1)
+                    .adjustAxisPoint(D2D.Y, 1);
                 break;
             }
 
             case C8.SOUTH : {
 
-                nextLocation.adjustDimension( D2D.Y, 1 );
+                nextLocation.adjustAxisPoint(D2D.Y, 1);
                 break;
             }
 
             case C8.SOUTH_WEST : {
                 nextLocation
-                    .adjustDimension( D2D.X, -1 )
-                    .adjustDimension( D2D.Y, 1 );
+                    .adjustAxisPoint(D2D.X, -1)
+                    .adjustAxisPoint(D2D.Y, 1);
                 break;
             }
 
             case C8.WEST : {
-                nextLocation.adjustDimension( D2D.X, -1 );
+                nextLocation.adjustAxisPoint(D2D.X, -1);
                 break;
             }
 
             case C8.NORTH_WEST : {
                 nextLocation
-                    .adjustDimension( D2D.X, -1 )
-                    .adjustDimension( D2D.Y, -1 );
+                    .adjustAxisPoint(D2D.X, -1)
+                    .adjustAxisPoint(D2D.Y, -1);
                 break;
             }
 

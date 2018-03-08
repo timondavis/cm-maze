@@ -345,7 +345,7 @@ export class MazeBuilder {
 
             Object.keys( this.getCoordinatesCollection() ).forEach( (key) => {
 
-                currentValue = this.getCoordinatesCollection()[key].getCoordinates().getDimension( i );
+                currentValue = this.getCoordinatesCollection()[key].getCoordinates().getAxisPoint(i);
                 currentMin = ( currentValue < currentMin ) ? currentValue : currentMin;
             });
 
@@ -364,7 +364,7 @@ export class MazeBuilder {
             Object.keys( this.getCoordinatesCollection() ).forEach( (key) => {
 
                 currentNode = this.getCoordinatesCollection()[key];
-                currentNode.getCoordinates().adjustDimension( i, adjustmentsByIndex[i] );
+                currentNode.getCoordinates().adjustAxisPoint(i, adjustmentsByIndex[i]);
             });
         }
 
@@ -401,7 +401,7 @@ export class MazeBuilder {
             Object.keys( this.getCoordinatesCollection() ).forEach( (key: string) => {
 
                 node = this.getCoordinatesCollection()[key];
-                currentValue = node.getCoordinates().getDimension( i );
+                currentValue = node.getCoordinates().getAxisPoint(i);
                 maxValue = ( currentValue > maxValue ) ? currentValue : maxValue;
                 minValue = ( currentValue < minValue ) ? currentValue : minValue;
             });

@@ -37,7 +37,7 @@ describe( 'NodeLocation2D', () => {
        const next = [ MazeBuilder.rand( r ), MazeBuilder.rand( r ) ];
 
        mc = new NodeLocation2D( old );
-       mc.updateDimension( 1, next[1] )
+       mc.updateAxisPoint(1, next[1])
 
        expect( mc.getPosition().toString() ).to.be.equal( [ old[0], next[1] ].toString() );
    });
@@ -48,7 +48,7 @@ describe( 'NodeLocation2D', () => {
        const delta = MazeBuilder.rand( r );
 
        mc = new NodeLocation2D( old );
-       mc.adjustDimension( 0, delta );
+       mc.adjustAxisPoint(0, delta);
 
        expect( mc.getPosition().toString() ).to.be.equal( [ old[0] + delta, old[1]].toString() );
    });
@@ -59,8 +59,8 @@ describe( 'NodeLocation2D', () => {
 
        mc = new NodeLocation2D( old );
 
-       expect( mc.getDimension(0 ) ).to.be.equal( old[0] );
-       expect( mc.getDimension( 1 ) ).to.be.equal( old[1] );
+       expect( mc.getAxisPoint(0) ).to.be.equal( old[0] );
+       expect( mc.getAxisPoint(1) ).to.be.equal( old[1] );
    });
 
    it( 'provides reports on position by returning a 2-element array (x,y)', ()  => {
@@ -77,8 +77,8 @@ describe( 'NodeLocation2D', () => {
        const old = [ MazeBuilder.rand( r ), MazeBuilder.rand( r ) ];
        mc = new NodeLocation2D( old );
 
-       expect( NodeLocation2D.encodeCoorindateArray( 2, old ) ).to.be.equal( "[" + old.toString() + "]" );
-       expect( "[" + old.toString() + "]").to.be.equal( NodeLocation2D.encodeCoorindateArray( 2, old ) );
+       expect( NodeLocation2D.encodePositionArray( 2, old ) ).to.be.equal( "[" + old.toString() + "]" );
+       expect( "[" + old.toString() + "]").to.be.equal( NodeLocation2D.encodePositionArray( 2, old ) );
    });
 
    it( 'should report, as a number, how many dimensions this coordinate facilitates', () => {

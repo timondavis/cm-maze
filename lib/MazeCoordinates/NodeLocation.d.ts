@@ -19,35 +19,35 @@ export declare abstract class NodeLocation {
      */
     constructor(position?: number[]);
     /**
-     * Update the position on this coordinate
+     * Update the position on this location instance
      *
      * @param {number[]} position
      * @returns {NodeLocation}
      */
     updatePosition(position: number[]): NodeLocation;
     /**
-     * Update a dimensional value of the coordinate's position
+     * Update the value of the point on the indicated dimensional axis
      *
-     * @param {number} index
-     * @param {number} value
+     * @param {number} axisIndex
+     * @param {number} newValue
      * @returns {NodeLocation}
      */
-    updateDimension(index: number, value: number): NodeLocation;
+    updateAxisPoint(axisIndex: number, newValue: number): NodeLocation;
     /**
-     * Adjust the indicated dimension on the coordinate position.  Changes by amount indicated.
+     * Adjust the value of the point on the indicated dimensional axis by the indicated delta
      *
-     * @param {number} index
-     * @param {number} amount
+     * @param {number} axisIndex
+     * @param {number} pointDelta
      * @returns {NodeLocation}
      */
-    adjustDimension(index: number, amount: number): NodeLocation;
+    adjustAxisPoint(axisIndex: number, pointDelta: number): NodeLocation;
     /**
      * Get this value at the given index (index represents dimension)
      *
-     * @param {number} index
+     * @param {number} axisIndex
      * @returns {number}
      */
-    getDimension(index: number): number;
+    getAxisPoint(axisIndex: number): number;
     /**
      * Get the position of this coordinate.
      * @returns {number[]}
@@ -73,7 +73,7 @@ export declare abstract class NodeLocation {
      * @param {number[]} elements
      * @returns {string}
      */
-    static encodeCoorindateArray(dimensions: number, elements: number[]): string;
+    static encodePositionArray(dimensions: number, elements: number[]): string;
     protected abstract getDimensionValue(): number;
     /**
      * Validate that the dimensions have been set on this item.  Mainly this is here to bug other developers if they

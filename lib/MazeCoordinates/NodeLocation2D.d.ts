@@ -13,7 +13,7 @@ export declare enum D2D {
  */
 export declare class NodeLocation2D extends NodeLocation {
     /**
-     * Get the number of dimensions belonging to this coordinate
+     * Get the number of dimensions belonging to this location
      *
      * @returns {number}
      */

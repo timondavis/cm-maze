@@ -3,7 +3,7 @@ import {NodeLocation} from "./NodeLocation";
 /**
  * Quick reference for X and Y indexes in MazeCoordinate positions.
  */
-export enum D2D { X = 0, Y = 1 };
+export enum D2D { X = 0, Y = 1 }
 
 /**
  * @class NodeLocation2D
@@ -13,7 +13,7 @@ export enum D2D { X = 0, Y = 1 };
 export class NodeLocation2D extends NodeLocation {
 
     /**
-     * Get the number of dimensions belonging to this coordinate
+     * Get the number of dimensions belonging to this location
      *
      * @returns {number}
      */

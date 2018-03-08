@@ -33,14 +33,14 @@ export abstract class NodeLocation {
 
         }
         else if (position.length !== this.dimensions) {
-            throw("Position supplied is of incorrect dimensions for the coordinate");
+            throw( "Position supplied has incorrect #  of dimensions" );
         }
 
         this.position = position;
     }
 
     /**
-     * Update the position on this coordinate
+     * Update the position on this location instance
      *
      * @param {number[]} position
      * @returns {NodeLocation}
@@ -48,7 +48,7 @@ export abstract class NodeLocation {
     public updatePosition(position: number[]): NodeLocation {
 
         if ( position.length !== this.dimensions ) {
-            throw("Position supplied is of incorrect dimensions for the coordinate");
+            throw( "Position supplied has incorrect # of dimensions" );
         }
 
         this.position = position;
@@ -56,40 +56,40 @@ export abstract class NodeLocation {
     }
 
     /**
-     * Update a dimensional value of the coordinate's position
+     * Update the value of the point on the indicated dimensional axis
      *
-     * @param {number} index
-     * @param {number} value
+     * @param {number} axisIndex
+     * @param {number} newValue
      * @returns {NodeLocation}
      */
-    public updateDimension( index : number, value : number ) : NodeLocation {
+    public updateAxisPoint(axisIndex: number, newValue: number) : NodeLocation {
 
-        if ( index < 0 || index >= this.dimensions ) {
+        if ( axisIndex < 0 || axisIndex >= this.dimensions ) {
             throw ( "Index out of dimensional range for coordinate" );
         }
 
-        this.position[index] = value;
+        this.position[axisIndex] = newValue;
 
         return this;
     }
 
     /**
-     * Adjust the indicated dimension on the coordinate position.  Changes by amount indicated.
+     * Adjust the value of the point on the indicated dimensional axis by the indicated delta
      *
-     * @param {number} index
-     * @param {number} amount
+     * @param {number} axisIndex
+     * @param {number} pointDelta
      * @returns {NodeLocation}
      */
-    public adjustDimension( index : number, amount : number ) : NodeLocation {
+    public adjustAxisPoint(axisIndex: number, pointDelta: number) : NodeLocation {
 
         let newPosition = [];
         for( let i = 0 ; i < this.dimensions ; i++ ) { newPosition[i] = this.position[i]; }
 
-        if ( index < 0 || index >= this.dimensions ) {
+        if ( axisIndex < 0 || axisIndex >= this.dimensions ) {
             throw ( "Index out of dimensional range for coordinate" );
         }
 
-        newPosition[index] += amount;
+        newPosition[axisIndex] += pointDelta;
 
         this.position = newPosition;
 
@@ -99,16 +99,16 @@ export abstract class NodeLocation {
     /**
      * Get this value at the given index (index represents dimension)
      *
-     * @param {number} index
+     * @param {number} axisIndex
      * @returns {number}
      */
-    public getDimension( index : number ) : number {
+    public getAxisPoint(axisIndex: number) : number {
 
-        if ( index < 0 || index >= this.dimensions ) {
+        if ( axisIndex < 0 || axisIndex >= this.dimensions ) {
             throw ( "Index out of dimensional range for coordinate" );
         }
 
-        return this.position[index];
+        return this.position[axisIndex];
     }
 
     /**
@@ -135,7 +135,7 @@ export abstract class NodeLocation {
      */
     public toString() : string {
 
-        return NodeLocation.encodeCoorindateArray( this.dimensions, this.position );
+        return NodeLocation.encodePositionArray( this.dimensions, this.position );
     }
 
     /**
@@ -147,7 +147,7 @@ export abstract class NodeLocation {
      * @param {number[]} elements
      * @returns {string}
      */
-    public static encodeCoorindateArray( dimensions: number, elements: number[] ) : string {
+    public static encodePositionArray(dimensions: number, elements: number[] ) : string {
 
         let s: string = "[";
 

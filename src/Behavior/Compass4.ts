@@ -48,16 +48,16 @@ export class Compass4 extends Cardinality {
 
         let nextLocation = new NodeLocation2D( [
 
-            currentLocation.getDimension( 0 ),
-            currentLocation.getDimension( 1 )
+            currentLocation.getAxisPoint(0),
+            currentLocation.getAxisPoint(1)
         ]);
 
         switch( exitConnectionPoint ) {
 
-            case C4.NORTH : { nextLocation.adjustDimension( D2D.Y, - 1 ); break; }
-            case C4.EAST : { nextLocation.adjustDimension( D2D.X, 1 ); break; }
-            case C4.SOUTH: { nextLocation.adjustDimension( D2D.Y,  1 ); break; }
-            case C4.WEST: { nextLocation.adjustDimension( D2D.X, -1 ); break; }
+            case C4.NORTH : { nextLocation.adjustAxisPoint(D2D.Y, -1); break; }
+            case C4.EAST : { nextLocation.adjustAxisPoint(D2D.X, 1); break; }
+            case C4.SOUTH: { nextLocation.adjustAxisPoint(D2D.Y, 1); break; }
+            case C4.WEST: { nextLocation.adjustAxisPoint(D2D.X, -1); break; }
             default:  throw( "Indicated exit position is out of range" );
         }
 
