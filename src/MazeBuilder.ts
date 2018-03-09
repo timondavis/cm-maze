@@ -131,7 +131,7 @@ export class MazeBuilder {
         for ( let i = 0 ; i < depth ; i++ ) {
 
             // Pick a random exit point on this node.  If there is no open exit, traverse to the next node and continue.
-            openExits = pointer.getOpenExitPoints();
+            openExits = pointer.getOpenConnectionPoints();
             if (openExits.length == 0) {
                 pointer = this.hopToNextNode(pointer);
                 continue;
@@ -153,7 +153,7 @@ export class MazeBuilder {
             }
 
             // .. retreat if unsuccessful, fallback to a previously connected node ...
-            occupiedExits = pointer.getOccupiedExitPoints();
+            occupiedExits = pointer.getOccupiedConnectionPoints();
 
             if ( occupiedExits.length > 0 ) {
                 pointer = pointer.getNeighborAt( MazeBuilder.rand( occupiedExits.length - 1, 0 ) );
@@ -273,7 +273,7 @@ export class MazeBuilder {
         let tempNextNode: MazeNode;
 
         // Determine coordinates for the new and existing nodes
-        lastCoordinates = pointer.getCoordinates();
+        lastCoordinates = pointer.getLocation();
         nextCoordinates = this.cardinality.getNextLocation(lastCoordinates, exitPoint);
 
         // If the next node's coordinate is already taken point our Next Node to that node.  Otherwise,
@@ -282,11 +282,9 @@ export class MazeBuilder {
            tempNextNode = this.occupiedLocations[ nextCoordinates.toString() ];
         } else {
            tempNextNode = new MazeNode( this.cardinality );
-           tempNextNode.setCoordinates(nextCoordinates);
+           tempNextNode.setLocation(nextCoordinates);
 
-           tempNextNode.setMaxExits(
-               MazeBuilder.rand( this.cardinality.getConnectionPointCount() - 1, 1 )
-           );
+           tempNextNode.setMaxConnections(MazeBuilder.rand(this.cardinality.getConnectionPointCount() - 1, 1));
 
            this.nodeCounter++;
            tempNextNode.setName( this.nodeCounter.toString() );
@@ -311,12 +309,12 @@ export class MazeBuilder {
 
         // If the logical entry point is open on the next node, we'll connect the nodes and traverse
         // to the next node.
-        if ( pointer.isPointOpen( exitPoint ) && tempNextNode.isPointOpen( this.cardinality.getOpposingConnectionPoint( exitPoint ))) {
+        if ( pointer.isConnectionPointOpen(exitPoint) && tempNextNode.isConnectionPointOpen(this.cardinality.getOpposingConnectionPoint(exitPoint))) {
 
             pointer.connectTo( tempNextNode, exitPoint );
             pointer = tempNextNode;
 
-            this.occupiedLocations[pointer.getCoordinates().toString()] = pointer;
+            this.occupiedLocations[pointer.getLocation().toString()] = pointer;
             return exitPoint;
         }
 
@@ -334,7 +332,7 @@ export class MazeBuilder {
     private normalizeNodeCoordinates(): { [key:string] : MazeNode } {
 
         let adjustedCoordinates : { [key:string] : MazeNode } = {};
-        let dimensionsUsed = this.getNodeCollection()["[0,0]"].getCoordinates().getDimensions();
+        let dimensionsUsed = this.getNodeCollection()["[0,0]"].getLocation().getDimensions();
         let minCoordinateValuesInrange: number[] = [];
         let currentValue: number;
         let currentMin: number = 0;
@@ -346,7 +344,7 @@ export class MazeBuilder {
 
             Object.keys( this.getNodeCollection() ).forEach( (key) => {
 
-                currentValue = this.getNodeCollection()[key].getCoordinates().getAxisPoint(i);
+                currentValue = this.getNodeCollection()[key].getLocation().getAxisPoint(i);
                 currentMin = ( currentValue < currentMin ) ? currentValue : currentMin;
             });
 
@@ -365,7 +363,7 @@ export class MazeBuilder {
             Object.keys( this.getNodeCollection() ).forEach( (key) => {
 
                 currentNode = this.getNodeCollection()[key];
-                currentNode.getCoordinates().adjustAxisPoint(i, adjustmentsByIndex[i]);
+                currentNode.getLocation().adjustAxisPoint(i, adjustmentsByIndex[i]);
             });
         }
 
@@ -373,7 +371,7 @@ export class MazeBuilder {
         Object.keys( this.getNodeCollection() ).forEach( (key) => {
 
             currentNode = this.getNodeCollection()[key];
-            adjustedCoordinates[currentNode.getCoordinates().toString()] = currentNode;
+            adjustedCoordinates[currentNode.getLocation().toString()] = currentNode;
         });
 
         return adjustedCoordinates;
@@ -387,7 +385,7 @@ export class MazeBuilder {
      */
     private getDimensions() : number[] {
 
-        let dimensionsUsed = this.entry.getCoordinates().getDimensions();
+        let dimensionsUsed = this.entry.getLocation().getDimensions();
         let node : MazeNode;
         let currentValue : number;
         let maxValue : number;
@@ -402,7 +400,7 @@ export class MazeBuilder {
             Object.keys( this.getNodeCollection() ).forEach( (key: string) => {
 
                 node = this.getNodeCollection()[key];
-                currentValue = node.getCoordinates().getAxisPoint(i);
+                currentValue = node.getLocation().getAxisPoint(i);
                 maxValue = ( currentValue > maxValue ) ? currentValue : maxValue;
                 minValue = ( currentValue < minValue ) ? currentValue : minValue;
             });

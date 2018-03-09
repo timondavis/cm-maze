@@ -31,26 +31,26 @@ describe( 'Maze', () => {
         let nodeCollection: { [key:string] : MazeNode } = {};
         let capturedNodeCollection: { [key:string] : MazeNode };
 
-        a.setCoordinates( new NodeLocation2D( [1, 1] ));
-        b.setCoordinates( new NodeLocation2D( [1, 2] ));
-        c.setCoordinates( new NodeLocation2D( [2, 1] ));
-        d.setCoordinates( new NodeLocation2D( [2, 0] ));
-        e.setCoordinates( new NodeLocation2D( [0, 1] ));
+        a.setLocation( new NodeLocation2D( [1, 1] ));
+        b.setLocation( new NodeLocation2D( [1, 2] ));
+        c.setLocation( new NodeLocation2D( [2, 1] ));
+        d.setLocation( new NodeLocation2D( [2, 0] ));
+        e.setLocation( new NodeLocation2D( [0, 1] ));
 
-        nodeCollection[ a.getCoordinates().toString() ] = a;
-        nodeCollection[ b.getCoordinates().toString() ] = b;
-        nodeCollection[ c.getCoordinates().toString() ] = c;
-        nodeCollection[ d.getCoordinates().toString() ] = d;
-        nodeCollection[ e.getCoordinates().toString() ] = e;
+        nodeCollection[ a.getLocation().toString() ] = a;
+        nodeCollection[ b.getLocation().toString() ] = b;
+        nodeCollection[ c.getLocation().toString() ] = c;
+        nodeCollection[ d.getLocation().toString() ] = d;
+        nodeCollection[ e.getLocation().toString() ] = e;
 
         m.setNodes( nodeCollection );
         capturedNodeCollection = m.getNodes();
 
-        expect( capturedNodeCollection[a.getCoordinates().toString() ] ).to.be.equal( a );
-        expect( capturedNodeCollection[b.getCoordinates().toString() ] ).to.be.equal( b );
-        expect( capturedNodeCollection[c.getCoordinates().toString() ] ).to.be.equal( c );
-        expect( capturedNodeCollection[d.getCoordinates().toString() ] ).to.be.equal( d );
-        expect( capturedNodeCollection[e.getCoordinates().toString() ] ).to.be.equal( e );
+        expect( capturedNodeCollection[a.getLocation().toString() ] ).to.be.equal( a );
+        expect( capturedNodeCollection[b.getLocation().toString() ] ).to.be.equal( b );
+        expect( capturedNodeCollection[c.getLocation().toString() ] ).to.be.equal( c );
+        expect( capturedNodeCollection[d.getLocation().toString() ] ).to.be.equal( d );
+        expect( capturedNodeCollection[e.getLocation().toString() ] ).to.be.equal( e );
     });
 
     it( 'can return nodes residing at the indicated coordinates', () => {
@@ -62,11 +62,11 @@ describe( 'Maze', () => {
 
         let nodeCollection: { [key:string] : MazeNode } = {};
 
-        a.setCoordinates( new NodeLocation2D( [1, 1] ));
-        b.setCoordinates( new NodeLocation2D( [1, 2] ));
+        a.setLocation( new NodeLocation2D( [1, 1] ));
+        b.setLocation( new NodeLocation2D( [1, 2] ));
 
-        nodeCollection[ a.getCoordinates().toString() ] = a;
-        nodeCollection[ b.getCoordinates().toString() ] = b;
+        nodeCollection[ a.getLocation().toString() ] = a;
+        nodeCollection[ b.getLocation().toString() ] = b;
 
         m.setNodes( nodeCollection );
 
@@ -82,16 +82,16 @@ describe( 'Maze', () => {
 
         let nodeCollection: { [key:string] : MazeNode } = {};
 
-        a.setCoordinates( new NodeLocation2D( [1, 1] ));
-        b.setCoordinates( new NodeLocation2D( [1, 2] ));
-        c.setCoordinates( new NodeLocation2D( [2, 1] ));
+        a.setLocation( new NodeLocation2D( [1, 1] ));
+        b.setLocation( new NodeLocation2D( [1, 2] ));
+        c.setLocation( new NodeLocation2D( [2, 1] ));
 
         m.setStartNode( a );
         m.setFinishNode( c );
 
-        nodeCollection[ a.getCoordinates().toString() ] = a;
-        nodeCollection[ b.getCoordinates().toString() ] = b;
-        nodeCollection[ c.getCoordinates().toString() ] = c;
+        nodeCollection[ a.getLocation().toString() ] = a;
+        nodeCollection[ b.getLocation().toString() ] = b;
+        nodeCollection[ c.getLocation().toString() ] = c;
 
         m.setNodes( nodeCollection );
 
@@ -131,13 +131,13 @@ describe( 'Maze', () => {
 
         let nodeCollection: { [key:string] : MazeNode } = {};
 
-        a.setCoordinates( new NodeLocation2D( [1, 1] ));
-        b.setCoordinates( new NodeLocation2D( [1, 2] ));
-        c.setCoordinates( new NodeLocation2D( [2, 1] ));
+        a.setLocation( new NodeLocation2D( [1, 1] ));
+        b.setLocation( new NodeLocation2D( [1, 2] ));
+        c.setLocation( new NodeLocation2D( [2, 1] ));
 
-        nodeCollection[ a.getCoordinates().toString() ] = a;
-        nodeCollection[ b.getCoordinates().toString() ] = b;
-        nodeCollection[ c.getCoordinates().toString() ] = c;
+        nodeCollection[ a.getLocation().toString() ] = a;
+        nodeCollection[ b.getLocation().toString() ] = b;
+        nodeCollection[ c.getLocation().toString() ] = c;
 
         m.setNodes( nodeCollection );
         m.setCurrentNode( b );
@@ -157,22 +157,22 @@ describe( 'Maze', () => {
 
         let nodeCollection: { [key:string] : MazeNode } = {};
 
-        a.setCoordinates( new NodeLocation2D( [1, 1] )).setName( "A" );
-        b.setCoordinates( new NodeLocation2D( [1, 2] )).setName( "B" );
-        c.setCoordinates( new NodeLocation2D( [2, 1] )).setName( "C" );
-        d.setCoordinates( new NodeLocation2D( [2, 0] )).setName( "D" );
-        e.setCoordinates( new NodeLocation2D( [0, 1] )).setName( "E" );
+        a.setLocation( new NodeLocation2D( [1, 1] )).setName( "A" );
+        b.setLocation( new NodeLocation2D( [1, 2] )).setName( "B" );
+        c.setLocation( new NodeLocation2D( [2, 1] )).setName( "C" );
+        d.setLocation( new NodeLocation2D( [2, 0] )).setName( "D" );
+        e.setLocation( new NodeLocation2D( [0, 1] )).setName( "E" );
 
         a.connectTo( e, C4.N );
         a.connectTo( c, C4.E );
         a.connectTo( b, C4.S );
         b.connectTo( d, C4.W );
 
-        nodeCollection[ a.getCoordinates().toString() ] = a;
-        nodeCollection[ b.getCoordinates().toString() ] = b;
-        nodeCollection[ c.getCoordinates().toString() ] = c;
-        nodeCollection[ d.getCoordinates().toString() ] = d;
-        nodeCollection[ e.getCoordinates().toString() ] = e;
+        nodeCollection[ a.getLocation().toString() ] = a;
+        nodeCollection[ b.getLocation().toString() ] = b;
+        nodeCollection[ c.getLocation().toString() ] = c;
+        nodeCollection[ d.getLocation().toString() ] = d;
+        nodeCollection[ e.getLocation().toString() ] = e;
 
         m.setNodes( nodeCollection );
         m.setCurrentNode( a );

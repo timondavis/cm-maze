@@ -81,13 +81,13 @@ export declare class MazeNode {
      *
      * @returns {MazeNode[]}
      */
-    getOccupiedExitPoints(): number[];
+    getOccupiedConnectionPoints(): number[];
     /**
      * Get a list of unoccupied exit positions on the node
      *
      * @returns {number[]}
      */
-    getOpenExitPoints(): number[];
+    getOpenConnectionPoints(): number[];
     /**
      * Get an array of neighboring nodes.
      *
@@ -98,28 +98,28 @@ export declare class MazeNode {
     /**
      * Find out whether an entry/exit position on the node is empty.
      *
-     * @param {number} position
+     * @param {number} point
      * @returns {boolean}
      */
-    isPointOpen(position: number): boolean;
+    isConnectionPointOpen(point: number): boolean;
     /**
      * Find out whether an entry/exit position on the node is occupied
-     * @param {number} position
+     * @param {number} point
      * @returns {boolean}
      */
-    isPointOccupied(position: number): boolean;
+    isConnectionPointOccupied(point: number): boolean;
     /**
      * Set the coordinates for this node
      *
      * @param {NodeLocation} coordinates
      * @returns {this}
      */
-    setCoordinates(coordinates: NodeLocation): this;
+    setLocation(coordinates: NodeLocation): this;
     /**
      * Get the coordinates for this node
      * @returns {NodeLocation}
      */
-    getCoordinates(): NodeLocation;
+    getLocation(): NodeLocation;
     /**
      * Get the cardinality behavior object associated with this node.
      * @returns {Cardinality}
@@ -134,16 +134,16 @@ export declare class MazeNode {
     /**
      * Set the maximum amount of nodes that this node can connect to.
      *
-     * @param {number} maxExits
+     * @param {number} maxConnections
      * @returns {MazeNode}
      */
-    setMaxExits(maxExits: number): MazeNode;
+    setMaxConnections(maxConnections: number): MazeNode;
     /**
      * Get the maximum amount of nodes that this node can connect to.
      *
      * @returns {number}
      */
-    getMaxExits(): number;
+    getMaxConnections(): number;
     /**
      * Toggle debugging messages
      *
