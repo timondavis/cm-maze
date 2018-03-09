@@ -77,8 +77,8 @@ describe( 'NodeLocation2D', () => {
        const old = [ MazeBuilder.rand( r ), MazeBuilder.rand( r ) ];
        mc = new NodeLocation2D( old );
 
-       expect( NodeLocation2D.encodePositionArray( 2, old ) ).to.be.equal( "[" + old.toString() + "]" );
-       expect( "[" + old.toString() + "]").to.be.equal( NodeLocation2D.encodePositionArray( 2, old ) );
+       expect( NodeLocation2D.encodePositionArray(old) ).to.be.equal( "[" + old.toString() + "]" );
+       expect( "[" + old.toString() + "]").to.be.equal( NodeLocation2D.encodePositionArray(old) );
    });
 
    it( 'should report, as a number, how many dimensions this coordinate facilitates', () => {
