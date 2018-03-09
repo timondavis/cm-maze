@@ -1,6 +1,6 @@
 {
   "name": "cm-check",
-  "version": "0.1.0",
+  "version": "0.2.2",
   "description": "System for processing die-based checks in role playing games.  Observable hooks allow outside systems to affect the check in some fashion.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",

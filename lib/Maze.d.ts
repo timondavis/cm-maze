@@ -14,7 +14,7 @@ export declare class Maze {
      */
     protected cardinality: Cardinality;
     /**
-     * A "Dictionary" of nodes in the maze, indexed by string ( @see MazeNode.getCoordinates().toString() )
+     * A "Dictionary" of nodes in the maze, indexed by string ( @see MazeNode.getLocation().toString() )
      *
      * @type {{ [key:string] : MazeNode }}
      */

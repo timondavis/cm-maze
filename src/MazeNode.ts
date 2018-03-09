@@ -66,7 +66,7 @@ export class MazeNode {
      */
     public connectTo( node: MazeNode, exitPosition: number, autoConnect: boolean = true ): MazeNode  {
 
-        if ( ! this.isPointOpen( exitPosition ) )  {
+        if ( ! this.isConnectionPointOpen(exitPosition) )  {
 
             throw( "One-Way connection failed: " +
                 "Indicated node will not tolerate any more additional connections - maximum reached." );
@@ -85,7 +85,7 @@ export class MazeNode {
 
         if ( autoConnect ) {
 
-            if ( ! node.isPointOpen( node.getCardinality().getOpposingConnectionPoint( exitPosition ) ) ) {
+            if ( ! node.isConnectionPointOpen(node.getCardinality().getOpposingConnectionPoint(exitPosition)) ) {
 
                 throw( "Two-Way conneciton failed.  Indicated node will not tolerate any more additonal connections, " +
                     "maximum reached.")
@@ -163,7 +163,7 @@ export class MazeNode {
      *
      * @returns {MazeNode[]}
      */
-    public getOccupiedExitPoints() : number[] {
+    public getOccupiedConnectionPoints() : number[] {
 
         let positions: number[] = [];
 
@@ -184,7 +184,7 @@ export class MazeNode {
      *
      * @returns {number[]}
      */
-    public getOpenExitPoints() : number[] {
+    public getOpenConnectionPoints() : number[] {
 
         let positions: number[] = [];
 
@@ -227,29 +227,29 @@ export class MazeNode {
     /**
      * Find out whether an entry/exit position on the node is empty.
      *
-     * @param {number} position
+     * @param {number} point
      * @returns {boolean}
      */
-    public isPointOpen( position: number ): boolean {
+    public isConnectionPointOpen( point: number ): boolean {
 
-        if ( this.maxExits >= 0 && this.maxExits <= this.getOccupiedExitPoints().length) {
+        if ( this.maxExits >= 0 && this.maxExits <= this.getOccupiedConnectionPoints().length) {
 
             return false;
         }
 
-        this.cardinality.validateConnectionPoint(position);
-        return ( this.neighbors[position] === undefined );
+        this.cardinality.validateConnectionPoint( point );
+        return ( this.neighbors[point] === undefined );
     }
 
     /**
      * Find out whether an entry/exit position on the node is occupied
-     * @param {number} position
+     * @param {number} point
      * @returns {boolean}
      */
-    public isPointOccupied( position: number ) : boolean {
+    public isConnectionPointOccupied( point: number ) : boolean {
 
-        this.cardinality.validateConnectionPoint(position);
-        return ( this.neighbors[position] !== undefined );
+        this.cardinality.validateConnectionPoint( point );
+        return ( this.neighbors[point] !== undefined );
     }
 
     /**
@@ -258,7 +258,7 @@ export class MazeNode {
      * @param {NodeLocation} coordinates
      * @returns {this}
      */
-    public setCoordinates( coordinates: NodeLocation) {
+    public setLocation(coordinates: NodeLocation) {
 
         this.coordinates = coordinates;
         return this;
@@ -268,7 +268,7 @@ export class MazeNode {
      * Get the coordinates for this node
      * @returns {NodeLocation}
      */
-    public getCoordinates() : NodeLocation {
+    public getLocation() : NodeLocation {
 
         return this.coordinates;
     }
@@ -289,10 +289,10 @@ export class MazeNode {
     public toString() : string {
 
         let output: string = "";
-        let occupiedExitPoints = this.getOccupiedExitPoints();
+        let occupiedExitPoints = this.getOccupiedConnectionPoints();
 
         output += this.getName() + ": \n";
-        output += "Coordinates: " + this.getCoordinates().toString() + "\n";
+        output += "Coordinates: " + this.getLocation().toString() + "\n";
         output += "Exits:";
         for( let i = 0 ; i < occupiedExitPoints.length ; i++ ) {
 
@@ -300,7 +300,7 @@ export class MazeNode {
         }
 
         output += "\n";
-        output += "Max Exits: " + this.getMaxExits();
+        output += "Max Exits: " + this.getMaxConnections();
         output += "\n\n";
 
         return output;
@@ -309,12 +309,12 @@ export class MazeNode {
     /**
      * Set the maximum amount of nodes that this node can connect to.
      *
-     * @param {number} maxExits
+     * @param {number} maxConnections
      * @returns {MazeNode}
      */
-    public setMaxExits( maxExits: number ) : MazeNode {
+    public setMaxConnections(maxConnections: number) : MazeNode {
 
-        this.maxExits = maxExits;
+        this.maxExits = maxConnections;
         return this;
     }
 
@@ -323,7 +323,7 @@ export class MazeNode {
      *
      * @returns {number}
      */
-    public getMaxExits() : number {
+    public getMaxConnections() : number {
 
         return this.maxExits;
     }
@@ -343,5 +343,4 @@ export class MazeNode {
             MazeNode.debug = toggle;
         }
     }
-
 }

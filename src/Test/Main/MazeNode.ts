@@ -88,8 +88,8 @@ describe( 'MazeNode', () => {
         a.connectTo( new MazeNode( new Compass4() ).setName( "C" ), C4.E );
         a.connectTo( new MazeNode( new Compass4() ).setName( "D" ), C4.S, false );
 
-        exitsOfA = a.getOccupiedExitPoints();
-        exitsOfC = a.getNeighborAt( 1 ).getOccupiedExitPoints();
+        exitsOfA = a.getOccupiedConnectionPoints();
+        exitsOfC = a.getNeighborAt( 1 ).getOccupiedConnectionPoints();
 
         expect( a.getNeighborAt( exitsOfA[0] ).getName() ).to.be.equal( "C" );
         expect( a.getNeighborAt( exitsOfA[1] ).getName() ).to.be.equal( "D" );
@@ -109,8 +109,8 @@ describe( 'MazeNode', () => {
         a.connectTo( new MazeNode( new Compass8() ), C8.S );
         a.connectTo( new MazeNode( new Compass8() ), C8.W );
 
-        exitsOpenOnA = a.getOpenExitPoints();
-        exitsOccupiedOnA = a.getOccupiedExitPoints();
+        exitsOpenOnA = a.getOpenConnectionPoints();
+        exitsOccupiedOnA = a.getOccupiedConnectionPoints();
 
         expect( exitsOpenOnA ).to.have.lengthOf( 4 );
         expect( exitsOpenOnA[0] ).to.be.equal( 1 );
@@ -152,8 +152,8 @@ describe( 'MazeNode', () => {
         let a = new MazeNode( new Compass8() );
         const coords = [ MazeBuilder.rand( r ), MazeBuilder.rand( r ) ];
 
-        a.setCoordinates( new NodeLocation2D( coords ) );
-        expect( a.getCoordinates().toString() ).to.be.equal( new NodeLocation2D( coords ).toString() );
+        a.setLocation( new NodeLocation2D( coords ) );
+        expect( a.getLocation().toString() ).to.be.equal( new NodeLocation2D( coords ).toString() );
     });
 
     it( 'reports on whether a given exit point on the node is occupied or empty (two separate functions)', () => {
@@ -165,20 +165,20 @@ describe( 'MazeNode', () => {
         a.connectTo( b, C4.NORTH );
         a.connectTo( c, C4.SOUTH );
 
-        expect( a.isPointOpen( 0 ) ).to.be.false; expect( a.isPointOpen( 1 ) ).to.be.true;
-        expect( a.isPointOpen( 2 ) ).to.be.false; expect( a.isPointOpen( 3 ) ).to.be.true;
-        expect( a.isPointOccupied( 0 ) ).to.be.true; expect( a.isPointOccupied( 1 ) ).to.be.false;
-        expect( a.isPointOccupied( 2 ) ).to.be.true; expect( a.isPointOccupied( 3 ) ).to.be.false;
+        expect( a.isConnectionPointOpen(0) ).to.be.false; expect( a.isConnectionPointOpen(1) ).to.be.true;
+        expect( a.isConnectionPointOpen(2) ).to.be.false; expect( a.isConnectionPointOpen(3) ).to.be.true;
+        expect( a.isConnectionPointOccupied(0) ).to.be.true; expect( a.isConnectionPointOccupied(1) ).to.be.false;
+        expect( a.isConnectionPointOccupied(2) ).to.be.true; expect( a.isConnectionPointOccupied(3) ).to.be.false;
 
-        expect( b.isPointOpen( 0 ) ).to.be.true; expect( b.isPointOpen( 1 ) ).to.be.true;
-        expect( b.isPointOpen( 2 ) ).to.be.false; expect( b.isPointOpen( 3 ) ).to.be.true;
-        expect( b.isPointOccupied( 0 ) ).to.be.false; expect( b.isPointOccupied( 1 ) ).to.be.false;
-        expect( b.isPointOccupied( 2 ) ).to.be.true; expect( b.isPointOccupied( 3 ) ).to.be.false;
+        expect( b.isConnectionPointOpen(0) ).to.be.true; expect( b.isConnectionPointOpen(1) ).to.be.true;
+        expect( b.isConnectionPointOpen(2) ).to.be.false; expect( b.isConnectionPointOpen(3) ).to.be.true;
+        expect( b.isConnectionPointOccupied(0) ).to.be.false; expect( b.isConnectionPointOccupied(1) ).to.be.false;
+        expect( b.isConnectionPointOccupied(2) ).to.be.true; expect( b.isConnectionPointOccupied(3) ).to.be.false;
 
-        expect( c.isPointOpen( 0 ) ).to.be.false; expect( c.isPointOpen( 1 ) ).to.be.true;
-        expect( c.isPointOpen( 2 ) ).to.be.true; expect( c.isPointOpen( 3 ) ).to.be.true;
-        expect( c.isPointOccupied( 0 ) ).to.be.true; expect( c.isPointOccupied( 1 ) ).to.be.false;
-        expect( c.isPointOccupied( 2 ) ).to.be.false; expect( c.isPointOccupied( 3 ) ).to.be.false;
+        expect( c.isConnectionPointOpen(0) ).to.be.false; expect( c.isConnectionPointOpen(1) ).to.be.true;
+        expect( c.isConnectionPointOpen(2) ).to.be.true; expect( c.isConnectionPointOpen(3) ).to.be.true;
+        expect( c.isConnectionPointOccupied(0) ).to.be.true; expect( c.isConnectionPointOccupied(1) ).to.be.false;
+        expect( c.isConnectionPointOccupied(2) ).to.be.false; expect( c.isConnectionPointOccupied(3) ).to.be.false;
     });
 
     it( 'reports the cardinality behavior instance assigned to the node on demand', () => {
@@ -196,8 +196,8 @@ describe( 'MazeNode', () => {
         let limitedToOne = new MazeNode( new Compass4() );
         let limitedToThree = new MazeNode( new Compass4() );
 
-        limitedToOne.setMaxExits( 1 );
-        limitedToThree.setMaxExits( 3 );
+        limitedToOne.setMaxConnections(1);
+        limitedToThree.setMaxConnections(3);
 
         for ( let i = 0 ; i < 4 ; i++ ) {
 

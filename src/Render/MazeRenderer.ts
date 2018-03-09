@@ -79,11 +79,11 @@ export class MazeRenderer {
 
                 if ( typeof node === 'undefined' ) { continue; }
 
-                if ( node.getCoordinates() === this.maze.getStartNode().getCoordinates() ) {
+                if ( node.getLocation() === this.maze.getStartNode().getLocation() ) {
 
                     context.fillStyle = "#00FF00";
                     context.strokeStyle = "#00FF00";
-                } else if ( this.maze.getFinishNode() && node.getCoordinates() === (<MazeNode> this.maze.getFinishNode()).getCoordinates() ) {
+                } else if ( this.maze.getFinishNode() && node.getLocation() === (<MazeNode> this.maze.getFinishNode()).getLocation() ) {
 
                     context.fillStyle = "#0000FF";
                     context.strokeStyle = "#0000FF";
@@ -118,7 +118,7 @@ export class MazeRenderer {
                     context.strokeStyle = "#ff0000";
                     context.fillStyle = "#ff0000";
 
-                    if ( ! node.isPointOccupied(i) ) { continue; }
+                    if ( ! node.isConnectionPointOccupied(i) ) { continue; }
 
                     lineOriginX = nodeCenterX +
                         Math.cos( (Math.PI/180) * ( ( i / cardinality * 360 ) - 90 ) ) * nodeRadiusPx;
@@ -126,7 +126,7 @@ export class MazeRenderer {
                         Math.sin( (Math.PI/180) * ( ( i / cardinality * 360 ) - 90 ) ) * nodeRadiusPx;
 
                     neighborNode = node.getNeighborAt( i );
-                    let neighborCoordinates = neighborNode.getCoordinates().getPosition();
+                    let neighborCoordinates = neighborNode.getLocation().getPosition();
 
                     neighborNodeCenterX = ( gridUnitWidthPx * neighborCoordinates[X] + ( gridUnitWidthPx * 0.5 ) );
                     neighborNodeCenterY = ( gridUnitHeightPx * neighborCoordinates[Y] + ( gridUnitHeightPx * 0.5 ) );
