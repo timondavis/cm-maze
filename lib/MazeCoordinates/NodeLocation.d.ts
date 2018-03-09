@@ -69,11 +69,10 @@ export declare abstract class NodeLocation {
      * If executing this function on a maze coordinate instance, consider using the .toString() method, which will
      * give you the same result sourcing from the position on the coordinate.
      *
-     * @param {number} dimensions
-     * @param {number[]} elements
+     * @param {number[]} position
      * @returns {string}
      */
-    static encodePositionArray(dimensions: number, elements: number[]): string;
+    static encodePositionArray(position: number[]): string;
     protected abstract getDimensionValue(): number;
     /**
      * Validate that the dimensions have been set on this item.  Mainly this is here to bug other developers - if you

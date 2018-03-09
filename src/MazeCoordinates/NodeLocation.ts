@@ -135,7 +135,7 @@ export abstract class NodeLocation {
      */
     public toString() : string {
 
-        return NodeLocation.encodePositionArray( this.dimensions, this.position );
+        return NodeLocation.encodePositionArray(this.position);
     }
 
     /**
@@ -143,20 +143,19 @@ export abstract class NodeLocation {
      * If executing this function on a maze coordinate instance, consider using the .toString() method, which will
      * give you the same result sourcing from the position on the coordinate.
      *
-     * @param {number} dimensions
-     * @param {number[]} elements
+     * @param {number[]} position
      * @returns {string}
      */
-    public static encodePositionArray(dimensions: number, elements: number[] ) : string {
+    public static encodePositionArray(position: number[]) : string {
 
         let s: string = "[";
 
-        for( let i = 0 ; i < dimensions - 1; i++ ){
+        for( let i = 0 ; i < position.length - 1; i++ ){
 
-            s += elements[i] + ",";
+            s += position[i] + ",";
         }
 
-        s += elements[dimensions - 1] + "]"
+        s += position[position.length - 1] + "]"
 
         return s;
     }
