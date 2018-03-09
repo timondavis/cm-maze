@@ -106,6 +106,8 @@ export class MazeBuilder {
      */
     public static rand( max: number = 100, min: number = 1 ) : number {
 
+       max += 1;
+
        const number =  Math.floor( Math.random() * max ) + min;
        return Math.min( max, number );
     }
@@ -134,7 +136,7 @@ export class MazeBuilder {
                 pointer = this.hopToNextNode(pointer);
                 continue;
             }
-            newDirection = openExits[MazeBuilder.rand(openExits.length, 0)];
+            newDirection = openExits[MazeBuilder.rand(openExits.length - 1, 0)];
 
             // Start by attempting to connect to a random new or existing node gracefully...
             nextExitPosition = this.buildNextNodeOnRandomPath( pointer, newDirection );
@@ -183,7 +185,7 @@ export class MazeBuilder {
             neighbors = pointer.getNeighbors();
 
             if ( neighbors.length > 0 ) {
-                pointer = neighbors[ MazeBuilder.rand( neighbors.length, 0 ) ];
+                pointer = neighbors[ MazeBuilder.rand( neighbors.length - 1, 0 ) ];
             }
 
             else break;
@@ -222,7 +224,7 @@ export class MazeBuilder {
 
         for ( let i = 0 ; i < openConnectionPoints.length ; i++ ) {
 
-            let index: number = MazeBuilder.rand( openConnectionPoints.length, 0 );
+            let index: number = MazeBuilder.rand( openConnectionPoints.length - 1, 0 );
             newDirection = openConnectionPoints[index];
             openConnectionPoints = openConnectionPoints.splice( index, 1 );
 
@@ -249,7 +251,7 @@ export class MazeBuilder {
 
         return pointer.getNeighborAt(
             MazeBuilder.rand(
-                this.cardinality.getConnectionPointCount(),
+                this.cardinality.getConnectionPointCount() - 1,
                 0
             )
         );
@@ -283,7 +285,7 @@ export class MazeBuilder {
            tempNextNode.setCoordinates(nextCoordinates);
 
            tempNextNode.setMaxExits(
-               MazeBuilder.rand( this.cardinality.getConnectionPointCount(), 1 )
+               MazeBuilder.rand( this.cardinality.getConnectionPointCount() - 1, 1 )
            );
 
            this.nodeCounter++;
@@ -419,7 +421,7 @@ export class MazeBuilder {
     private selectRandomNode() : MazeNode {
 
         let coordinateList = Object.keys( this.getNodeCollection() );
-        let index = MazeBuilder.rand( coordinateList.length, 0 );
+        let index = MazeBuilder.rand( coordinateList.length - 1, 0 );
 
         return this.getNodeCollection()[coordinateList[index]];
     }
