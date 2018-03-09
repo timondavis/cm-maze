@@ -1,6 +1,6 @@
-import {CardinalityBehavior} from "./Behavior/CardinalityBehavior";
+import {Cardinality} from "./Behavior/Cardinality";
 import {MazeNode} from "./MazeNode";
-import {MazeCoordinates} from "./MazeCoordinates/MazeCoordinates";
+import {NodeLocation} from "./MazeCoordinates/NodeLocation";
 
 /**
  * @class Maze
@@ -10,11 +10,11 @@ import {MazeCoordinates} from "./MazeCoordinates/MazeCoordinates";
 export class Maze {
 
     /**
-     * The CardinalityBehavior concrete instance which describes how nodes connect and traverse.
+     * The Cardinality concrete instance which describes how nodes connect and traverse.
      *
      * @type {CardinalityBehavior}
      */
-    protected cardinalityBehavior : CardinalityBehavior;
+    protected cardinality : Cardinality;
 
     /**
      * A "Dictionary" of nodes in the maze, indexed by string ( @see MazeNode.getCoordinates().toString() )
@@ -61,20 +61,20 @@ export class Maze {
     /**
      * Set the cardinality behavior for nodes on this maze.
      *
-     * @param {CardinalityBehavior} cardinalityBehavior
+     * @param {CardinalityBehavior} cardinality
      */
-    public setCardinalityBehavior( cardinalityBehavior : CardinalityBehavior ) {
-        this.cardinalityBehavior = cardinalityBehavior;
+    public setCardinality(cardinality : Cardinality ) {
+        this.cardinality = cardinality;
     }
 
     /**
-     * Get the cardinality behavior for nodes on this maze.
+     * Get the cardinality  for nodes on this maze.
      *
-     * @returns {CardinalityBehavior}
+     * @returns {Cardinality}
      */
-    public getCardinalityBehavior() : CardinalityBehavior {
+    public getCardinality() : Cardinality {
 
-        return this.cardinalityBehavior;
+        return this.cardinality;
     }
 
     /**
@@ -97,14 +97,14 @@ export class Maze {
     }
 
     /**
-     * Get the MazeNode at the given coordinates, if available.
+     * Get the MazeNode at the given location, if available.
      *
-     * @param {MazeCoordinates} coordinates
+     * @param {NodeLocation} location
      * @returns {MazeNode}
      */
-    public getNode( coordinates : MazeCoordinates ) : MazeNode {
+    public getNode( location : NodeLocation ) : MazeNode {
 
-       return this.nodes[coordinates.toString()];
+       return this.nodes[location.toString()];
     }
 
     /**
@@ -153,7 +153,7 @@ export class Maze {
     }
 
     /**
-     * Get the range of each dimension of this maze.  For example, a 4 x 6 maze ( w = 4, l = 6) will
+     * Get the range of each dimension of this maze.  For example, a 4 x 6 maze ( w = 4 (x axis), l = 6 (y axis)) will
      * return [4, 6].
      *
      * @returns {number[]}
@@ -163,7 +163,7 @@ export class Maze {
     }
 
     /**
-     * Set the range of each dimension of this maze.  For example, a 4 x 6 maze ( w = 4, l = 6) will
+     * Set the range of each dimension of this maze.  For example, a 4 x 6 maze ( w = 4 (x axis), l = 6(y axis)) will
      * be assigned with an array defined as [4, 6].
      *
      * @returns {number[]}

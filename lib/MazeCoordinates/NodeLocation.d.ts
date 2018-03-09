@@ -3,7 +3,7 @@
  *
  * Stores and facilitates mutation of the coordinates of a given point on a cartesian graph (2+ dimensions)
  */
-export declare abstract class MazeCoordinates {
+export declare abstract class NodeLocation {
     /**
      * The number of dimensions recorded in these coordinates.
      */
@@ -19,42 +19,42 @@ export declare abstract class MazeCoordinates {
      */
     constructor(position?: number[]);
     /**
-     * Update the position on this coordinate
+     * Update the position on this location instance
      *
      * @param {number[]} position
      * @returns {NodeLocation}
      */
-    updatePosition(position: number[]): MazeCoordinates;
+    updatePosition(position: number[]): NodeLocation;
     /**
-     * Update a dimensional value of the coordinate's position
+     * Update the value of the point on the indicated dimensional axis
      *
-     * @param {number} index
-     * @param {number} value
+     * @param {number} axisIndex
+     * @param {number} newValue
      * @returns {NodeLocation}
      */
-    updateDimension(index: number, value: number): MazeCoordinates;
+    updateAxisPoint(axisIndex: number, newValue: number): NodeLocation;
     /**
-     * Adjust the indicated dimension on the coordinate position.  Changes by amount indicated.
+     * Adjust the value of the point on the indicated dimensional axis by the indicated delta
      *
-     * @param {number} index
-     * @param {number} amount
+     * @param {number} axisIndex
+     * @param {number} pointDelta
      * @returns {NodeLocation}
      */
-    adjustDimension(index: number, amount: number): MazeCoordinates;
+    adjustAxisPoint(axisIndex: number, pointDelta: number): NodeLocation;
     /**
-     * Get this value at the given index (index represents dimension)
+     * Get the axis point value on the indicated axis
      *
-     * @param {number} index
+     * @param {number} axisIndex
      * @returns {number}
      */
-    getDimension(index: number): number;
+    getAxisPoint(axisIndex: number): number;
     /**
-     * Get the position of this coordinate.
+     * Get the position of this location.
      * @returns {number[]}
      */
     getPosition(): number[];
     /**
-     * Get the dimensions of this coordinate.  A 2 dimensional coordinate is an array with 2 elements, 3 for 3, etc.
+     * Get the # of dimensions or axis tracking the position of this location
      *
      * @returns {number}
      */
@@ -65,7 +65,7 @@ export declare abstract class MazeCoordinates {
      */
     toString(): string;
     /**
-     * Convert an array of dimensional positions into a string that reads like the array.  Great for comparisons!
+     * Convert an array representing a position into a string that reads like the array.  Great for comparisons!
      * If executing this function on a maze coordinate instance, consider using the .toString() method, which will
      * give you the same result sourcing from the position on the coordinate.
      *
@@ -73,12 +73,12 @@ export declare abstract class MazeCoordinates {
      * @param {number[]} elements
      * @returns {string}
      */
-    static encodeCoorindateArray(dimensions: number, elements: number[]): string;
+    static encodePositionArray(dimensions: number, elements: number[]): string;
     protected abstract getDimensionValue(): number;
     /**
-     * Validate that the dimensions have been set on this item.  Mainly this is here to bug other developers if they
+     * Validate that the dimensions have been set on this item.  Mainly this is here to bug other developers - if you
      * extend this abstract class without ensuring that the dimension value is defined as a property on the child
-     * class.
+     * class, it will fail.
      */
     private validateDimensions();
 }

@@ -1,10 +1,8 @@
 import {MazeNode} from "./MazeNode";
-import { CardinalityBehavior } from "./Behavior/CardinalityBehavior"
-import {MazeCoordinates} from "./MazeCoordinates/MazeCoordinates";
-import {CardinalityBehaviorFour2D} from "./Behavior/CardinalityBehaviorFour2D";
-import {MazeCoordinates2D} from "./MazeCoordinates/MazeCoordinates2D";
+import {Cardinality} from "./Behavior/Cardinality"
+import {NodeLocation} from "./MazeCoordinates/NodeLocation";
+import {Compass4} from "./Behavior/Compass4";
 import {Maze} from "./Maze";
-import {CardinalityBehaviorEight2D} from "./Behavior/CardinalityBehaviorEight2D";
 
 /**
  * @class MazeBuilder
@@ -29,18 +27,18 @@ export class MazeBuilder {
     protected entry : MazeNode;
 
     /**
-     *  An instance of the CardinalityBehavior instance responsible for facilitating node connection and traversal
+     *  A Cardinality instance responsible for facilitating node connection and traversal
      *  logic.
      *
-     *  @type {CardinalityBehavior}
+     *  @type {Cardinality}
      */
-    cardinalityBehavior : CardinalityBehavior;
+    cardinality : Cardinality;
 
     /**
-     * A "Dictionary" of nodes in the generated maze, referenced by a string (@see MazeCoordinates.toString() );
+     * A "Dictionary" of nodes in the generated maze, referenced by a string (@see NodeLocation.toString() );
      * @type {{ [key:stirng] : MazeNode }}
      */
-    occupiedCoordinates : { [key:string] : MazeNode } = {};
+    occupiedLocations : { [key:string] : MazeNode } = {};
 
     /**
      * Inrementing count of how many -considerations- have been made to build nodes.  Here for convenience (namely
@@ -53,12 +51,12 @@ export class MazeBuilder {
     /**
      * Constructor
      *
-     * @param {CardinalityBehavior} cardinalityBehavior
+     * @param {Cardinality} cardinality
      * @param {number} complexity
      */
-    public constructor( cardinalityBehavior? : CardinalityBehavior, complexity: number = 100 ) {
+    public constructor( cardinality? : Cardinality, complexity: number = 100 ) {
 
-        this.cardinalityBehavior = ( cardinalityBehavior ) ? cardinalityBehavior : new CardinalityBehaviorFour2D();
+        this.cardinality = ( cardinality ) ? cardinality : new Compass4();
         this.complexity = complexity;
     }
 
@@ -70,13 +68,13 @@ export class MazeBuilder {
     public buildMaze(): Maze {
 
         // Start entry node at 0,0
-        let startingCoordinates = this.cardinalityBehavior.generateCoordinates();
+        let startingCoordinates = this.cardinality.generateNodeLocation();
 
-        this.occupiedCoordinates = {};
-        this.entry = new MazeNode( this.cardinalityBehavior );
+        this.occupiedLocations = {};
+        this.entry = new MazeNode( this.cardinality );
         this.nodeCounter++;
         this.entry.setName( this.nodeCounter.toString() );
-        this.occupiedCoordinates[startingCoordinates.toString()] = this.entry;
+        this.occupiedLocations[startingCoordinates.toString()] = this.entry;
 
         this.generateRandomPathFrom( this.entry );
 
@@ -87,7 +85,7 @@ export class MazeBuilder {
 
         const m: Maze = new Maze();
 
-        m.setCardinalityBehavior( this.cardinalityBehavior );
+        m.setCardinality( this.cardinality );
         m.setNodes( this.normalizeNodeCoordinates() );
         m.setCurrentNode( this.entry );
         m.setStartNode( this.entry );
@@ -202,30 +200,31 @@ export class MazeBuilder {
      *
      * @return {{[key:string] : MazeNode}}
      */
-    public getCoordinatesCollection(): {[key:string] : MazeNode} {
+    public getNodeCollection(): {[key:string] : MazeNode} {
 
-        return this.occupiedCoordinates;
+        return this.occupiedLocations;
     }
 
     /**
-     * Try every available exit on the node for connection to a new or existing node.  Return the index of the
-     * successful connections exit point when new connection is made.  If no connection is made, returns -1.
+     * Try every available connection point on the node and attempt to connect to a new or existing node.
+     * Return the index of the successful connections connection point when new connection is made.
+     * If no connection is made, returns -1.
      *
      * @param {MazeNode} pointer
-     * @param {number[]} openExits
+     * @param {number[]} openConnectionPoints
      * @returns {number}
      */
-    private tryNodeConnectionFromEveryAvailableExit( pointer: MazeNode, openExits: number[] ): number {
+    private tryNodeConnectionFromEveryAvailableExit( pointer: MazeNode, openConnectionPoints: number[] ): number {
 
         let validExitIndexFound: boolean = false;
         let newDirection = -1;
         let candidateExitPosition = -1;
 
-        for ( let i = 0 ; i < openExits.length ; i++ ) {
+        for ( let i = 0 ; i < openConnectionPoints.length ; i++ ) {
 
-            let index: number = MazeBuilder.rand( openExits.length, 0 );
-            newDirection = openExits[index];
-            openExits = openExits.splice( index, 1 );
+            let index: number = MazeBuilder.rand( openConnectionPoints.length, 0 );
+            newDirection = openConnectionPoints[index];
+            openConnectionPoints = openConnectionPoints.splice( index, 1 );
 
             candidateExitPosition = this.buildNextNodeOnRandomPath( pointer, newDirection );
 
@@ -250,7 +249,7 @@ export class MazeBuilder {
 
         return pointer.getNeighborAt(
             MazeBuilder.rand(
-                this.cardinalityBehavior.getCardinality(),
+                this.cardinality.getConnectionPointCount(),
                 0
             )
         );
@@ -267,24 +266,24 @@ export class MazeBuilder {
      */
     private getNextNodeAtExit( pointer: MazeNode, exitPoint: number): MazeNode {
 
-        let lastCoordinates: MazeCoordinates;
-        let nextCoordinates: MazeCoordinates;
+        let lastCoordinates: NodeLocation;
+        let nextCoordinates: NodeLocation;
         let tempNextNode: MazeNode;
 
         // Determine coordinates for the new and existing nodes
         lastCoordinates = pointer.getCoordinates();
-        nextCoordinates = this.cardinalityBehavior.getNextCoordinates( lastCoordinates, exitPoint );
+        nextCoordinates = this.cardinality.getNextLocation(lastCoordinates, exitPoint);
 
         // If the next node's coordinate is already taken point our Next Node to that node.  Otherwise,
         // if the space in unoccupied, create a new node.
-        if( this.occupiedCoordinates.hasOwnProperty(nextCoordinates.toString() ) ) {
-           tempNextNode = this.occupiedCoordinates[ nextCoordinates.toString() ];
+        if( this.occupiedLocations.hasOwnProperty(nextCoordinates.toString() ) ) {
+           tempNextNode = this.occupiedLocations[ nextCoordinates.toString() ];
         } else {
-           tempNextNode = new MazeNode( this.cardinalityBehavior );
+           tempNextNode = new MazeNode( this.cardinality );
            tempNextNode.setCoordinates(nextCoordinates);
 
            tempNextNode.setMaxExits(
-               MazeBuilder.rand( this.cardinalityBehavior.getCardinality(), 1 )
+               MazeBuilder.rand( this.cardinality.getConnectionPointCount(), 1 )
            );
 
            this.nodeCounter++;
@@ -310,12 +309,12 @@ export class MazeBuilder {
 
         // If the logical entry point is open on the next node, we'll connect the nodes and traverse
         // to the next node.
-        if ( pointer.isPointOpen( exitPoint ) && tempNextNode.isPointOpen( this.cardinalityBehavior.getOpposingPoint( exitPoint ))) {
+        if ( pointer.isPointOpen( exitPoint ) && tempNextNode.isPointOpen( this.cardinality.getOpposingConnectionPoint( exitPoint ))) {
 
             pointer.connectTo( tempNextNode, exitPoint );
             pointer = tempNextNode;
 
-            this.occupiedCoordinates[pointer.getCoordinates().toString()] = pointer;
+            this.occupiedLocations[pointer.getCoordinates().toString()] = pointer;
             return exitPoint;
         }
 
@@ -333,7 +332,7 @@ export class MazeBuilder {
     private normalizeNodeCoordinates(): { [key:string] : MazeNode } {
 
         let adjustedCoordinates : { [key:string] : MazeNode } = {};
-        let dimensionsUsed = this.getCoordinatesCollection()["[0,0]"].getCoordinates().getDimensions();
+        let dimensionsUsed = this.getNodeCollection()["[0,0]"].getCoordinates().getDimensions();
         let minCoordinateValuesInrange: number[] = [];
         let currentValue: number;
         let currentMin: number = 0;
@@ -343,9 +342,9 @@ export class MazeBuilder {
         // O(d * n)
         for ( let i = 0 ; i < dimensionsUsed ; i++ ) {
 
-            Object.keys( this.getCoordinatesCollection() ).forEach( (key) => {
+            Object.keys( this.getNodeCollection() ).forEach( (key) => {
 
-                currentValue = this.getCoordinatesCollection()[key].getCoordinates().getDimension( i );
+                currentValue = this.getNodeCollection()[key].getCoordinates().getAxisPoint(i);
                 currentMin = ( currentValue < currentMin ) ? currentValue : currentMin;
             });
 
@@ -361,17 +360,17 @@ export class MazeBuilder {
         // O(d * n)
         for ( let i = 0 ; i < dimensionsUsed ; i++ ) {
 
-            Object.keys( this.getCoordinatesCollection() ).forEach( (key) => {
+            Object.keys( this.getNodeCollection() ).forEach( (key) => {
 
-                currentNode = this.getCoordinatesCollection()[key];
-                currentNode.getCoordinates().adjustDimension( i, adjustmentsByIndex[i] );
+                currentNode = this.getNodeCollection()[key];
+                currentNode.getCoordinates().adjustAxisPoint(i, adjustmentsByIndex[i]);
             });
         }
 
         // O(n)
-        Object.keys( this.getCoordinatesCollection() ).forEach( (key) => {
+        Object.keys( this.getNodeCollection() ).forEach( (key) => {
 
-            currentNode = this.getCoordinatesCollection()[key];
+            currentNode = this.getNodeCollection()[key];
             adjustedCoordinates[currentNode.getCoordinates().toString()] = currentNode;
         });
 
@@ -398,10 +397,10 @@ export class MazeBuilder {
             maxValue = 0;
             minValue = 0;
 
-            Object.keys( this.getCoordinatesCollection() ).forEach( (key: string) => {
+            Object.keys( this.getNodeCollection() ).forEach( (key: string) => {
 
-                node = this.getCoordinatesCollection()[key];
-                currentValue = node.getCoordinates().getDimension( i );
+                node = this.getNodeCollection()[key];
+                currentValue = node.getCoordinates().getAxisPoint(i);
                 maxValue = ( currentValue > maxValue ) ? currentValue : maxValue;
                 minValue = ( currentValue < minValue ) ? currentValue : minValue;
             });
@@ -419,9 +418,9 @@ export class MazeBuilder {
      */
     private selectRandomNode() : MazeNode {
 
-        let coordinateList = Object.keys( this.getCoordinatesCollection() );
+        let coordinateList = Object.keys( this.getNodeCollection() );
         let index = MazeBuilder.rand( coordinateList.length, 0 );
 
-        return this.getCoordinatesCollection()[coordinateList[index]];
+        return this.getNodeCollection()[coordinateList[index]];
     }
 }

@@ -1,9 +1,9 @@
 /**
- * @class MazeCoordinates
+ * @class NodeLocation
  *
  * Stores and facilitates mutation of the coordinates of a given point on a cartesian graph (2+ dimensions)
  */
-export abstract class MazeCoordinates {
+export abstract class NodeLocation {
 
     /**
      * The number of dimensions recorded in these coordinates.
@@ -33,22 +33,22 @@ export abstract class MazeCoordinates {
 
         }
         else if (position.length !== this.dimensions) {
-            throw("Position supplied is of incorrect dimensions for the coordinate");
+            throw( "Position supplied has incorrect #  of dimensions" );
         }
 
         this.position = position;
     }
 
     /**
-     * Update the position on this coordinate
+     * Update the position on this location instance
      *
      * @param {number[]} position
-     * @returns {MazeCoordinates}
+     * @returns {NodeLocation}
      */
-    public updatePosition(position: number[]): MazeCoordinates {
+    public updatePosition(position: number[]): NodeLocation {
 
         if ( position.length !== this.dimensions ) {
-            throw("Position supplied is of incorrect dimensions for the coordinate");
+            throw( "Position supplied has incorrect # of dimensions" );
         }
 
         this.position = position;
@@ -56,40 +56,40 @@ export abstract class MazeCoordinates {
     }
 
     /**
-     * Update a dimensional value of the coordinate's position
+     * Update the value of the point on the indicated dimensional axis
      *
-     * @param {number} index
-     * @param {number} value
-     * @returns {MazeCoordinates}
+     * @param {number} axisIndex
+     * @param {number} newValue
+     * @returns {NodeLocation}
      */
-    public updateDimension( index : number, value : number ) : MazeCoordinates {
+    public updateAxisPoint(axisIndex: number, newValue: number) : NodeLocation {
 
-        if ( index < 0 || index >= this.dimensions ) {
+        if ( axisIndex < 0 || axisIndex >= this.dimensions ) {
             throw ( "Index out of dimensional range for coordinate" );
         }
 
-        this.position[index] = value;
+        this.position[axisIndex] = newValue;
 
         return this;
     }
 
     /**
-     * Adjust the indicated dimension on the coordinate position.  Changes by amount indicated.
+     * Adjust the value of the point on the indicated dimensional axis by the indicated delta
      *
-     * @param {number} index
-     * @param {number} amount
-     * @returns {MazeCoordinates}
+     * @param {number} axisIndex
+     * @param {number} pointDelta
+     * @returns {NodeLocation}
      */
-    public adjustDimension( index : number, amount : number ) : MazeCoordinates {
+    public adjustAxisPoint(axisIndex: number, pointDelta: number) : NodeLocation {
 
         let newPosition = [];
         for( let i = 0 ; i < this.dimensions ; i++ ) { newPosition[i] = this.position[i]; }
 
-        if ( index < 0 || index >= this.dimensions ) {
+        if ( axisIndex < 0 || axisIndex >= this.dimensions ) {
             throw ( "Index out of dimensional range for coordinate" );
         }
 
-        newPosition[index] += amount;
+        newPosition[axisIndex] += pointDelta;
 
         this.position = newPosition;
 
@@ -97,22 +97,22 @@ export abstract class MazeCoordinates {
     }
 
     /**
-     * Get this value at the given index (index represents dimension)
+     * Get the axis point value on the indicated axis
      *
-     * @param {number} index
+     * @param {number} axisIndex
      * @returns {number}
      */
-    public getDimension( index : number ) : number {
+    public getAxisPoint(axisIndex: number) : number {
 
-        if ( index < 0 || index >= this.dimensions ) {
+        if ( axisIndex < 0 || axisIndex >= this.dimensions ) {
             throw ( "Index out of dimensional range for coordinate" );
         }
 
-        return this.position[index];
+        return this.position[axisIndex];
     }
 
     /**
-     * Get the position of this coordinate.
+     * Get the position of this location.
      * @returns {number[]}
      */
     public getPosition(): number[] {
@@ -120,7 +120,7 @@ export abstract class MazeCoordinates {
     }
 
     /**
-     * Get the dimensions of this coordinate.  A 2 dimensional coordinate is an array with 2 elements, 3 for 3, etc.
+     * Get the # of dimensions or axis tracking the position of this location
      *
      * @returns {number}
      */
@@ -135,11 +135,11 @@ export abstract class MazeCoordinates {
      */
     public toString() : string {
 
-        return MazeCoordinates.encodeCoorindateArray( this.dimensions, this.position );
+        return NodeLocation.encodePositionArray( this.dimensions, this.position );
     }
 
     /**
-     * Convert an array of dimensional positions into a string that reads like the array.  Great for comparisons!
+     * Convert an array representing a position into a string that reads like the array.  Great for comparisons!
      * If executing this function on a maze coordinate instance, consider using the .toString() method, which will
      * give you the same result sourcing from the position on the coordinate.
      *
@@ -147,7 +147,7 @@ export abstract class MazeCoordinates {
      * @param {number[]} elements
      * @returns {string}
      */
-    public static encodeCoorindateArray( dimensions: number, elements: number[] ) : string {
+    public static encodePositionArray(dimensions: number, elements: number[] ) : string {
 
         let s: string = "[";
 
@@ -164,16 +164,16 @@ export abstract class MazeCoordinates {
     protected abstract getDimensionValue(): number;
 
     /**
-     * Validate that the dimensions have been set on this item.  Mainly this is here to bug other developers if they
+     * Validate that the dimensions have been set on this item.  Mainly this is here to bug other developers - if you
      * extend this abstract class without ensuring that the dimension value is defined as a property on the child
-     * class.
+     * class, it will fail.
      */
     private validateDimensions() : void {
 
         if ( this.dimensions === undefined ) {
-            throw ( "Coordinate cannot be instantiated because it has no dimensions.  When extending the " +
-                "MazeCoordinate class, please be sure to set the value for dimensions before invoking the parent " +
-                "by returning the proper value in the implementation of the getDimensionValue() method" );
+            throw ( "NodeLocation cannot be instantiated because it has no dimensions.  When extending the " +
+                "NodeLocation class, please be sure to set the value for dimensions before invoking the parent " +
+                "by returning the proper value in the concrete implementation of the getDimensionValue() method" );
         }
 
     }
