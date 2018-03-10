@@ -1,5 +1,5 @@
 {
-  "name": "cm-check",
+  "name": "cm-maze",
   "version": "0.2.2",
   "description": "System for processing die-based checks in role playing games.  Observable hooks allow outside systems to affect the check in some fashion.",
   "main": "lib/index.js",
