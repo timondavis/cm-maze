@@ -1,0 +1,37 @@
+{
+  "nodes": [
+    {
+      "name": "Ye Olde Magick Shoppe",
+      "connections": {
+        "black": "Uptown",
+        "white": "Uptown"
+      },
+      "color": "red"
+    },
+    {
+      "name": "Uptown",
+      "connections": {
+        "black": "Southside",
+        "white": "Miskatonic University",
+        "neutral": [ "Woods", "Ye Olde Magick Shoppe", "St. Mary's Hospital" ]
+      },
+      "color": "red"
+    },
+    {
+      "name": "St. Mary's Hospital",
+      "connections": {
+        "black": "Uptown",
+        "white": "Uptown"
+      },
+      "color": "red"
+    },
+    {
+      "name": "Woods",
+      "connections": {
+        "black": "Uptown",
+        "white": "Uptown"
+      },
+      "color": "Red"
+    }
+  ]
+}
