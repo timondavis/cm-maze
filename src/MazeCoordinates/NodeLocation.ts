@@ -13,7 +13,7 @@ export abstract class NodeLocation {
     /**
      * The actual position of these coordinates on a cartesian graph.
      */
-    public position: number[];
+    public _position: number[];
 
     /**
      * Create a new MazeCoordinate, indicating its position
@@ -36,7 +36,7 @@ export abstract class NodeLocation {
             throw( "Position supplied has incorrect #  of dimensions" );
         }
 
-        this.position = position;
+        this._position = position;
     }
 
     /**
@@ -51,7 +51,7 @@ export abstract class NodeLocation {
             throw( "Position supplied has incorrect # of dimensions" );
         }
 
-        this.position = position;
+        this._position = position;
         return this;
     }
 
@@ -68,7 +68,7 @@ export abstract class NodeLocation {
             throw ( "Index out of dimensional range for coordinate" );
         }
 
-        this.position[axisIndex] = newValue;
+        this._position[axisIndex] = newValue;
 
         return this;
     }
@@ -83,7 +83,7 @@ export abstract class NodeLocation {
     public adjustAxisPoint(axisIndex: number, pointDelta: number) : NodeLocation {
 
         let newPosition = [];
-        for( let i = 0 ; i < this.dimensions ; i++ ) { newPosition[i] = this.position[i]; }
+        for( let i = 0 ; i < this.dimensions ; i++ ) { newPosition[i] = this._position[i]; }
 
         if ( axisIndex < 0 || axisIndex >= this.dimensions ) {
             throw ( "Index out of dimensional range for coordinate" );
@@ -91,7 +91,7 @@ export abstract class NodeLocation {
 
         newPosition[axisIndex] += pointDelta;
 
-        this.position = newPosition;
+        this._position = newPosition;
 
         return this;
     }
@@ -108,15 +108,23 @@ export abstract class NodeLocation {
             throw ( "Index out of dimensional range for coordinate" );
         }
 
-        return this.position[axisIndex];
+        return this._position[axisIndex];
     }
 
     /**
+     * @deprecated
      * Get the position of this location.
      * @returns {number[]}
      */
     public getPosition(): number[] {
-        return this.position;
+        return this._position;
+    }
+
+    /**
+     * Get the position more directly with a getter.
+     */
+    public get position() : number[] {
+        return this._position;
     }
 
     /**
@@ -135,7 +143,7 @@ export abstract class NodeLocation {
      */
     public toString() : string {
 
-        return NodeLocation.encodePositionArray(this.position);
+        return NodeLocation.encodePositionArray(this._position);
     }
 
     /**

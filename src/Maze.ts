@@ -97,6 +97,32 @@ export class Maze {
     }
 
     /**
+     * Get all nodes as an array instead of a map (which is the native structure).
+     */
+    public getNodesArray() : MazeNode[] {
+        let nodesArray: MazeNode[];
+        nodesArray = [];
+
+        Object.keys(this.getNodes()).forEach(key => {
+            nodesArray.push(this.nodes[key]);
+        });
+
+        return nodesArray;
+    }
+
+    /**
+     * Iterate through the maze nodes by calling in a callback function.  Callback
+     * function will be processed on each MazeNode in the collection.
+     *
+     * @param callback (node: MazeNode, key: string, nodes: { [key: string] : MazeNode }) => void
+     */
+    public forEachNode(callback: (node: MazeNode, key: string, nodes: { [key: string] : MazeNode}) => void) : void {
+        Object.keys(this.getNodes()).forEach((key) => {
+            callback(this.getNodes()[key], key, this.getNodes());
+        });
+    }
+
+    /**
      * Get the MazeNode at the given location, if available.
      *
      * @param {NodeLocation} location
@@ -140,16 +166,11 @@ export class Maze {
     /**
      * Get the node which is defined as the 'finishing point', if available.
      *
-     * @returns {MazeNode | boolean}
+     * @returns {MazeNode}
      */
-    public getFinishNode() : MazeNode | boolean {
+    public getFinishNode() : MazeNode {
 
-        if ( typeof this.finish !== 'undefined' ) {
-
-            return this.finish;
-        }
-
-        return false;
+        return this.finish;
     }
 
     /**

@@ -11,7 +11,7 @@ export declare abstract class NodeLocation {
     /**
      * The actual position of these coordinates on a cartesian graph.
      */
-    position: number[];
+    _position: number[];
     /**
      * Create a new MazeCoordinate, indicating its position
      *
@@ -49,10 +49,15 @@ export declare abstract class NodeLocation {
      */
     getAxisPoint(axisIndex: number): number;
     /**
+     * @deprecated
      * Get the position of this location.
      * @returns {number[]}
      */
     getPosition(): number[];
+    /**
+     * Get the position more directly with a getter.
+     */
+    readonly position: number[];
     /**
      * Get the # of dimensions or axis tracking the position of this location
      *

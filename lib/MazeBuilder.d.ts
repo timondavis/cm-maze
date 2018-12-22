@@ -35,13 +35,6 @@ export declare class MazeBuilder {
         [key: string]: MazeNode;
     };
     /**
-     * Inrementing count of how many -considerations- have been made to build nodes.  Here for convenience (namely
-     * in labelling).  Don't rely on this value for anything consistent.
-     *
-     * @type {number}
-     */
-    nodeCounter: number;
-    /**
      * Constructor
      *
      * @param {Cardinality} cardinality
@@ -130,7 +123,7 @@ export declare class MazeBuilder {
      * If the indicated dictionary has negative node values (a natural result of the current version of
      * the generation process), push all of the node coordinates up so that 0,0 represents the top left.
      *
-     * This ultimately updates the map so that it will fit nicely within quadrant IV of the cartesian graph.
+     * This ultimately updates the map so that it will fit nicely within quadrant II of the cartesian graph.
      *
      * @returns {{[p: string]: MazeNode}}
      */

@@ -18,4 +18,12 @@ export declare class NodeLocation2D extends NodeLocation {
      * @returns {number}
      */
     protected getDimensionValue(): number;
+    /**
+     * Get the X position for the node location
+     */
+    readonly X: number;
+    /**
+     * Get the Y position for the node location
+     */
+    readonly Y: number;
 }

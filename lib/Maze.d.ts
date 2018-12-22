@@ -78,6 +78,19 @@ export declare class Maze {
         [key: string]: MazeNode;
     };
     /**
+     * Get all nodes as an array instead of a map (which is the native structure).
+     */
+    getNodesArray(): MazeNode[];
+    /**
+     * Iterate through the maze nodes by calling in a callback function.  Callback
+     * function will be processed on each MazeNode in the collection.
+     *
+     * @param callback (node: MazeNode, key: string, nodes: { [key: string] : MazeNode }) => void
+     */
+    forEachNode(callback: (node: MazeNode, key: string, nodes: {
+        [key: string]: MazeNode;
+    }) => void): void;
+    /**
      * Get the MazeNode at the given location, if available.
      *
      * @param {NodeLocation} location
@@ -105,9 +118,9 @@ export declare class Maze {
     /**
      * Get the node which is defined as the 'finishing point', if available.
      *
-     * @returns {MazeNode | boolean}
+     * @returns {MazeNode}
      */
-    getFinishNode(): MazeNode | boolean;
+    getFinishNode(): MazeNode;
     /**
      * Get the range of each dimension of this maze.  For example, a 4 x 6 maze ( w = 4 (x axis), l = 6 (y axis)) will
      * return [4, 6].

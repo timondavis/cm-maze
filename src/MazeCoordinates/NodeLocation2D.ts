@@ -20,4 +20,18 @@ export class NodeLocation2D extends NodeLocation {
     protected getDimensionValue(): number {
         return 2;
     }
+
+    /**
+     * Get the X position for the node location
+     */
+    public get X() : number {
+        return this.position[0];
+    }
+
+    /**
+     * Get the Y position for the node location
+     */
+    public get Y() : number {
+        return this.position[1];
+    }
 }

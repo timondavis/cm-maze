@@ -184,4 +184,78 @@ describe( 'Maze', () => {
         expect( m.move( C4.S ) ).to.be.equal( b );
         expect( m.move( C4.W ) ).to.be.equal( d );
     });
+
+    it( 'also returns maze nodes back as an array on demand', () => {
+        m = new Maze();
+
+        let a = new MazeNode( new Compass4() );
+        let b = new MazeNode( new Compass4() );
+        let c = new MazeNode( new Compass4() );
+
+        let nodeCollection: { [key:string] : MazeNode } = {};
+
+        a.setLocation( new NodeLocation2D( [1, 1] ));
+        b.setLocation( new NodeLocation2D( [1, 2] ));
+        c.setLocation( new NodeLocation2D( [1, 3] ));
+
+        nodeCollection[ a.getLocation().toString() ] = a;
+        nodeCollection[ b.getLocation().toString() ] = b;
+
+        m.setNodes( nodeCollection );
+
+        let nodesArray = m.getNodesArray();
+
+        expect( nodesArray.indexOf(a) ).to.not.be.equal( -1 );
+        expect( nodesArray.indexOf(b) ).to.not.be.equal( -1 );
+        expect( nodesArray.indexOf(c) ).to.be.equal( -1 );
+    });
+
+    it ( 'facilitates forEeach traversal by employing a callback function parameter', () => {
+
+        m = new Maze();
+
+        let a = new MazeNode( new Compass4() );
+        let b = new MazeNode( new Compass4() );
+        let c = new MazeNode( new Compass4() );
+
+        let nodeCollection: { [key:string] : MazeNode } = {};
+
+        a.setLocation( new NodeLocation2D( [1, 1] ));
+        a.setName( a.getLocation().toString() );
+        b.setLocation( new NodeLocation2D( [1, 2] ));
+        b.setName( b.getLocation().toString() );
+        c.setLocation( new NodeLocation2D( [1, 3] ));
+        c.setName( c.getLocation().toString() );
+
+        nodeCollection[ a.getLocation().toString() ] = a;
+        nodeCollection[ b.getLocation().toString() ] = b;
+
+        m.setNodes( nodeCollection );
+
+        let nodesArray: MazeNode[];
+        let nodesNames: string[];
+        nodesArray = [];
+        nodesNames = [];
+        m.forEachNode((node, key, nodes) => {
+            nodesArray.push(node);
+            nodesNames.push(key);
+            expect(nodes).to.have.property(a.getLocation().toString());
+            expect(nodes).to.have.property(b.getLocation().toString());
+            expect(nodes).not.to.have.property(c.getLocation().toString());
+        });
+
+        expect( nodesArray ).to.have.lengthOf( 2 );
+        expect( nodesNames ).to.have.lengthOf( 2 );
+        expect( nodesArray.indexOf( a ) ).not.to.be.equal( -1 );
+        expect( nodesArray.indexOf( b ) ).not.to.be.equal( -1 );
+        expect( nodesArray.indexOf( c ) ).to.be.equal( -1 );
+
+        console.log( a.getName() );
+        //console.log( nodesNames[0] );
+        expect( nodesNames.indexOf( a.getName() )).not.to.be.equal( -1 );
+        expect( nodesNames.indexOf( b.getName() )).not.to.be.equal( -1 );
+        expect( nodesNames.indexOf( c.getName() )).to.be.equal( -1 );
+
+    });
+
 });

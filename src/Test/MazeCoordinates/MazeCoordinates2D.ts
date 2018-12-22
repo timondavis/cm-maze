@@ -87,5 +87,17 @@ describe( 'NodeLocation2D', () => {
        expect( mc.getDimensions() ).to.be.equal( 2 );
    });
 
+   it ( 'facilitates capturing location with a getter', () => {
+       const nodeLocation = [ MazeBuilder.rand( r ), MazeBuilder.rand( r ) ];
+       mc = new NodeLocation2D(nodeLocation);
+       expect(mc.position).to.be.equal(nodeLocation);
+   });
 
+   it ( 'provides X and Y coordinates with specific named functions (specialized for 2D version', () => {
+
+       const nodeLocation = [ MazeBuilder.rand( r ), MazeBuilder.rand( r ) ];
+       mc = new NodeLocation2D(nodeLocation);
+       expect(mc.X).to.be.equal(nodeLocation[0]);
+       expect(mc.Y).to.be.equal(nodeLocation[1]);
+   });
 });

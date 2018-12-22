@@ -41,14 +41,6 @@ export class MazeBuilder {
     occupiedLocations : { [key:string] : MazeNode } = {};
 
     /**
-     * Inrementing count of how many -considerations- have been made to build nodes.  Here for convenience (namely
-     * in labelling).  Don't rely on this value for anything consistent.
-     *
-     * @type {number}
-     */
-    nodeCounter: number = 0;
-
-    /**
      * Constructor
      *
      * @param {Cardinality} cardinality
@@ -72,8 +64,6 @@ export class MazeBuilder {
 
         this.occupiedLocations = {};
         this.entry = new MazeNode( this.cardinality );
-        this.nodeCounter++;
-        this.entry.setName( this.nodeCounter.toString() );
         this.occupiedLocations[startingCoordinates.toString()] = this.entry;
 
         this.generateRandomPathFrom( this.entry );
@@ -286,8 +276,6 @@ export class MazeBuilder {
 
            tempNextNode.setMaxConnections(MazeBuilder.rand(this.cardinality.getConnectionPointCount() - 1, 1));
 
-           this.nodeCounter++;
-           tempNextNode.setName( this.nodeCounter.toString() );
         }
 
         return tempNextNode;
@@ -325,7 +313,7 @@ export class MazeBuilder {
      * If the indicated dictionary has negative node values (a natural result of the current version of
      * the generation process), push all of the node coordinates up so that 0,0 represents the top left.
      *
-     * This ultimately updates the map so that it will fit nicely within quadrant IV of the cartesian graph.
+     * This ultimately updates the map so that it will fit nicely within quadrant II of the cartesian graph.
      *
      * @returns {{[p: string]: MazeNode}}
      */
@@ -364,6 +352,7 @@ export class MazeBuilder {
 
                 currentNode = this.getNodeCollection()[key];
                 currentNode.getLocation().adjustAxisPoint(i, adjustmentsByIndex[i]);
+                currentNode.setName('[' + currentNode.getLocation().position.toString() + ']');
             });
         }
 
