@@ -25,13 +25,13 @@ export class NodeLocation2D extends NodeLocation {
      * Get the X position for the node location
      */
     public get X() : number {
-        return this.position[0];
+        return this.getPosition()[0];
     }
 
     /**
      * Get the Y position for the node location
      */
     public get Y() : number {
-        return this.position[1];
+        return this.getPosition()[1];
     }
 }

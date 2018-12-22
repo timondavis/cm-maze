@@ -253,7 +253,6 @@ export class MazeNode {
     }
 
     /**
-     * @deprecated
      * @use Location
      * Set the coordinates for this node
      * @param {NodeLocation} coordinates
@@ -266,7 +265,6 @@ export class MazeNode {
     }
 
     /**
-     * @deprecated
      * @use Location
      * Get the coordinates for this node
      * @returns {NodeLocation}
@@ -274,22 +272,6 @@ export class MazeNode {
     public getLocation() : NodeLocation {
 
         return this.coordinates;
-    }
-
-    /**
-     * Get the coordinate information for this node
-     * @returns {NodeLocation}
-     */
-    public get Location() {
-        return this.coordinates;
-    }
-
-    /**
-     * Set the coordinates for this node
-     * @param {NodeLocation} value
-     */
-    public set Location(value: NodeLocation) {
-        this.coordinates = value;
     }
 
     /**

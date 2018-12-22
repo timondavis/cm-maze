@@ -352,7 +352,7 @@ export class MazeBuilder {
 
                 currentNode = this.getNodeCollection()[key];
                 currentNode.getLocation().adjustAxisPoint(i, adjustmentsByIndex[i]);
-                currentNode.setName('[' + currentNode.getLocation().position.toString() + ']');
+                currentNode.setName('[' + currentNode.getLocation().getPosition().toString() + ']');
             });
         }
 

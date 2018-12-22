@@ -109,7 +109,6 @@ export declare class MazeNode {
      */
     isConnectionPointOccupied(point: number): boolean;
     /**
-     * @deprecated
      * @use Location
      * Set the coordinates for this node
      * @param {NodeLocation} coordinates
@@ -117,21 +116,11 @@ export declare class MazeNode {
      */
     setLocation(coordinates: NodeLocation): this;
     /**
-     * @deprecated
      * @use Location
      * Get the coordinates for this node
      * @returns {NodeLocation}
      */
     getLocation(): NodeLocation;
-    /**
-     * Get the coordinate information for this node
-     * @returns {NodeLocation}
-     */
-    /**
-     * Set the coordinates for this node
-     * @param {NodeLocation} value
-     */
-    Location: NodeLocation;
     /**
      * Get the cardinality behavior object associated with this node.
      * @returns {Cardinality}

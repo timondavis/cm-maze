@@ -13,7 +13,7 @@ export abstract class NodeLocation {
     /**
      * The actual position of these coordinates on a cartesian graph.
      */
-    public _position: number[];
+    protected position: number[];
 
     /**
      * Create a new MazeCoordinate, indicating its position
@@ -25,19 +25,15 @@ export abstract class NodeLocation {
         this.dimensions = this.getDimensionValue();
         this.validateDimensions();
 
-        if ( ! position ) {
-
-            // Populate default position if not provided
-            position = [];
-            for( let i = 0 ; i < this.dimensions ; i++ ) { position[i] = 0; }
-
-        }
-        else if (position.length !== this.dimensions) {
-            throw( "Position supplied has incorrect #  of dimensions" );
+        if (position !== undefined && position.length !== this.dimensions) {
+            throw("Position supplied has incorrect #  of dimensions");
         }
 
-        this._position = position;
+        let tempPosition = [];
+        for (let i = 0; i < this.dimensions; i++) { tempPosition[i] = 0; }
+        this.position = (position) ? position : tempPosition;
     }
+
 
     /**
      * Update the position on this location instance
@@ -51,7 +47,7 @@ export abstract class NodeLocation {
             throw( "Position supplied has incorrect # of dimensions" );
         }
 
-        this._position = position;
+        this.position = position;
         return this;
     }
 
@@ -68,7 +64,7 @@ export abstract class NodeLocation {
             throw ( "Index out of dimensional range for coordinate" );
         }
 
-        this._position[axisIndex] = newValue;
+        this.position[axisIndex] = newValue;
 
         return this;
     }
@@ -83,7 +79,7 @@ export abstract class NodeLocation {
     public adjustAxisPoint(axisIndex: number, pointDelta: number) : NodeLocation {
 
         let newPosition = [];
-        for( let i = 0 ; i < this.dimensions ; i++ ) { newPosition[i] = this._position[i]; }
+        for( let i = 0 ; i < this.dimensions ; i++ ) { newPosition[i] = this.position[i]; }
 
         if ( axisIndex < 0 || axisIndex >= this.dimensions ) {
             throw ( "Index out of dimensional range for coordinate" );
@@ -91,7 +87,7 @@ export abstract class NodeLocation {
 
         newPosition[axisIndex] += pointDelta;
 
-        this._position = newPosition;
+        this.position = newPosition;
 
         return this;
     }
@@ -108,23 +104,15 @@ export abstract class NodeLocation {
             throw ( "Index out of dimensional range for coordinate" );
         }
 
-        return this._position[axisIndex];
+        return this.position[axisIndex];
     }
 
     /**
-     * @deprecated
      * Get the position of this location.
      * @returns {number[]}
      */
     public getPosition(): number[] {
-        return this._position;
-    }
-
-    /**
-     * Get the position more directly with a getter.
-     */
-    public get position() : number[] {
-        return this._position;
+        return this.position;
     }
 
     /**
@@ -143,7 +131,7 @@ export abstract class NodeLocation {
      */
     public toString() : string {
 
-        return NodeLocation.encodePositionArray(this._position);
+        return NodeLocation.encodePositionArray(this.position);
     }
 
     /**
