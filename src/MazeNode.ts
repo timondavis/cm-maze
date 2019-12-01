@@ -1,5 +1,6 @@
 import {NodeLocation} from "./MazeCoordinates/NodeLocation";
 import {Cardinality} from "./Behavior/Cardinality";
+import {Maze} from "./Maze";
 
 /**
  * @class MazeNode
@@ -16,10 +17,10 @@ export class MazeNode {
     protected static debug: boolean = false;
 
     /**
-     * A collection of neighboring nodes, stored by exit point index
+     * A collection of index ids for neighboring nodes
      * @type { MazeNode[] }
      */
-    protected neighbors : MazeNode[];
+    protected neighbors : string[];
 
     /**
      * Provides services and constraints allowing for the logical connection and traversal between this and other nodes
@@ -46,10 +47,17 @@ export class MazeNode {
      */
     protected maxExits: number;
 
-    public constructor( cardinality: Cardinality, coordinates? : NodeLocation ) {
+    /**
+     * Maze which this node belongs to
+     */
+    protected maze: Maze;
+
+    public constructor( maze: Maze, cardinality: Cardinality, coordinates? : NodeLocation ) {
+
+        this.maze = maze;
 
         this.cardinality = cardinality;
-        this.neighbors = new Array<MazeNode>( cardinality.getConnectionPointCount() );
+        this.neighbors = new Array<string>( cardinality.getConnectionPointCount() );
 
         this.coordinates = ( coordinates ) ? coordinates : this.cardinality.generateNodeLocation();
         this.maxExits = -1;
@@ -81,7 +89,7 @@ export class MazeNode {
             throw( "Indicated exitPosition exitPosition is already occupied.  Two exits/entries may not occupy the same exitPosition" );
         }
 
-        this.neighbors[exitPosition] = node;
+        this.neighbors[exitPosition] = node.getLocationId();
 
         if ( autoConnect ) {
 
@@ -111,13 +119,13 @@ export class MazeNode {
      * @param {number} cardinalityPoint
      * @returns {MazeNode}
      */
-    public getNeighborAt( exitPosition : number ) {
+    public getNeighborAt( exitPosition : number ): MazeNode {
 
         if ( exitPosition >= this.cardinality.getConnectionPointCount() || exitPosition < 0 ) {
             throw( "Indicated cardinality position is outside of the valid range" );
         }
 
-        return this.neighbors[exitPosition];
+        return this.maze.getNodes[this.neighbors[exitPosition]];
     }
 
     /**
@@ -152,7 +160,7 @@ export class MazeNode {
 
         for (let i = 0 ; i < this.cardinality.getConnectionPointCount() ; i++ ) {
 
-            if ( node == this.neighbors[i] ) { return true; }
+            if ( node == this.maze.getNodes()[this.neighbors[i]] ) { return true; }
         }
 
         return false;
@@ -214,10 +222,10 @@ export class MazeNode {
 
             if ( this.neighbors[i] != undefined ) {
 
-                positions.push( this.neighbors[i] );
+                positions.push( this.maze.getNodes()[this.neighbors[i]] );
             } else if ( includeOpenNodes ) {
 
-                positions.push( this.neighbors[i] );
+                positions.push( this.maze.getNodes()[this.neighbors[i]] );
             }
         }
 
@@ -272,6 +280,14 @@ export class MazeNode {
     public getLocation() : NodeLocation {
 
         return this.coordinates;
+    }
+
+    /**
+     * Get a string ID for this location
+     * @return {string}
+     */
+    public getLocationId() : string {
+        return this.getLocation().toString();
     }
 
     /**

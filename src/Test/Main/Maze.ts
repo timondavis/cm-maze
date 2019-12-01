@@ -22,11 +22,11 @@ describe( 'Maze', () => {
 
         m = new Maze();
 
-        let a = new MazeNode( new Compass4() );
-        let b = new MazeNode( new Compass4() );
-        let c = new MazeNode( new Compass4() );
-        let d = new MazeNode( new Compass4() );
-        let e = new MazeNode( new Compass4() );
+        let a = new MazeNode( m, new Compass4() );
+        let b = new MazeNode( m, new Compass4() );
+        let c = new MazeNode( m, new Compass4() );
+        let d = new MazeNode( m, new Compass4() );
+        let e = new MazeNode( m, new Compass4() );
 
         let nodeCollection: { [key:string] : MazeNode } = {};
         let capturedNodeCollection: { [key:string] : MazeNode };
@@ -57,8 +57,8 @@ describe( 'Maze', () => {
 
         m = new Maze();
 
-        let a = new MazeNode( new Compass4() );
-        let b = new MazeNode( new Compass4() );
+        let a = new MazeNode( m, new Compass4() );
+        let b = new MazeNode( m, new Compass4() );
 
         let nodeCollection: { [key:string] : MazeNode } = {};
 
@@ -76,9 +76,9 @@ describe( 'Maze', () => {
     it( 'facilitates definition of "starting" and "ending" nodes', () =>  {
         m = new Maze();
 
-        let a = new MazeNode( new Compass4() );
-        let b = new MazeNode( new Compass4() );
-        let c = new MazeNode( new Compass4() );
+        let a = new MazeNode( m, new Compass4() );
+        let b = new MazeNode( m, new Compass4() );
+        let c = new MazeNode( m, new Compass4() );
 
         let nodeCollection: { [key:string] : MazeNode } = {};
 
@@ -118,6 +118,8 @@ describe( 'Maze', () => {
 
         let contents = maze.getNodes();
 
+        console.log(contents);
+
         expect( maze.getSize() ).to.be.equal( Object.keys( contents ).length );
     });
 
@@ -125,9 +127,9 @@ describe( 'Maze', () => {
 
         m = new Maze();
 
-        let a = new MazeNode( new Compass4() );
-        let b = new MazeNode( new Compass4() );
-        let c = new MazeNode( new Compass4() );
+        let a = new MazeNode( m, new Compass4() );
+        let b = new MazeNode( m, new Compass4() );
+        let c = new MazeNode( m, new Compass4() );
 
         let nodeCollection: { [key:string] : MazeNode } = {};
 
@@ -149,11 +151,11 @@ describe( 'Maze', () => {
 
         m = new Maze();
 
-        let a = new MazeNode( new Compass4() );
-        let b = new MazeNode( new Compass4() );
-        let c = new MazeNode( new Compass4() );
-        let d = new MazeNode( new Compass4() );
-        let e = new MazeNode( new Compass4() );
+        let a = new MazeNode( m, new Compass4() );
+        let b = new MazeNode( m, new Compass4() );
+        let c = new MazeNode( m, new Compass4() );
+        let d = new MazeNode( m, new Compass4() );
+        let e = new MazeNode( m, new Compass4() );
 
         let nodeCollection: { [key:string] : MazeNode } = {};
 
@@ -188,9 +190,9 @@ describe( 'Maze', () => {
     it( 'also returns maze nodes back as an array on demand', () => {
         m = new Maze();
 
-        let a = new MazeNode( new Compass4() );
-        let b = new MazeNode( new Compass4() );
-        let c = new MazeNode( new Compass4() );
+        let a = new MazeNode( m, new Compass4() );
+        let b = new MazeNode( m, new Compass4() );
+        let c = new MazeNode( m, new Compass4() );
 
         let nodeCollection: { [key:string] : MazeNode } = {};
 
@@ -214,9 +216,9 @@ describe( 'Maze', () => {
 
         m = new Maze();
 
-        let a = new MazeNode( new Compass4() );
-        let b = new MazeNode( new Compass4() );
-        let c = new MazeNode( new Compass4() );
+        let a = new MazeNode( m, new Compass4() );
+        let b = new MazeNode( m, new Compass4() );
+        let c = new MazeNode( m, new Compass4() );
 
         let nodeCollection: { [key:string] : MazeNode } = {};
 

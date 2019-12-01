@@ -111,6 +111,17 @@ export class Maze {
     }
 
     /**
+     * Add a node to the node array
+     * @param key
+     * @param mazeNode
+     */
+    public addNode(key: string, mazeNode: MazeNode) {
+
+        if (this.nodes.hasOwnProperty(key)) { throw "Duplicate key assignment on Maze nodes"; }
+        this.nodes[key] = mazeNode;
+    }
+
+    /**
      * Iterate through the maze nodes by calling in a callback function.  Callback
      * function will be processed on each MazeNode in the collection.
      *
