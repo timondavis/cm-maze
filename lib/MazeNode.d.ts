@@ -1,5 +1,6 @@
 import { NodeLocation } from "./MazeCoordinates/NodeLocation";
 import { Cardinality } from "./Behavior/Cardinality";
+import { Maze } from "./Maze";
 /**
  * @class MazeNode
  *
@@ -13,10 +14,10 @@ export declare class MazeNode {
      */
     protected static debug: boolean;
     /**
-     * A collection of neighboring nodes, stored by exit point index
+     * A collection of index ids for neighboring nodes
      * @type { MazeNode[] }
      */
-    protected neighbors: MazeNode[];
+    protected neighbors: string[];
     /**
      * Provides services and constraints allowing for the logical connection and traversal between this and other nodes
      */
@@ -38,7 +39,11 @@ export declare class MazeNode {
      * than what is dictated by this value.
      */
     protected maxExits: number;
-    constructor(cardinality: Cardinality, coordinates?: NodeLocation);
+    /**
+     * Maze which this node belongs to
+     */
+    protected maze: Maze;
+    constructor(maze: Maze, cardinality: Cardinality, coordinates?: NodeLocation);
     /**
      * Connects one MazeNode instance to another.  Implicitly bi-directional, but directed edges between nodes
      * can be crated by passing in the autoConnect parameter as false.  If either node is maxed out, no connection will be made.
@@ -121,6 +126,11 @@ export declare class MazeNode {
      * @returns {NodeLocation}
      */
     getLocation(): NodeLocation;
+    /**
+     * Get a string ID for this location
+     * @return {string}
+     */
+    getLocationId(): string;
     /**
      * Get the cardinality behavior object associated with this node.
      * @returns {Cardinality}

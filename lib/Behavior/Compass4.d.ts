@@ -13,7 +13,7 @@ export declare enum C4 {
     S = 2,
     SOUTH = 2,
     W = 3,
-    WEST = 3,
+    WEST = 3
 }
 /**
  * @class Compass4

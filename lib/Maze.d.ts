@@ -78,9 +78,25 @@ export declare class Maze {
         [key: string]: MazeNode;
     };
     /**
+     * Get the Maze Node with the given ID, if it exists.  Returns null if not found.
+     * @param mazeNodeId
+     */
+    getNodeWithId(mazeNodeId: string): MazeNode;
+    /**
+     * Does the maze node dictionary have an entry with the given ID?
+     * @param mazeNodeId
+     */
+    containsNodeWithId(mazeNodeId: string): boolean;
+    /**
      * Get all nodes as an array instead of a map (which is the native structure).
      */
     getNodesArray(): MazeNode[];
+    /**
+     * Add a node to the node array
+     * @param key
+     * @param mazeNode
+     */
+    addNode(key: string, mazeNode: MazeNode): void;
     /**
      * Iterate through the maze nodes by calling in a callback function.  Callback
      * function will be processed on each MazeNode in the collection.

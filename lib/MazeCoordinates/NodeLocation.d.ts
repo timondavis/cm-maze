@@ -79,5 +79,5 @@ export declare abstract class NodeLocation {
      * extend this abstract class without ensuring that the dimension value is defined as a property on the child
      * class, it will fail.
      */
-    private validateDimensions();
+    private validateDimensions;
 }
