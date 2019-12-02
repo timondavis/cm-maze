@@ -6,6 +6,7 @@ import {Compass8, C8} from "../../Behavior/Compass8";
 import {MazeBuilder} from "../../MazeBuilder";
 import {NodeLocation2D} from "../../MazeCoordinates/NodeLocation2D";
 import {Cardinality} from "../../Behavior/Cardinality";
+import {Maze} from "../../Maze";
 
 describe( 'MazeNode', () => {
 
@@ -13,9 +14,15 @@ describe( 'MazeNode', () => {
 
     it( 'connects bidirectionally to each node by default, but can be done in directed graph fashion', () => {
 
-        let a = new MazeNode( new Compass8() );
-        let b = new MazeNode( new Compass8() );
-        let c = new MazeNode( new Compass8() );
+        let m = new Maze();
+
+        let a = new MazeNode( m, new Compass8() ).setLocation(new NodeLocation2D([0, 0]));
+        let b = new MazeNode( m, new Compass8() ).setLocation(new NodeLocation2D([0, 1]));
+        let c = new MazeNode( m, new Compass8() ).setLocation(new NodeLocation2D([1, 0]));
+
+        m.addNode(a.getLocationId(), a);
+        m.addNode(b.getLocationId(), b);
+        m.addNode(c.getLocationId(), c);
 
         // A < -- > B connect
         a.connectTo( b, 3 );
@@ -38,20 +45,33 @@ describe( 'MazeNode', () => {
 
     it( 'can be explicitly named', () => {
 
-        const a = new MazeNode( new Compass4 );
+        let m = new Maze();
+
+        const a = new MazeNode( m, new Compass4 );
         a.setName( "My Name" );
         expect( a.getName() ).to.be.equal( "My Name" );
     });
 
     it ( 'can report on who its neighboring nodes are', function () {
 
-        let a = new MazeNode( new Compass4() ).setName("A");
+        let m = new Maze();
+
+        let a = new MazeNode( m, new Compass4(), new NodeLocation2D([0, 0]) ).setName("A");
+        let b = new MazeNode( m, new Compass4(), new NodeLocation2D([1, 0]) ).setName("B");
+        let c = new MazeNode( m, new Compass4(), new NodeLocation2D([0, -1]) ).setName( "C" );
+        let d = new MazeNode( m, new Compass4(), new NodeLocation2D([0, 1]) ).setName( "D" );
+
+        m.addNode(a.getLocationId(), a);
+        m.addNode(b.getLocationId(), b);
+        m.addNode(c.getLocationId(), c);
+        m.addNode(d.getLocationId(), d);
+
         let neighborsOfA: MazeNode[];
         let neighborsOfB: MazeNode[];
 
-        a.connectTo( new MazeNode( new Compass4()  ).setName( "C" ), C4.N, false );
-        a.connectTo( new MazeNode( new Compass4()  ).setName( "B" ), C4.E );
-        a.connectTo( new MazeNode( new Compass4() ).setName( "D" ), C4.S, false );
+        a.connectTo( c, C4.N, false );
+        a.connectTo( b, C4.E );
+        a.connectTo( d, C4.S, false );
 
         neighborsOfA = a.getNeighbors();
         neighborsOfB = a.getNeighborAt( 1 ).getNeighbors();
@@ -80,13 +100,24 @@ describe( 'MazeNode', () => {
 
     it ( 'can report on what its occupied exit points are', function() {
 
-        let a = new MazeNode( new Compass4()  ).setName("A");
+        let m = new Maze();
+
+        let a = new MazeNode( m, new Compass4() ).setName("A").setLocation(new NodeLocation2D([0, 0]));
+        let b = new MazeNode( m, new Compass4() ).setName("B").setLocation(new NodeLocation2D([-1, 0]));
+        let c = new MazeNode( m, new Compass4() ).setName("C").setLocation(new NodeLocation2D([1, 0]));
+        let d = new MazeNode( m, new Compass4() ).setName("D").setLocation(new NodeLocation2D([0, 1]));
+
+        m.addNode(a.getLocationId(), a);
+        m.addNode(b.getLocationId(), b);
+        m.addNode(c.getLocationId(), c);
+        m.addNode(d.getLocationId(), d);
+
         let exitsOfA: number[];
         let exitsOfC: number[];
 
-        a.connectTo( new MazeNode( new Compass4() ).setName( "B" ), C4.W, false );
-        a.connectTo( new MazeNode( new Compass4() ).setName( "C" ), C4.E );
-        a.connectTo( new MazeNode( new Compass4() ).setName( "D" ), C4.S, false );
+        a.connectTo( b, C4.W, false );
+        a.connectTo( c, C4.E );
+        a.connectTo( d, C4.S, false );
 
         exitsOfA = a.getOccupiedConnectionPoints();
         exitsOfC = a.getNeighborAt( 1 ).getOccupiedConnectionPoints();
@@ -100,14 +131,16 @@ describe( 'MazeNode', () => {
 
     it( 'can report on what its open exit points are', () => {
 
+        let m = new Maze();
+
         let exitsOpenOnA : number[];
         let exitsOccupiedOnA: number[];
-        let a = new MazeNode( new Compass8() );
+        let a = new MazeNode( m, new Compass8() );
 
-        a.connectTo( new MazeNode( new Compass8() ), C8.N );
-        a.connectTo( new MazeNode( new Compass8() ), C8.E );
-        a.connectTo( new MazeNode( new Compass8() ), C8.S );
-        a.connectTo( new MazeNode( new Compass8() ), C8.W );
+        a.connectTo( new MazeNode( m, new Compass8() ), C8.N );
+        a.connectTo( new MazeNode( m, new Compass8() ), C8.E );
+        a.connectTo( new MazeNode( m, new Compass8() ), C8.S );
+        a.connectTo( new MazeNode( m, new Compass8() ), C8.W );
 
         exitsOpenOnA = a.getOpenConnectionPoints();
         exitsOccupiedOnA = a.getOccupiedConnectionPoints();
@@ -127,15 +160,22 @@ describe( 'MazeNode', () => {
 
     it( 'confirms whether another supplied node is neighbors with this node', () => {
 
-        let a = new MazeNode( new Compass4() );
-        let b = new MazeNode( new Compass4() );
-        let c = new MazeNode( new Compass4() );
-        let d = new MazeNode( new Compass4() );
+        let m = new Maze();
+
+        let a = new MazeNode( m, new Compass4() ).setLocation(new NodeLocation2D([0, 0]));
+        let b = new MazeNode( m, new Compass4() ).setLocation(new NodeLocation2D([0, -1]));
+        let c = new MazeNode( m, new Compass4() ).setLocation(new NodeLocation2D([-1, -1]));
+        let d = new MazeNode( m, new Compass4() ).setLocation(new NodeLocation2D([-1, 0]));
+
+        m.addNode(a.getLocationId(), a);
+        m.addNode(b.getLocationId(), b);
+        m.addNode(c.getLocationId(), c);
+        m.addNode(d.getLocationId(), d);
 
         a.connectTo( b, C4.NORTH );
         a.connectTo( d, C4.WEST );
         b.connectTo( c, C4.WEST );
-        d.connectTo( c, C4.NORTH );
+        d.connectTo( c, C4.NORTH ); // Illogical position should still connect (it is allowed).
 
         expect( a.isNeighborsWith( b ) ).to.be.true;
         expect( a.isNeighborsWith( d ) ).to.be.true;
@@ -149,7 +189,9 @@ describe( 'MazeNode', () => {
 
     it( 'can accept and report 2 dimensional coordinates (as instances of NodeLocation2D objects)', () => {
 
-        let a = new MazeNode( new Compass8() );
+        let m = new Maze();
+
+        let a = new MazeNode( m, new Compass8() );
         const coords = [ MazeBuilder.rand( r ), MazeBuilder.rand( r ) ];
 
         a.setLocation( new NodeLocation2D( coords ) );
@@ -158,9 +200,11 @@ describe( 'MazeNode', () => {
 
     it( 'reports on whether a given exit point on the node is occupied or empty (two separate functions)', () => {
 
-        let a = new MazeNode( new Compass4() );
-        let b = new MazeNode( new Compass4() );
-        let c = new MazeNode( new Compass4() );
+        let m = new Maze();
+
+        let a = new MazeNode( m, new Compass4() );
+        let b = new MazeNode( m, new Compass4() );
+        let c = new MazeNode( m, new Compass4() );
 
         a.connectTo( b, C4.NORTH );
         a.connectTo( c, C4.SOUTH );
@@ -183,7 +227,9 @@ describe( 'MazeNode', () => {
 
     it( 'reports the cardinality behavior instance assigned to the node on demand', () => {
 
-        let a = new MazeNode( new Compass4() );
+        let m = new Maze();
+
+        let a = new MazeNode( m, new Compass4() );
 
         expect( a.getCardinality() ).to.be.instanceOf( Cardinality );
         expect( a.getCardinality() ).to.be.instanceOf( Compass4 );
@@ -192,33 +238,35 @@ describe( 'MazeNode', () => {
 
     it( 'accepts and respects limits to the amount of nodes that this node can be connected to', () => {
 
-        let unlimited = new MazeNode( new Compass4() );
-        let limitedToOne = new MazeNode( new Compass4() );
-        let limitedToThree = new MazeNode( new Compass4() );
+        let m = new Maze();
+
+        let unlimited = new MazeNode( m, new Compass4() );
+        let limitedToOne = new MazeNode( m, new Compass4() );
+        let limitedToThree = new MazeNode( m, new Compass4() );
 
         limitedToOne.setMaxConnections(1);
         limitedToThree.setMaxConnections(3);
 
         for ( let i = 0 ; i < 4 ; i++ ) {
 
-            expect( () => { unlimited.connectTo( new MazeNode( new Compass4() ), i ) } )
+            expect( () => { unlimited.connectTo( new MazeNode( m, new Compass4() ), i ) } )
                 .not.to.throw();
 
             //
             if ( i < 1 ) {
-                expect( () => { limitedToOne.connectTo( new MazeNode( new Compass4() ), i ) } )
+                expect( () => { limitedToOne.connectTo( new MazeNode( m, new Compass4() ), i ) } )
                     .not.to.throw();
             } else {
-                expect( () => { limitedToOne.connectTo( new MazeNode( new Compass4() ), i ) } )
+                expect( () => { limitedToOne.connectTo( new MazeNode( m, new Compass4() ), i ) } )
                     .to.throw();
             }
 
             if ( i < 3 ) {
 
-                expect( () => { limitedToThree.connectTo( new MazeNode( new Compass4() ), i ) } )
+                expect( () => { limitedToThree.connectTo( new MazeNode( m, new Compass4() ), i ) } )
                     .not.to.throw();
             } else {
-                expect( () => { limitedToThree.connectTo( new MazeNode( new Compass4() ), i ) } )
+                expect( () => { limitedToThree.connectTo( new MazeNode( m, new Compass4() ), i ) } )
                     .to.throw();
             }
         }

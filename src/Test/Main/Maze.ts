@@ -118,8 +118,6 @@ describe( 'Maze', () => {
 
         let contents = maze.getNodes();
 
-        console.log(contents);
-
         expect( maze.getSize() ).to.be.equal( Object.keys( contents ).length );
     });
 
@@ -252,12 +250,8 @@ describe( 'Maze', () => {
         expect( nodesArray.indexOf( b ) ).not.to.be.equal( -1 );
         expect( nodesArray.indexOf( c ) ).to.be.equal( -1 );
 
-        console.log( a.getName() );
-        //console.log( nodesNames[0] );
         expect( nodesNames.indexOf( a.getName() )).not.to.be.equal( -1 );
         expect( nodesNames.indexOf( b.getName() )).not.to.be.equal( -1 );
         expect( nodesNames.indexOf( c.getName() )).to.be.equal( -1 );
-
     });
-
 });

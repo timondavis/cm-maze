@@ -97,6 +97,32 @@ export class Maze {
     }
 
     /**
+     * Get the Maze Node with the given ID, if it exists.  Returns null if not found.
+     * @param mazeNodeId
+     */
+    public getNodeWithId(mazeNodeId: string) : MazeNode {
+        if (this.containsNodeWithId(mazeNodeId)) {
+            return this.nodes[mazeNodeId];
+        }
+        return null;
+    }
+
+    /**
+     * Does the maze node dictionary have an entry with the given ID?
+     * @param mazeNodeId
+     */
+    public containsNodeWithId(mazeNodeId: string) : boolean {
+        let nodeIdFound = false;
+        Object.keys(this.nodes).forEach((key) => {
+            if (key === mazeNodeId) {
+                nodeIdFound = true;
+            }
+        });
+
+        return nodeIdFound;
+    }
+
+    /**
      * Get all nodes as an array instead of a map (which is the native structure).
      */
     public getNodesArray() : MazeNode[] {
@@ -116,7 +142,7 @@ export class Maze {
      * @param mazeNode
      */
     public addNode(key: string, mazeNode: MazeNode) {
-
+        if (!key) { throw "Cannot add node without key"; }
         if (this.nodes.hasOwnProperty(key)) { throw "Duplicate key assignment on Maze nodes"; }
         this.nodes[key] = mazeNode;
     }

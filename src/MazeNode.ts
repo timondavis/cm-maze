@@ -80,7 +80,6 @@ export class MazeNode {
                 "Indicated node will not tolerate any more additional connections - maximum reached." );
         }
 
-
         if ( exitPosition >= this.cardinality.getConnectionPointCount() || exitPosition < 0 ) {
             throw( "Indicated exitPosition value exceeds maximum MazeNode cardinality range" );
         }
@@ -125,7 +124,7 @@ export class MazeNode {
             throw( "Indicated cardinality position is outside of the valid range" );
         }
 
-        return this.maze.getNodes[this.neighbors[exitPosition]];
+        return this.maze.getNodes()[this.neighbors[exitPosition]];
     }
 
     /**
@@ -160,7 +159,7 @@ export class MazeNode {
 
         for (let i = 0 ; i < this.cardinality.getConnectionPointCount() ; i++ ) {
 
-            if ( node == this.maze.getNodes()[this.neighbors[i]] ) { return true; }
+            if ( node == this.maze.getNodeWithId(this.neighbors[i])) { return true; }
         }
 
         return false;
