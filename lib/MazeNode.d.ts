@@ -1,6 +1,5 @@
 import { NodeLocation } from "./MazeCoordinates/NodeLocation";
 import { Cardinality } from "./Behavior/Cardinality";
-import { Maze } from "./Maze";
 /**
  * @class MazeNode
  *
@@ -29,6 +28,10 @@ export declare class MazeNode {
      */
     protected name: string;
     /**
+     * Unique string key for maze node
+     */
+    protected mazeNodeId: string;
+    /**
      * The NodeLocation track the location of this node relative to other nodes
      *
      * @type { NodeLocation }
@@ -39,16 +42,13 @@ export declare class MazeNode {
      * than what is dictated by this value.
      */
     protected maxExits: number;
-    /**
-     * Maze which this node belongs to
-     */
-    protected maze: Maze;
-    constructor(maze: Maze, cardinality: Cardinality, coordinates?: NodeLocation);
+    constructor(cardinality: Cardinality, id?: string, coordinates?: NodeLocation);
+    get ID(): string;
     /**
      * Connects one MazeNode instance to another.  Implicitly bi-directional, but directed edges between nodes
      * can be crated by passing in the autoConnect parameter as false.  If either node is maxed out, no connection will be made.
      *
-     * @param {MazeNode} node           The node to connect to this node
+     * @param {string} mazeNodeId           The node Id to connect to this node
      * @param {number} exitPosition     The cardinality position you want to connect this node with
      * @param {boolean} autoConnect     Defaults to TRUE.  If true, the connectTo node will position back to this node.
      * @returns {MazeNode}
@@ -58,9 +58,9 @@ export declare class MazeNode {
      * Get a connected node by indicating the exit (cardinality position) that leads to the node.
      *
      * @param {number} cardinalityPoint
-     * @returns {MazeNode}
+     * @returns {string} Maze node ID
      */
-    getNeighborAt(exitPosition: number): MazeNode;
+    getNeighborIdAt(exitPosition: number): string;
     /**
      * Give this node a name, if you like
      *
@@ -94,12 +94,12 @@ export declare class MazeNode {
      */
     getOpenConnectionPoints(): number[];
     /**
-     * Get an array of neighboring nodes.
+     * Get an array of neighboring node ids.
      *
      * @boolean {includeOpenNodes}  Get the array with null nodes in-tact.  Useful for mapping.  Defaults to FALSE.
-     * @returns {MazeNode[]}
+     * @returns {string[]}
      */
-    getNeighbors(includeOpenNodes?: boolean): MazeNode[];
+    getNeighborIds(includeOpenNodes?: boolean): string[];
     /**
      * Find out whether an entry/exit position on the node is empty.
      *
@@ -161,4 +161,8 @@ export declare class MazeNode {
      * @param {boolean} toggle
      */
     static toggleDebug(toggle?: boolean): void;
+    /**
+     * Generate a unique key
+     */
+    static generateKey(): any;
 }

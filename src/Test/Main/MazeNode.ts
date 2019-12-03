@@ -39,8 +39,8 @@ describe( 'MazeNode', () => {
         expect( b.isNeighborsWith( c ) ).to.be.true;
         expect( c.isNeighborsWith( b ) ).to.be.false;
 
-        expect( b.getNeighborIdAt( 1 ) ).to.be.equal( c );
-        expect( c.getNeighborIdAt( 5 ) ).to.be.undefined;
+        expect( m.getNodeWithId(b.getNeighborIdAt( 1 ))).to.be.equal( c );
+        expect( m.getNodeWithId(c.getNeighborIdAt( 5 ))).to.be.null;
     });
 
     it( 'can be explicitly named', () => {

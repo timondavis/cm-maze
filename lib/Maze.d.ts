@@ -96,7 +96,7 @@ export declare class Maze {
      * @param key
      * @param mazeNode
      */
-    addNode(key: string, mazeNode: MazeNode): void;
+    addNode(mazeNode: MazeNode): void;
     /**
      * Iterate through the maze nodes by calling in a callback function.  Callback
      * function will be processed on each MazeNode in the collection.
@@ -112,7 +112,7 @@ export declare class Maze {
      * @param {NodeLocation} location
      * @returns {MazeNode}
      */
-    getNode(location: NodeLocation): MazeNode;
+    getNodeAtLocation(location: NodeLocation): MazeNode;
     /**
      * Assign the indicated node a 'starting point' status.
      *
