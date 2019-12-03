@@ -22,7 +22,7 @@ export declare enum C8 {
     W = 6,
     WEST = 6,
     NW = 7,
-    NORTH_WEST = 7,
+    NORTH_WEST = 7
 }
 /**
  * @class Compass8

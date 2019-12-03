@@ -74,7 +74,7 @@ export class MazeRenderer {
             for ( let y = 0 ; y < this.maze.getDimensions()[Y] ; y++ ) {
 
 
-                let node = this.maze.getNode( new NodeLocation2D( [ x, y ] ) );
+                let node = this.maze.getNodeAtLocation( new NodeLocation2D( [ x, y ] ) );
                 let neighborNode: MazeNode;
 
                 if ( typeof node === 'undefined' ) { continue; }
@@ -125,7 +125,8 @@ export class MazeRenderer {
                     lineOriginY = nodeCenterY +
                         Math.sin( (Math.PI/180) * ( ( i / cardinality * 360 ) - 90 ) ) * nodeRadiusPx;
 
-                    neighborNode = node.getNeighborAt( i );
+                    let neighborNodeId = node.getNeighborIdAt(i);
+                    neighborNode = this.maze.getNodeWithId(neighborNodeId);
                     let neighborCoordinates = neighborNode.getLocation().getPosition();
 
                     neighborNodeCenterX = ( gridUnitWidthPx * neighborCoordinates[X] + ( gridUnitWidthPx * 0.5 ) );

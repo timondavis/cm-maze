@@ -4,7 +4,7 @@ import { NodeLocation } from "./NodeLocation";
  */
 export declare enum D2D {
     X = 0,
-    Y = 1,
+    Y = 1
 }
 /**
  * @class NodeLocation2D
@@ -21,9 +21,9 @@ export declare class NodeLocation2D extends NodeLocation {
     /**
      * Get the X position for the node location
      */
-    readonly X: number;
+    get X(): number;
     /**
      * Get the Y position for the node location
      */
-    readonly Y: number;
+    get Y(): number;
 }
