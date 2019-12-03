@@ -21,9 +21,9 @@ export declare class NodeLocation2D extends NodeLocation {
     /**
      * Get the X position for the node location
      */
-    get X(): number;
+    readonly X: number;
     /**
      * Get the Y position for the node location
      */
-    get Y(): number;
+    readonly Y: number;
 }

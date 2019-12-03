@@ -43,7 +43,7 @@ export declare class MazeNode {
      */
     protected maxExits: number;
     constructor(cardinality: Cardinality, id?: string, coordinates?: NodeLocation);
-    get ID(): string;
+    readonly ID: string;
     /**
      * Connects one MazeNode instance to another.  Implicitly bi-directional, but directed edges between nodes
      * can be crated by passing in the autoConnect parameter as false.  If either node is maxed out, no connection will be made.
