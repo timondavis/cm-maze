@@ -97,6 +97,32 @@ export class Maze {
     }
 
     /**
+     * Get the Maze Node with the given ID, if it exists.  Returns null if not found.
+     * @param mazeNodeId
+     */
+    public getNodeWithId(mazeNodeId: string) : MazeNode {
+        if (this.containsNodeWithId(mazeNodeId)) {
+            return this.nodes[mazeNodeId];
+        }
+        return null;
+    }
+
+    /**
+     * Does the maze node dictionary have an entry with the given ID?
+     * @param mazeNodeId
+     */
+    public containsNodeWithId(mazeNodeId: string) : boolean {
+        let nodeIdFound = false;
+        Object.keys(this.nodes).forEach((key) => {
+            if (key === mazeNodeId) {
+                nodeIdFound = true;
+            }
+        });
+
+        return nodeIdFound;
+    }
+
+    /**
      * Get all nodes as an array instead of a map (which is the native structure).
      */
     public getNodesArray() : MazeNode[] {
@@ -108,6 +134,16 @@ export class Maze {
         });
 
         return nodesArray;
+    }
+
+    /**
+     * Add a node to the node array
+     * @param key
+     * @param mazeNode
+     */
+    public addNode(mazeNode: MazeNode) {
+        if (this.nodes.hasOwnProperty(mazeNode.ID)) { throw "Duplicate key assignment on Maze nodes"; }
+        this.nodes[mazeNode.ID] = mazeNode;
     }
 
     /**
@@ -128,9 +164,21 @@ export class Maze {
      * @param {NodeLocation} location
      * @returns {MazeNode}
      */
-    public getNode( location : NodeLocation ) : MazeNode {
+    public getNodeAtLocation( location : NodeLocation ) : MazeNode {
 
-       return this.nodes[location.toString()];
+       const keys = Object.keys(this.nodes);
+       let foundNode: MazeNode = null;
+       let key: string = "";
+
+       for (let keyIndex = 0 ; keyIndex < keys.length ; keyIndex++) {
+           key = keys[keyIndex];
+           if (this.nodes[key].getLocation().toString() === location.toString()) {
+               foundNode = this.nodes[key];
+               break;
+           }
+       }
+
+       return foundNode;
     }
 
     /**
@@ -230,7 +278,7 @@ export class Maze {
     public move( direction : number ) : MazeNode | boolean {
 
         if ( this.currentNode.isConnectionPointOccupied(direction) ) {
-            this.currentNode = this.currentNode.getNeighborAt( direction );
+            this.currentNode = this.getNodeWithId(this.currentNode.getNeighborIdAt( direction ));
             return this.currentNode;
         }
 
