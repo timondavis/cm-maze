@@ -1,6 +1,5 @@
 import {NodeLocation} from "./MazeCoordinates/NodeLocation";
 import {Cardinality} from "./Behavior/Cardinality";
-import {Maze} from "./Maze";
 
 /**
  * @class MazeNode
@@ -32,7 +31,12 @@ export class MazeNode {
      *
      * @type {string}
      */
-    protected name = "";
+    protected name: string = "";
+
+    /**
+     * Unique string key for maze node
+     */
+    protected mazeNodeId: string = "";
 
     /**
      * The NodeLocation track the location of this node relative to other nodes
@@ -47,27 +51,26 @@ export class MazeNode {
      */
     protected maxExits: number;
 
-    /**
-     * Maze which this node belongs to
-     */
-    protected maze: Maze;
-
-    public constructor( maze: Maze, cardinality: Cardinality, coordinates? : NodeLocation ) {
-
-        this.maze = maze;
+    public constructor(cardinality: Cardinality, id: string = null, coordinates? : NodeLocation) {
 
         this.cardinality = cardinality;
         this.neighbors = new Array<string>( cardinality.getConnectionPointCount() );
 
         this.coordinates = ( coordinates ) ? coordinates : this.cardinality.generateNodeLocation();
         this.maxExits = -1;
+
+        this.mazeNodeId = (id) ? id : MazeNode.generateKey();
+    }
+
+    public get ID() {
+        return this.mazeNodeId;
     }
 
     /**
      * Connects one MazeNode instance to another.  Implicitly bi-directional, but directed edges between nodes
      * can be crated by passing in the autoConnect parameter as false.  If either node is maxed out, no connection will be made.
      *
-     * @param {MazeNode} node           The node to connect to this node
+     * @param {string} mazeNodeId           The node Id to connect to this node
      * @param {number} exitPosition     The cardinality position you want to connect this node with
      * @param {boolean} autoConnect     Defaults to TRUE.  If true, the connectTo node will position back to this node.
      * @returns {MazeNode}
@@ -88,7 +91,7 @@ export class MazeNode {
             throw( "Indicated exitPosition exitPosition is already occupied.  Two exits/entries may not occupy the same exitPosition" );
         }
 
-        this.neighbors[exitPosition] = node.getLocationId();
+        this.neighbors[exitPosition] = node.ID;
 
         if ( autoConnect ) {
 
@@ -116,15 +119,15 @@ export class MazeNode {
      * Get a connected node by indicating the exit (cardinality position) that leads to the node.
      *
      * @param {number} cardinalityPoint
-     * @returns {MazeNode}
+     * @returns {string} Maze node ID
      */
-    public getNeighborAt( exitPosition : number ): MazeNode {
+    public getNeighborIdAt( exitPosition : number ): string {
 
         if ( exitPosition >= this.cardinality.getConnectionPointCount() || exitPosition < 0 ) {
             throw( "Indicated cardinality position is outside of the valid range" );
         }
 
-        return this.maze.getNodes()[this.neighbors[exitPosition]];
+        return this.neighbors[exitPosition];
     }
 
     /**
@@ -159,7 +162,7 @@ export class MazeNode {
 
         for (let i = 0 ; i < this.cardinality.getConnectionPointCount() ; i++ ) {
 
-            if ( node == this.maze.getNodeWithId(this.neighbors[i])) { return true; }
+            if (node.ID == this.neighbors[i]) { return true; }
         }
 
         return false;
@@ -207,24 +210,23 @@ export class MazeNode {
     }
 
     /**
-     * Get an array of neighboring nodes.
+     * Get an array of neighboring node ids.
      *
      * @boolean {includeOpenNodes}  Get the array with null nodes in-tact.  Useful for mapping.  Defaults to FALSE.
-     * @returns {MazeNode[]}
+     * @returns {string[]}
      */
-    public getNeighbors( includeOpenNodes = false ): MazeNode[] {
+    public getNeighborIds( includeOpenNodes = false ): string[] {
 
-        let positions: MazeNode[] = [];
+        let positions: string[] = [];
 
-        /* @TODO o(n) where n is cardinality.  Can this be improved? */
         for (let i = 0 ; i < this.cardinality.getConnectionPointCount() ; i++ ) {
 
             if ( this.neighbors[i] != undefined ) {
 
-                positions.push( this.maze.getNodes()[this.neighbors[i]] );
+                positions.push( this.neighbors[i] );
             } else if ( includeOpenNodes ) {
 
-                positions.push( this.maze.getNodes()[this.neighbors[i]] );
+                positions.push( this.neighbors[i] );
             }
         }
 
@@ -358,5 +360,14 @@ export class MazeNode {
         else {
             MazeNode.debug = toggle;
         }
+    }
+
+    /**
+     * Generate a unique key
+     */
+    public static generateKey() {
+
+        let uuid = require('uuid/v4');
+        return uuid();
     }
 }

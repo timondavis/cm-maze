@@ -22,63 +22,57 @@ describe( 'Maze', () => {
 
         m = new Maze();
 
-        let a = new MazeNode( m, new Compass4() );
-        let b = new MazeNode( m, new Compass4() );
-        let c = new MazeNode( m, new Compass4() );
-        let d = new MazeNode( m, new Compass4() );
-        let e = new MazeNode( m, new Compass4() );
+        let a = new MazeNode( new Compass4() );
+        let b = new MazeNode( new Compass4() );
+        let c = new MazeNode( new Compass4() );
+        let d = new MazeNode( new Compass4() );
+        let e = new MazeNode( new Compass4() );
 
         let nodeCollection: { [key:string] : MazeNode } = {};
         let capturedNodeCollection: { [key:string] : MazeNode };
 
-        a.setLocation( new NodeLocation2D( [1, 1] ));
-        b.setLocation( new NodeLocation2D( [1, 2] ));
-        c.setLocation( new NodeLocation2D( [2, 1] ));
-        d.setLocation( new NodeLocation2D( [2, 0] ));
-        e.setLocation( new NodeLocation2D( [0, 1] ));
-
-        nodeCollection[ a.getLocation().toString() ] = a;
-        nodeCollection[ b.getLocation().toString() ] = b;
-        nodeCollection[ c.getLocation().toString() ] = c;
-        nodeCollection[ d.getLocation().toString() ] = d;
-        nodeCollection[ e.getLocation().toString() ] = e;
+        nodeCollection[ a.ID ] = a;
+        nodeCollection[ b.ID ] = b;
+        nodeCollection[ c.ID ] = c;
+        nodeCollection[ d.ID ] = d;
+        nodeCollection[ e.ID ] = e;
 
         m.setNodes( nodeCollection );
         capturedNodeCollection = m.getNodes();
 
-        expect( capturedNodeCollection[a.getLocation().toString() ] ).to.be.equal( a );
-        expect( capturedNodeCollection[b.getLocation().toString() ] ).to.be.equal( b );
-        expect( capturedNodeCollection[c.getLocation().toString() ] ).to.be.equal( c );
-        expect( capturedNodeCollection[d.getLocation().toString() ] ).to.be.equal( d );
-        expect( capturedNodeCollection[e.getLocation().toString() ] ).to.be.equal( e );
+        expect( capturedNodeCollection[a.ID] ).to.be.equal( a );
+        expect( capturedNodeCollection[b.ID] ).to.be.equal( b );
+        expect( capturedNodeCollection[c.ID] ).to.be.equal( c );
+        expect( capturedNodeCollection[d.ID] ).to.be.equal( d );
+        expect( capturedNodeCollection[e.ID] ).to.be.equal( e );
     });
 
     it( 'can return nodes residing at the indicated coordinates', () => {
 
         m = new Maze();
 
-        let a = new MazeNode( m, new Compass4() );
-        let b = new MazeNode( m, new Compass4() );
+        let a = new MazeNode( new Compass4() );
+        let b = new MazeNode( new Compass4() );
 
         let nodeCollection: { [key:string] : MazeNode } = {};
 
         a.setLocation( new NodeLocation2D( [1, 1] ));
         b.setLocation( new NodeLocation2D( [1, 2] ));
 
-        nodeCollection[ a.getLocation().toString() ] = a;
-        nodeCollection[ b.getLocation().toString() ] = b;
+        nodeCollection[ a.ID ] = a;
+        nodeCollection[ b.ID ] = b;
 
         m.setNodes( nodeCollection );
 
-        expect( m.getNode( new NodeLocation2D( [1,2] ))).to.be.equal( b );
+        expect( m.getNodeAtLocation( new NodeLocation2D( [1,2] )).ID ).to.be.equal( b.ID );
     });
 
     it( 'facilitates definition of "starting" and "ending" nodes', () =>  {
         m = new Maze();
 
-        let a = new MazeNode( m, new Compass4() );
-        let b = new MazeNode( m, new Compass4() );
-        let c = new MazeNode( m, new Compass4() );
+        let a = new MazeNode( new Compass4() );
+        let b = new MazeNode( new Compass4() );
+        let c = new MazeNode( new Compass4() );
 
         let nodeCollection: { [key:string] : MazeNode } = {};
 
@@ -125,9 +119,9 @@ describe( 'Maze', () => {
 
         m = new Maze();
 
-        let a = new MazeNode( m, new Compass4() );
-        let b = new MazeNode( m, new Compass4() );
-        let c = new MazeNode( m, new Compass4() );
+        let a = new MazeNode( new Compass4() );
+        let b = new MazeNode( new Compass4() );
+        let c = new MazeNode( new Compass4() );
 
         let nodeCollection: { [key:string] : MazeNode } = {};
 
@@ -149,11 +143,11 @@ describe( 'Maze', () => {
 
         m = new Maze();
 
-        let a = new MazeNode( m, new Compass4() );
-        let b = new MazeNode( m, new Compass4() );
-        let c = new MazeNode( m, new Compass4() );
-        let d = new MazeNode( m, new Compass4() );
-        let e = new MazeNode( m, new Compass4() );
+        let a = new MazeNode( new Compass4() );
+        let b = new MazeNode( new Compass4() );
+        let c = new MazeNode( new Compass4() );
+        let d = new MazeNode( new Compass4() );
+        let e = new MazeNode( new Compass4() );
 
         let nodeCollection: { [key:string] : MazeNode } = {};
 
@@ -168,11 +162,11 @@ describe( 'Maze', () => {
         a.connectTo( b, C4.S );
         b.connectTo( d, C4.W );
 
-        nodeCollection[ a.getLocation().toString() ] = a;
-        nodeCollection[ b.getLocation().toString() ] = b;
-        nodeCollection[ c.getLocation().toString() ] = c;
-        nodeCollection[ d.getLocation().toString() ] = d;
-        nodeCollection[ e.getLocation().toString() ] = e;
+        nodeCollection[ a.ID ] = a;
+        nodeCollection[ b.ID ] = b;
+        nodeCollection[ c.ID ] = c;
+        nodeCollection[ d.ID ] = d;
+        nodeCollection[ e.ID ] = e;
 
         m.setNodes( nodeCollection );
         m.setCurrentNode( a );
@@ -188,9 +182,9 @@ describe( 'Maze', () => {
     it( 'also returns maze nodes back as an array on demand', () => {
         m = new Maze();
 
-        let a = new MazeNode( m, new Compass4() );
-        let b = new MazeNode( m, new Compass4() );
-        let c = new MazeNode( m, new Compass4() );
+        let a = new MazeNode( new Compass4() );
+        let b = new MazeNode( new Compass4() );
+        let c = new MazeNode( new Compass4() );
 
         let nodeCollection: { [key:string] : MazeNode } = {};
 
@@ -214,9 +208,9 @@ describe( 'Maze', () => {
 
         m = new Maze();
 
-        let a = new MazeNode( m, new Compass4() );
-        let b = new MazeNode( m, new Compass4() );
-        let c = new MazeNode( m, new Compass4() );
+        let a = new MazeNode( new Compass4() );
+        let b = new MazeNode( new Compass4() );
+        let c = new MazeNode( new Compass4() );
 
         let nodeCollection: { [key:string] : MazeNode } = {};
 
@@ -254,4 +248,13 @@ describe( 'Maze', () => {
         expect( nodesNames.indexOf( b.getName() )).not.to.be.equal( -1 );
         expect( nodesNames.indexOf( c.getName() )).to.be.equal( -1 );
     });
+
+    it ('can be translated into a valid JSON string', () => {
+
+        let mb = new MazeBuilder();
+        let maze = mb.buildMaze();
+
+        expect (() => {JSON.stringify(maze)}).not.to.throw();
+    });
+
 });

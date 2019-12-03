@@ -141,10 +141,9 @@ export class Maze {
      * @param key
      * @param mazeNode
      */
-    public addNode(key: string, mazeNode: MazeNode) {
-        if (!key) { throw "Cannot add node without key"; }
-        if (this.nodes.hasOwnProperty(key)) { throw "Duplicate key assignment on Maze nodes"; }
-        this.nodes[key] = mazeNode;
+    public addNode(mazeNode: MazeNode) {
+        if (this.nodes.hasOwnProperty(mazeNode.ID)) { throw "Duplicate key assignment on Maze nodes"; }
+        this.nodes[mazeNode.ID] = mazeNode;
     }
 
     /**
@@ -165,9 +164,21 @@ export class Maze {
      * @param {NodeLocation} location
      * @returns {MazeNode}
      */
-    public getNode( location : NodeLocation ) : MazeNode {
+    public getNodeAtLocation( location : NodeLocation ) : MazeNode {
 
-       return this.nodes[location.toString()];
+       const keys = Object.keys(this.nodes);
+       let foundNode: MazeNode = null;
+       let key: string = "";
+
+       for (let keyIndex = 0 ; keyIndex < keys.length ; keyIndex++) {
+           key = keys[keyIndex];
+           if (this.nodes[key].getLocation().toString() === location.toString()) {
+               foundNode = this.nodes[key];
+               break;
+           }
+       }
+
+       return foundNode;
     }
 
     /**
@@ -267,7 +278,7 @@ export class Maze {
     public move( direction : number ) : MazeNode | boolean {
 
         if ( this.currentNode.isConnectionPointOccupied(direction) ) {
-            this.currentNode = this.currentNode.getNeighborAt( direction );
+            this.currentNode = this.getNodeWithId(this.currentNode.getNeighborIdAt( direction ));
             return this.currentNode;
         }
 

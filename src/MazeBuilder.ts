@@ -63,8 +63,8 @@ export class MazeBuilder {
         // Start entry node at 0,0
         let startingCoordinates = this.cardinality.generateNodeLocation();
 
-        this.entry = new MazeNode( this.maze, this.cardinality );
-        this.maze.addNode(this.entry.getLocationId(), this.entry);
+        this.entry = new MazeNode( this.cardinality, "Origin" );
+        this.maze.addNode(this.entry);
 
         this.generateRandomPathFrom( this.entry );
 
@@ -128,14 +128,16 @@ export class MazeBuilder {
             // Start by attempting to connect to a random new or existing node gracefully...
             nextExitPosition = this.buildNextNodeOnRandomPath( pointer, newDirection );
             if ( nextExitPosition >= 0 ) {
-                pointer = pointer.getNeighborAt( nextExitPosition );
+                let pointerId = pointer.getNeighborIdAt( nextExitPosition );
+                pointer = this.maze.getNodeWithId(pointerId);
                 continue;
             }
 
             // ... look for alternative ways of extending to another node if necessary...
             nextExitPosition = this.tryNodeConnectionFromEveryAvailableExit( pointer, openExits );
             if ( nextExitPosition >= 0 ) {
-                pointer = pointer.getNeighborAt( nextExitPosition );
+                let pointerId = pointer.getNeighborIdAt( nextExitPosition );
+                pointer = this.maze.getNodeWithId(pointerId);
                 continue;
             }
 
@@ -143,7 +145,8 @@ export class MazeBuilder {
             occupiedExits = pointer.getOccupiedConnectionPoints();
 
             if ( occupiedExits.length > 0 ) {
-                pointer = pointer.getNeighborAt( MazeBuilder.rand( occupiedExits.length - 1, 0 ) );
+                let pointerId = pointer.getNeighborIdAt( MazeBuilder.rand( occupiedExits.length - 1, 0 ) );
+                pointer = this.maze.getNodeWithId(pointerId);
             }
 
             // .. and, finally, surrender if we can't find any valid connected nodes.
@@ -164,17 +167,17 @@ export class MazeBuilder {
     public seekAndGenerateRandomPath( startingNode : MazeNode, maxDepth: number = this.complexity ) : MazeBuilder {
 
         const depth = MazeBuilder.rand( maxDepth, 0 );
-        let neighbors : MazeNode[];
+        let neighbors : string[];
         let pointer: MazeNode = startingNode;
 
         for ( let i = 0 ; i < depth ; i++ ) {
 
-            neighbors = pointer.getNeighbors();
+            neighbors = pointer.getNeighborIds();
 
             let index = MazeBuilder.rand(neighbors.length - 1, 0);
 
             if ( neighbors.length > 0 ) {
-                pointer = neighbors[index];
+                pointer = this.maze.getNodeWithId(neighbors[index]);
             }
 
             else break;
@@ -229,12 +232,12 @@ export class MazeBuilder {
      */
     private hopToNextNode( pointer: MazeNode ) : MazeNode {
 
-        return pointer.getNeighborAt(
+        return this.maze.getNodeWithId(pointer.getNeighborIdAt(
             MazeBuilder.rand(
                 this.cardinality.getConnectionPointCount() - 1,
                 0
             )
-        );
+        ));
     }
 
 
@@ -261,12 +264,12 @@ export class MazeBuilder {
         if( this.maze.containsNodeWithId(nextCoordinates.toString())) {
            tempNextNode = this.maze.getNodeWithId(nextCoordinates.toString());
         } else {
-           tempNextNode = new MazeNode( this.maze, this.cardinality );
+           tempNextNode = new MazeNode( this.cardinality );
            tempNextNode.setLocation(nextCoordinates);
 
            tempNextNode.setMaxConnections(MazeBuilder.rand(this.cardinality.getConnectionPointCount() - 1, 1));
 
-           this.maze.addNode(tempNextNode.getLocationId(), tempNextNode);
+           this.maze.addNode(tempNextNode);
         }
 
         return tempNextNode;
@@ -308,7 +311,7 @@ export class MazeBuilder {
     private normalizeNodeCoordinates(): { [key:string] : MazeNode } {
 
         let adjustedCoordinates : { [key:string] : MazeNode } = {};
-        let dimensionsUsed = this.maze.getNodes()["[0,0]"].getLocation().getDimensions();
+        let dimensionsUsed = this.maze.getNodeWithId("Origin").getLocation().getDimensions();
         let minCoordinateValuesInrange: number[] = [];
         let currentValue: number;
         let currentMin: number = 0;
