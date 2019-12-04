@@ -142,8 +142,8 @@ export class Maze {
      * @param mazeNode
      */
     public addNode(mazeNode: MazeNode) {
-        if (this.nodes.hasOwnProperty(mazeNode.ID)) { throw "Duplicate key assignment on Maze nodes"; }
-        this.nodes[mazeNode.ID] = mazeNode;
+        if (this.nodes.hasOwnProperty(mazeNode.getId())) { throw "Duplicate key assignment on Maze nodes"; }
+        this.nodes[mazeNode.getId()] = mazeNode;
     }
 
     /**

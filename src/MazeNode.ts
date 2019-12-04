@@ -62,7 +62,7 @@ export class MazeNode {
         this.mazeNodeId = (id) ? id : MazeNode.generateKey();
     }
 
-    public get ID() {
+    public getId(): string {
         return this.mazeNodeId;
     }
 
@@ -91,7 +91,7 @@ export class MazeNode {
             throw( "Indicated exitPosition exitPosition is already occupied.  Two exits/entries may not occupy the same exitPosition" );
         }
 
-        this.neighbors[exitPosition] = node.ID;
+        this.neighbors[exitPosition] = node.getId();
 
         if ( autoConnect ) {
 
@@ -162,7 +162,7 @@ export class MazeNode {
 
         for (let i = 0 ; i < this.cardinality.getConnectionPointCount() ; i++ ) {
 
-            if (node.ID == this.neighbors[i]) { return true; }
+            if (node.getId() == this.neighbors[i]) { return true; }
         }
 
         return false;

@@ -31,20 +31,20 @@ describe( 'Maze', () => {
         let nodeCollection: { [key:string] : MazeNode } = {};
         let capturedNodeCollection: { [key:string] : MazeNode };
 
-        nodeCollection[ a.ID ] = a;
-        nodeCollection[ b.ID ] = b;
-        nodeCollection[ c.ID ] = c;
-        nodeCollection[ d.ID ] = d;
-        nodeCollection[ e.ID ] = e;
+        nodeCollection[ a.getId() ] = a;
+        nodeCollection[ b.getId() ] = b;
+        nodeCollection[ c.getId() ] = c;
+        nodeCollection[ d.getId() ] = d;
+        nodeCollection[ e.getId() ] = e;
 
         m.setNodes( nodeCollection );
         capturedNodeCollection = m.getNodes();
 
-        expect( capturedNodeCollection[a.ID] ).to.be.equal( a );
-        expect( capturedNodeCollection[b.ID] ).to.be.equal( b );
-        expect( capturedNodeCollection[c.ID] ).to.be.equal( c );
-        expect( capturedNodeCollection[d.ID] ).to.be.equal( d );
-        expect( capturedNodeCollection[e.ID] ).to.be.equal( e );
+        expect( capturedNodeCollection[a.getId()] ).to.be.equal( a );
+        expect( capturedNodeCollection[b.getId()] ).to.be.equal( b );
+        expect( capturedNodeCollection[c.getId()] ).to.be.equal( c );
+        expect( capturedNodeCollection[d.getId()] ).to.be.equal( d );
+        expect( capturedNodeCollection[e.getId()] ).to.be.equal( e );
     });
 
     it( 'can return nodes residing at the indicated coordinates', () => {
@@ -59,12 +59,12 @@ describe( 'Maze', () => {
         a.setLocation( new NodeLocation2D( [1, 1] ));
         b.setLocation( new NodeLocation2D( [1, 2] ));
 
-        nodeCollection[ a.ID ] = a;
-        nodeCollection[ b.ID ] = b;
+        nodeCollection[ a.getId() ] = a;
+        nodeCollection[ b.getId() ] = b;
 
         m.setNodes( nodeCollection );
 
-        expect( m.getNodeAtLocation( new NodeLocation2D( [1,2] )).ID ).to.be.equal( b.ID );
+        expect( m.getNodeAtLocation( new NodeLocation2D( [1,2] )).getId() ).to.be.equal( b.getId() );
     });
 
     it( 'facilitates definition of "starting" and "ending" nodes', () =>  {
@@ -162,11 +162,11 @@ describe( 'Maze', () => {
         a.connectTo( b, C4.S );
         b.connectTo( d, C4.W );
 
-        nodeCollection[ a.ID ] = a;
-        nodeCollection[ b.ID ] = b;
-        nodeCollection[ c.ID ] = c;
-        nodeCollection[ d.ID ] = d;
-        nodeCollection[ e.ID ] = e;
+        nodeCollection[ a.getId() ] = a;
+        nodeCollection[ b.getId() ] = b;
+        nodeCollection[ c.getId() ] = c;
+        nodeCollection[ d.getId() ] = d;
+        nodeCollection[ e.getId() ] = e;
 
         m.setNodes( nodeCollection );
         m.setCurrentNode( a );
