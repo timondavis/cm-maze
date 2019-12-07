@@ -22,6 +22,8 @@ export enum C4 {
  */
 export class Compass4 extends Cardinality {
 
+    public typeId: string = 'Compass4';
+
     /**
      * Get the # of connection points attached to this cardinality
      *

@@ -50,6 +50,7 @@ export declare class Maze {
      * @type {MazeNode}
      */
     protected finish: MazeNode;
+    constructor(mazeData?: any);
     /**
      * Set the cardinality behavior for nodes on this maze.
      *

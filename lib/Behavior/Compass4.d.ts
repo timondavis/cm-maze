@@ -22,6 +22,7 @@ export declare enum C4 {
  * rose having 4 cardinal points
  */
 export declare class Compass4 extends Cardinality {
+    typeId: string;
     /**
      * Get the # of connection points attached to this cardinality
      *

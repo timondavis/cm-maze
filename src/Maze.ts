@@ -57,6 +57,12 @@ export class Maze {
      */
     protected finish: MazeNode;
 
+    public constructor(mazeData: any = null) {
+        if (mazeData === null) { return; }
+
+        this.cardinality = mazeData.cardinality;
+    }
+
 
     /**
      * Set the cardinality behavior for nodes on this maze.
