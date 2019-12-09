@@ -28,6 +28,10 @@ export class Compass8 extends Cardinality {
 
     public typeId: string = 'Compass8';
 
+    public constructor() {
+        super('Compass8');
+    }
+
     /**
      * Get the cardinality for this behavior
      *

@@ -31,6 +31,7 @@ export declare enum C8 {
  */
 export declare class Compass8 extends Cardinality {
     typeId: string;
+    constructor();
     /**
      * Get the cardinality for this behavior
      *

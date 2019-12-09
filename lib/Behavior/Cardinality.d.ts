@@ -6,8 +6,10 @@ import { NodeLocation } from "../MazeCoordinates/NodeLocation";
  * between them, in a logical fashion based on the cardinality of exit points for each node.
  */
 export declare abstract class Cardinality {
+    cardinalityId: string;
     abstract getNextLocation(currentLocation: NodeLocation, exitConnectionPoint: number): NodeLocation;
     abstract getConnectionPointCount(): number;
+    constructor(cardinalityId: any);
     /**
      * Ensure the indicated position is valid given this coordinates cardinality
      *
