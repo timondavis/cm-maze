@@ -254,15 +254,17 @@ export class MazeBuilder {
         let lastCoordinates: NodeLocation;
         let nextCoordinates: NodeLocation;
         let tempNextNode: MazeNode;
+        let nodeAtNextLocation : MazeNode;
 
         // Determine coordinates for the new and existing nodes
         lastCoordinates = pointer.getLocation();
         nextCoordinates = this.cardinality.getNextLocation(lastCoordinates, exitPoint);
+        nodeAtNextLocation = this.maze.getNodeAtLocation(nextCoordinates);
 
         // If the next node's coordinate is already taken point our Next Node to that node.  Otherwise,
         // if the space in unoccupied, create a new node.
-        if( this.maze.containsNodeWithId(nextCoordinates.toString())) {
-           tempNextNode = this.maze.getNodeWithId(nextCoordinates.toString());
+        if( nodeAtNextLocation ) {
+           tempNextNode = nodeAtNextLocation;
         } else {
            tempNextNode = new MazeNode( this.cardinality );
            tempNextNode.setLocation(nextCoordinates);
@@ -322,8 +324,7 @@ export class MazeBuilder {
         for ( let i = 0 ; i < dimensionsUsed ; i++ ) {
 
             Object.keys( this.maze.getNodes() ).forEach( (key) => {
-
-                currentValue = this.maze.getNodes()[key].getLocation().getAxisPoint(i);
+                currentValue = this.maze.getNodeWithId(key).getLocation().getAxisPoint(i);
                 currentMin = ( currentValue < currentMin ) ? currentValue : currentMin;
             });
 
@@ -332,7 +333,6 @@ export class MazeBuilder {
 
         // O(d)
         for( let i = 0 ; i < dimensionsUsed ; i++ ) {
-
             adjustmentsByIndex[i] = Math.abs( minCoordinateValuesInrange[i] );
         }
 
@@ -341,17 +341,16 @@ export class MazeBuilder {
 
             Object.keys( this.maze.getNodes() ).forEach( (key) => {
 
-                currentNode = this.maze.getNodes()[key];
+                currentNode = this.maze.getNodeWithId(key);
                 currentNode.getLocation().adjustAxisPoint(i, adjustmentsByIndex[i]);
-                currentNode.setName('[' + currentNode.getLocation().getPosition().toString() + ']');
             });
         }
 
         // O(n)
         Object.keys( this.maze.getNodes() ).forEach( (key) => {
 
-            currentNode = this.maze.getNodes()[key];
-            adjustedCoordinates[currentNode.getLocation().toString()] = currentNode;
+            currentNode = this.maze.getNodeWithId(key);
+            adjustedCoordinates[currentNode.getId()] = currentNode;
         });
 
         return adjustedCoordinates;

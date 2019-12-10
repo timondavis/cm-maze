@@ -5,6 +5,7 @@ import {expect} from 'chai';
 import 'mocha';
 import {MazeNode} from "../../MazeNode";
 import {NodeLocation2D} from "../../MazeCoordinates/NodeLocation2D";
+import {NodeLocation} from "../..";
 
 describe( 'Maze', () => {
 
@@ -123,11 +124,11 @@ describe( 'Maze', () => {
         let b = new MazeNode( new Compass4() );
         let c = new MazeNode( new Compass4() );
 
-        let nodeCollection: { [key:string] : MazeNode } = {};
-
         a.setLocation( new NodeLocation2D( [1, 1] ));
         b.setLocation( new NodeLocation2D( [1, 2] ));
         c.setLocation( new NodeLocation2D( [2, 1] ));
+
+        let nodeCollection: { [key:string] : MazeNode } = {};
 
         nodeCollection[ a.getLocation().toString() ] = a;
         nodeCollection[ b.getLocation().toString() ] = b;
@@ -256,5 +257,65 @@ describe( 'Maze', () => {
 
         expect (() => {JSON.stringify(maze)}).not.to.throw();
     });
+
+    it ( 'provides a method to generate its node collection indexed by location key', () => {
+
+        let mb = new MazeBuilder();
+        let maze = mb.buildMaze();
+        let nodes = maze.getNodes();
+        let indexedNodes = maze.getLocationKeyIndex();
+        let matchedNodeCount: number = 0;
+
+        // Indexes and nodes should have contents
+        expect(nodes).to.not.be.null;
+        expect(indexedNodes).to.not.be.null;
+        expect(Object.keys(indexedNodes)).length.to.be.above(0);
+
+        //
+        let notes : string[] = [];
+        maze.getNodesArray().forEach((node) => {
+            let locationString = node.getLocation().toString();
+            if (notes.indexOf(locationString) >= 0) { debugger; }
+            notes.push(locationString);
+        });
+        //
+
+        expect(Object.keys(indexedNodes).length).be.equal(Object.keys(nodes).length);
+
+        let node: MazeNode;
+        let correspondingNode: MazeNode;
+        let location: NodeLocation;
+        let nodeId: string;
+
+        // Crawling the maze nodes in order should give us nodes with the corresponding locations.
+        // We'll also compare and delete each node from the nodes list as we encounter them via the index.
+        // When we're done, all node pointers should point to null.
+        for (let x = 0 ; x < maze.getDimensions()[0] ; x++) {
+            for (let y = 0 ; y < maze.getDimensions()[1] ; y++) {
+                node = indexedNodes[new NodeLocation2D([x, y]).toString()];
+
+                if (typeof node === 'undefined') { continue; }
+
+                location = node.getLocation();
+                correspondingNode = maze.getNodeAtLocation(location);
+                nodeId = node.getId();
+
+                expect(location.getPosition()[0]).to.be.equal(x);
+                expect(location.getPosition()[1]).to.be.equal(y);
+                expect(correspondingNode).to.be.equal(node);
+                expect(maze.getNodeWithId(nodeId)).to.be.equal(node);
+
+                nodes[nodeId] = null;
+                expect(maze.getNodeWithId(nodeId)).to.be.null;
+            }
+        }
+
+        console.log(nodes);
+        maze.setNodes(nodes);
+        // Go through the nodes list and make sure all entries were deleted from the list.
+        Object.keys(maze.getNodes()).forEach((key) => {
+            expect(maze.getNodeWithId(key)).to.be.null;
+        })
+    })
 
 });
