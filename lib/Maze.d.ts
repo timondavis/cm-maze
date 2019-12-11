@@ -97,7 +97,7 @@ export declare class Maze {
      * @param key
      * @param mazeNode
      */
-    addNode(mazeNode: MazeNode): void;
+    addNode(mazeNode: MazeNode, demandUniqueLocations?: boolean): void;
     /**
      * Iterate through the maze nodes by calling in a callback function.  Callback
      * function will be processed on each MazeNode in the collection.
@@ -168,6 +168,9 @@ export declare class Maze {
      * @returns {MazeNode}
      */
     getCurrentNode(): MazeNode;
+    getLocationKeyIndex(): {
+        [location: string]: MazeNode;
+    };
     /**
      * Move the 'current' node pointer for this maze in the indicated direction, if available.  Returns
      * the new node if successful, or otherwise FALSE
@@ -176,4 +179,6 @@ export declare class Maze {
      * @returns {MazeNode | boolean}
      */
     move(direction: number): MazeNode | boolean;
+    private prepareMazeIndexArray;
+    private generate2DMazeIndex;
 }

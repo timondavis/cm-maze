@@ -147,8 +147,8 @@ export class Maze {
      * @param key
      * @param mazeNode
      */
-    public addNode(mazeNode: MazeNode) {
-        if (this.nodes.hasOwnProperty(mazeNode.getId())) { throw "Duplicate key assignment on Maze nodes"; }
+    public addNode(mazeNode: MazeNode, demandUniqueLocations: boolean = true) {
+        if (demandUniqueLocations && this.getNodeAtLocation(mazeNode.getLocation())) { throw "Duplicate key assignment on Maze nodes"; }
         this.nodes[mazeNode.getId()] = mazeNode;
     }
 
@@ -173,18 +173,28 @@ export class Maze {
     public getNodeAtLocation( location : NodeLocation ) : MazeNode {
 
        const keys = Object.keys(this.nodes);
+       let tryNode: MazeNode = null;
        let foundNode: MazeNode = null;
        let key: string = "";
 
-       for (let keyIndex = 0 ; keyIndex < keys.length ; keyIndex++) {
-           key = keys[keyIndex];
-           if (this.nodes[key].getLocation().toString() === location.toString()) {
-               foundNode = this.nodes[key];
-               break;
+       try {
+
+           for (let keyIndex = 0 ; keyIndex < keys.length ; keyIndex++) {
+               key = keys[keyIndex];
+               tryNode = this.getNodeWithId(key);
+
+               if (tryNode && tryNode.getLocation().toString() === location.toString()) {
+                   foundNode = this.nodes[key];
+                   break;
+               }
            }
+
+           return foundNode;
+       }
+       catch (ex) {
+           debugger;
        }
 
-       return foundNode;
     }
 
     /**
@@ -274,6 +284,21 @@ export class Maze {
         return this.currentNode;
     }
 
+    public getLocationKeyIndex(): { [location: string] : MazeNode } {
+
+        let node: MazeNode;
+        let location : NodeLocation;
+        let mazeArray : MazeNode[][] = this.prepareMazeIndexArray();
+
+        Object.keys(this.getNodes()).forEach((key) => {
+            node = <MazeNode> this.getNodeWithId(key);
+            location = node.getLocation();
+            mazeArray[location.getPosition()[0]][location.getPosition()[1]] = node;
+        });
+
+        return this.generate2DMazeIndex(mazeArray);
+    }
+
     /**
      * Move the 'current' node pointer for this maze in the indicated direction, if available.  Returns
      * the new node if successful, or otherwise FALSE
@@ -289,5 +314,31 @@ export class Maze {
         }
 
         return false;
+    }
+
+    private prepareMazeIndexArray(): MazeNode[][] {
+        let mazeArray : MazeNode[][] = [];
+
+        for (let x = 0 ; x < this.dimensions[0] ; x++ ) {
+            mazeArray[x] = [];
+            for (let y = 0 ; y < this.dimensions[1] ; y++ ) {
+                mazeArray[x][y] = null;
+            }
+        }
+
+        return mazeArray;
+    }
+
+    private generate2DMazeIndex(mazeArray: MazeNode[][]) : {[location:string] : MazeNode} {
+        let index : { [location: string] : MazeNode} = {};
+        for ( let x = 0 ; x < this.dimensions[0] ; x++ ) {
+            for ( let y = 0 ; y < this.dimensions[1] ; y++ ) {
+                if (mazeArray[x][y] !== null) {
+                    index[mazeArray[x][y].getLocation().toString()] = mazeArray[x][y];
+                }
+            }
+        }
+
+        return index;
     }
 }
