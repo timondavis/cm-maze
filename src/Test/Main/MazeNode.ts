@@ -142,7 +142,7 @@ describe( 'MazeNode', () => {
         a.connectTo( new MazeNode(new Compass8() ), C8.S );
         a.connectTo( new MazeNode(new Compass8() ), C8.W );
 
-        exitsOpenOnA = a.getOpenConnectionPoints();
+        exitsOpenOnA = a.getAvailableConnectionPoints();
         exitsOccupiedOnA = a.getOccupiedConnectionPoints();
 
         expect( exitsOpenOnA ).to.have.lengthOf( 4 );

@@ -194,7 +194,7 @@ export class MazeNode {
      *
      * @returns {number[]}
      */
-    public getOpenConnectionPoints() : number[] {
+    public getAvailableConnectionPoints() : number[] {
 
         let positions: number[] = [];
 
