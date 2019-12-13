@@ -160,8 +160,6 @@ export class MazeBuilder {
                 pointer = this.maze.getNodeWithId(pointerId);
             }
 
-            debugger;
-
             // No valid exits could be found.  Stop searching and do not traverse.  Result is that the current node will be returned.
             break;
         }

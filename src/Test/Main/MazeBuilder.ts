@@ -64,19 +64,18 @@ describe( 'MazeBuilder', () => {
 
     it ( 'will never create a room with all exits sealed', () => {
 
-        let mb4 = new MazeBuilder(new Compass4(), 500);
-        let mb8 = new MazeBuilder(new Compass8(), 500);
+        let mb4 = new MazeBuilder(new Compass4(), 150);
+        let mb8 = new MazeBuilder(new Compass8(), 150);
         let maze4 = mb4.buildMaze();
         let maze8 = mb8.buildMaze();
 
         maze4.getNodesArray().forEach((node: MazeNode) => {
-            expect(node.getAvailableConnectionPoints().length).to.be.greaterThan(0);
+            expect(node.getAvailableConnectionPoints().length).not.to.be.equal(4);
         });
 
         maze8.getNodesArray().forEach((node: MazeNode) => {
-            expect(node.getAvailableConnectionPoints().length).to.be.greaterThan(0);
+            expect(node.getAvailableConnectionPoints().length).not.to.be.equal(8);
         });
-
     });
 
     // Tricky/expensive to prove without a search algorithm.  Will implement this on the official.  Mean while, these tests are pending.
