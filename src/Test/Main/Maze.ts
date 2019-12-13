@@ -310,7 +310,6 @@ describe( 'Maze', () => {
             }
         }
 
-        console.log(nodes);
         maze.setNodes(nodes);
         // Go through the nodes list and make sure all entries were deleted from the list.
         Object.keys(maze.getNodes()).forEach((key) => {

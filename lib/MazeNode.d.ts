@@ -92,7 +92,7 @@ export declare class MazeNode {
      *
      * @returns {number[]}
      */
-    getOpenConnectionPoints(): number[];
+    getAvailableConnectionPoints(): number[];
     /**
      * Get an array of neighboring node ids.
      *

@@ -177,23 +177,17 @@ export class Maze {
        let foundNode: MazeNode = null;
        let key: string = "";
 
-       try {
+       for (let keyIndex = 0 ; keyIndex < keys.length ; keyIndex++) {
+           key = keys[keyIndex];
+           tryNode = this.getNodeWithId(key);
 
-           for (let keyIndex = 0 ; keyIndex < keys.length ; keyIndex++) {
-               key = keys[keyIndex];
-               tryNode = this.getNodeWithId(key);
-
-               if (tryNode && tryNode.getLocation().toString() === location.toString()) {
-                   foundNode = this.nodes[key];
-                   break;
-               }
+           if (tryNode && tryNode.getLocation().toString() === location.toString()) {
+               foundNode = this.nodes[key];
+               break;
            }
+       }
 
-           return foundNode;
-       }
-       catch (ex) {
-           debugger;
-       }
+       return foundNode;
 
     }
 

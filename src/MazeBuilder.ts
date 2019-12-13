@@ -110,38 +110,49 @@ export class MazeBuilder {
     public generateRandomPathFrom( pointer : MazeNode, depth: number = this.complexity ) : MazeBuilder {
 
         let newDirection = -1;
-        let openExits: number[] = [];
+        let exitsAvailable: number[] = [];
         let occupiedExits: number[];
         let nextExitPosition: number;
 
         // Create node connections (to new or existing nodes) - 1 for each level of depth declared.
         for ( let i = 0 ; i < depth ; i++ ) {
 
-            // Pick a random exit point on this node.  If there is no open exit, traverse to the next node and continue.
-            openExits = pointer.getOpenConnectionPoints();
-            if (openExits.length == 0) {
-                pointer = this.hopToNextNode(pointer);
+            exitsAvailable = pointer.getAvailableConnectionPoints();
+
+            /**
+             * If node connections are all employed, traverse to a random neighboring node.
+             */
+            if (exitsAvailable.length == 0) {
+                pointer = this.hopToNextNodeInRandomDirection(pointer);
                 continue;
             }
-            newDirection = openExits[MazeBuilder.rand(openExits.length - 1, 0)];
 
-            // Start by attempting to connect to a random new or existing node gracefully...
-            nextExitPosition = this.buildNextNodeOnRandomPath( pointer, newDirection );
+            /**
+             * Otherwise, we'll pick a direction for travel based on the exits available.
+             */
+            // Pick a random direction
+            newDirection = exitsAvailable[MazeBuilder.rand(exitsAvailable.length - 1, 0)];
+
+            // Start by attempting to connect to a random new or existing node gracefully.  If found,
+            // traverse to new direction.
+            nextExitPosition = this.attemptBuildNextNodeOnPath( pointer, newDirection );
             if ( nextExitPosition >= 0 ) {
                 let pointerId = pointer.getNeighborIdAt( nextExitPosition );
                 pointer = this.maze.getNodeWithId(pointerId);
                 continue;
             }
 
-            // ... look for alternative ways of extending to another node if necessary...
-            nextExitPosition = this.tryNodeConnectionFromEveryAvailableExit( pointer, openExits );
+            // If our selected direction is not available, disregard randomization and attempt to
+            // connect to, or build, a node in the indicated direction.  If such a node is found, traverse in the
+            // new direction.
+            nextExitPosition = this.attemptNodeConnectionFromEveryAvailableExit( pointer, exitsAvailable );
             if ( nextExitPosition >= 0 ) {
                 let pointerId = pointer.getNeighborIdAt( nextExitPosition );
                 pointer = this.maze.getNodeWithId(pointerId);
                 continue;
             }
 
-            // .. retreat if unsuccessful, fallback to a previously connected node ...
+            // If no valid exit point could be found, traverse to previous node.
             occupiedExits = pointer.getOccupiedConnectionPoints();
 
             if ( occupiedExits.length > 0 ) {
@@ -149,7 +160,7 @@ export class MazeBuilder {
                 pointer = this.maze.getNodeWithId(pointerId);
             }
 
-            // .. and, finally, surrender if we can't find any valid connected nodes.
+            // No valid exits could be found.  Stop searching and do not traverse.  Result is that the current node will be returned.
             break;
         }
 
@@ -199,7 +210,7 @@ export class MazeBuilder {
      * @param {number[]} openConnectionPoints
      * @returns {number}
      */
-    private tryNodeConnectionFromEveryAvailableExit( pointer: MazeNode, openConnectionPoints: number[] ): number {
+    private attemptNodeConnectionFromEveryAvailableExit( pointer: MazeNode, openConnectionPoints: number[] ): number {
 
         let validExitIndexFound: boolean = false;
         let newDirection = -1;
@@ -211,7 +222,7 @@ export class MazeBuilder {
             newDirection = openConnectionPoints[index];
             openConnectionPoints = openConnectionPoints.splice( index, 1 );
 
-            candidateExitPosition = this.buildNextNodeOnRandomPath( pointer, newDirection );
+            candidateExitPosition = this.attemptBuildNextNodeOnPath( pointer, newDirection );
 
             if ( candidateExitPosition > 0 ) {
                 validExitIndexFound = true;
@@ -223,14 +234,14 @@ export class MazeBuilder {
     }
 
     /**
-     * Convenince function to simply get the next node WHEN ALL EXIT POINTS ARE CLAIMED
+     * Convenience function to simply get the next node WHEN ALL EXIT POINTS ARE CLAIMED
      *
      * @pre  All exit points on the node must connect to other nodes.  Ignoring this precondition
      * may result in exceptions being thrown.
      *
      * @param {MazeNode} pointer
      */
-    private hopToNextNode( pointer: MazeNode ) : MazeNode {
+    private hopToNextNodeInRandomDirection( pointer: MazeNode ) : MazeNode {
 
         return this.maze.getNodeWithId(pointer.getNeighborIdAt(
             MazeBuilder.rand(
@@ -278,14 +289,19 @@ export class MazeBuilder {
     }
 
     /**
-     * Convenience method for producing (or finding), and then reporting the exit point connecting to,
-     * the next node on a given path. Returns the index of the connected path, or -1 if failure took place
+     * Convenience method for producing or finding the next node at the given exitPoint.
+     * If the next node has an available connection point for a logical connection to the supplied pointer,
+     * the connection will be made between the supplied node and the next node.
      *
      * @param {MazeNode} pointer
      * @param {number} exitPoint
-     * @returns {number}
+     * @returns {number}  If successful, the exit position on the supplied pointer, which leads to the adjoining node, will return.
+     *                    Otherwise, -1 will be returned.
      */
-    private buildNextNodeOnRandomPath( pointer: MazeNode, exitPoint : number ) : number {
+    private attemptBuildNextNodeOnPath( pointer: MazeNode, exitPoint : number ) : number {
+
+        if (!pointer.isConnectionPointOpen(exitPoint)) { return - 1;}
+
         let tempNextNode: MazeNode;
 
         // Get or create the node at the next position.
@@ -293,9 +309,9 @@ export class MazeBuilder {
 
         // If the logical entry point is open on the next node, we'll connect the nodes and traverse
         // to the next node.
-        if ( pointer.isConnectionPointOpen(exitPoint) && tempNextNode.isConnectionPointOpen(this.cardinality.getOpposingConnectionPoint(exitPoint))) {
+        if (tempNextNode.isConnectionPointOpen(this.cardinality.getOpposingConnectionPoint(exitPoint))) {
 
-            pointer.connectTo( tempNextNode, exitPoint );
+            pointer.connectTo(tempNextNode, exitPoint);
             return exitPoint;
         }
 
