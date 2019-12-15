@@ -15,12 +15,12 @@ export class MazeAnalysis {
      * The maze being analyzed.
      */
     private maze: Maze;
-    private mazeLocationIndex:  Map<NodeLocation2D, MazeNode>;
+    private mazeLocationIndex:  Map<string, MazeNode>;
     private mazeCardinalityPoints: number;
 
     /**
      * Get a map of exit points => node ids
-     * The exit points represent a point of cardinality, using the same standards as the Cardinality classes.
+     * The exit points represent a point of cardinality, using the location Id string provided by NodeLocation as the key.
      * The array of strings is a list of ids for nodes which have a vacancy in the adjacent node in the indicated direction.
      * "Vacancy" means that there is no node in the maze at the position in question.
      */
@@ -32,7 +32,7 @@ export class MazeAnalysis {
      * Get a map of node ids which do not have any adjacent vacancies.  These nodes are surrounded by other nodes.
      * "Vacancy" means that there is no node in the maze at the position in question.
      */
-    public get nodeIdsWIthNoVacantNeighborsInAnyDirection() : string[] {
+    public get nodeIdsWithNoVacantNeighborsInAnyDirection() : string[] {
         return this._nodeIdsWithNoVacantNeighborsInAnyDirection;
     }
 
@@ -96,7 +96,7 @@ export class MazeAnalysis {
 
         let location: NodeLocation2D = <NodeLocation2D> node.getCardinality().getNextLocation(node.getLocation(), exitIndex);
 
-        if (this.mazeLocationIndex.has(location)) {
+        if (this.mazeLocationIndex.has(location.toString())) {
             return true;
         }
 
