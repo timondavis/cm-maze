@@ -27,11 +27,11 @@ describe( 'MazeBuilder', () => {
 
     it( 'can enforce cardinality behaviors to all MazeNodes by applying an instance of CardinalityBehavior', () => {
 
-        MB = new MazeBuilder( new Compass8() );
+        MB = new MazeBuilder( { cardinality: new Compass8() } );
         let a: Maze = MB.buildMaze();
         expect( a.getStartNode().getCardinality() ).to.be.an.instanceOf( Compass8 );
 
-        MB = new MazeBuilder( new Compass4() );
+        MB = new MazeBuilder();
         let b: Maze = MB.buildMaze();
         expect( b.getStartNode().getCardinality() ).to.be.an.instanceOf( Compass4 );
     });

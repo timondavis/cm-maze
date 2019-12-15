@@ -1,6 +1,7 @@
 import {Cardinality} from "./Behavior/Cardinality";
 import {MazeNode} from "./MazeNode";
 import {NodeLocation} from "./MazeCoordinates/NodeLocation";
+import {NodeLocation2D} from "./MazeCoordinates/NodeLocation2D";
 
 /**
  * @class Maze
@@ -278,7 +279,7 @@ export class Maze {
         return this.currentNode;
     }
 
-    public getLocationKeyIndex(): { [location: string] : MazeNode } {
+    public getLocationKeyIndex(): Map<string, MazeNode> {
 
         let node: MazeNode;
         let location : NodeLocation;
@@ -323,12 +324,13 @@ export class Maze {
         return mazeArray;
     }
 
-    private generate2DMazeIndex(mazeArray: MazeNode[][]) : {[location:string] : MazeNode} {
-        let index : { [location: string] : MazeNode} = {};
+    private generate2DMazeIndex(mazeArray: MazeNode[][]) : Map<string, MazeNode> {
+        let index : Map<string, MazeNode> = new Map<string, MazeNode>();
+
         for ( let x = 0 ; x < this.dimensions[0] ; x++ ) {
             for ( let y = 0 ; y < this.dimensions[1] ; y++ ) {
                 if (mazeArray[x][y] !== null) {
-                    index[mazeArray[x][y].getLocation().toString()] = mazeArray[x][y];
+                    index.set(mazeArray[x][y].getLocation().toString(),  mazeArray[x][y]);
                 }
             }
         }

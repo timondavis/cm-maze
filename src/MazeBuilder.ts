@@ -3,6 +3,7 @@ import {Cardinality} from "./Behavior/Cardinality"
 import {NodeLocation} from "./MazeCoordinates/NodeLocation";
 import {Compass4} from "./Behavior/Compass4";
 import {Maze} from "./Maze";
+import {MazeBuilderExitPlacement} from "./MazeBuilder/MazeBuilderExitPlacement";
 
 /**
  * @class MazeBuilder
@@ -27,6 +28,11 @@ export class MazeBuilder {
     protected entry : MazeNode;
 
     /**
+     * Which 'mode' logic will be used to determine where the exit and entry points are, and their properties.
+     */
+    protected exitPlacement: string;
+
+    /**
      *  A Cardinality instance responsible for facilitating node connection and traversal
      *  logic.
      *
@@ -42,13 +48,15 @@ export class MazeBuilder {
     /**
      * Constructor
      *
-     * @param {Cardinality} cardinality
-     * @param {number} complexity
+     * @param configs : any
      */
-    public constructor( cardinality? : Cardinality, complexity: number = 100 ) {
+    public constructor( configs: any = null) {
 
-        this.cardinality = ( cardinality ) ? cardinality : new Compass4();
-        this.complexity = complexity;
+        this.cardinality = (configs && configs.hasOwnProperty('cardinality' )) ? configs.cardinality : new Compass4();
+        this.complexity = (configs && configs.hasOwnProperty('complexity' )) ? configs.complexity : 100;
+        this.exitPlacement = (configs && configs.hasOwnProperty('exitPlacement')) ?
+            configs.exitPlacement : MazeBuilderExitPlacement.INTERNAL;
+
     }
 
     /**

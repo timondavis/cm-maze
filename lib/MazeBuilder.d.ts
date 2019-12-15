@@ -21,6 +21,10 @@ export declare class MazeBuilder {
      */
     protected entry: MazeNode;
     /**
+     * Which 'mode' logic will be used to determine where the exit and entry points are, and their properties.
+     */
+    protected exitPlacement: string;
+    /**
      *  A Cardinality instance responsible for facilitating node connection and traversal
      *  logic.
      *
@@ -34,10 +38,9 @@ export declare class MazeBuilder {
     /**
      * Constructor
      *
-     * @param {Cardinality} cardinality
-     * @param {number} complexity
+     * @param configs : any
      */
-    constructor(cardinality?: Cardinality, complexity?: number);
+    constructor(configs?: any);
     /**
      * Build a new randomized maze instance based on local instance configurations
      *
