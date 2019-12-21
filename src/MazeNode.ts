@@ -51,13 +51,13 @@ export class MazeNode {
      */
     protected maxExits: number;
 
-    public constructor(cardinality: Cardinality, id: string = null, coordinates? : NodeLocation) {
+    public constructor(cardinality: Cardinality, id: string = null, coordinates? : NodeLocation, maxConnections: number = null) {
 
         this.cardinality = cardinality;
         this.neighbors = new Array<string>( cardinality.getConnectionPointCount() );
 
         this.coordinates = ( coordinates ) ? coordinates : this.cardinality.generateNodeLocation();
-        this.maxExits = -1;
+        this.maxExits = (maxConnections) ? maxConnections : this.cardinality.getConnectionPointCount();
 
         this.mazeNodeId = (id) ? id : MazeNode.generateKey();
     }
@@ -79,8 +79,15 @@ export class MazeNode {
 
         if ( ! this.isConnectionPointOpen(exitPosition) )  {
 
+            console.log('---On Entry---');
+            console.log(`Node ID (this.getId()): ${this.getId()}`);
+            console.log(`Current connection count (this.getOccupiedConnectionPoints().length): ${this.getOccupiedConnectionPoints().length}`);
+            console.log(`Maximum connection count (this.getMaxConnections()): ${this.getMaxConnections()}`);
+            console.log(`Reported Neighbor ID at position (this.getNeighborIdAt(exitPosition): ${this.getNeighborIdAt(exitPosition)}`);
+            console.log(`Attempted connection position (exitPosition): ${exitPosition}`);
+            console.log('--------------');
             throw( "One-Way connection failed: " +
-                "Indicated node will not tolerate any more additional connections - maximum reached." );
+                "Indicated node reports that given exit is not available for connection.." );
         }
 
         if ( exitPosition >= this.cardinality.getConnectionPointCount() || exitPosition < 0 ) {
@@ -96,6 +103,14 @@ export class MazeNode {
         if ( autoConnect ) {
 
             if ( ! node.isConnectionPointOpen(node.getCardinality().getOpposingConnectionPoint(exitPosition)) ) {
+
+                console.log('---On Autoconnect---');
+                console.log(`Node ID (this.getId()): ${this.getId()}`);
+                console.log(`Current connection count (node.getOccupiedConnectionPoints().length): ${this.getOccupiedConnectionPoints().length}`);
+                console.log(`Maximum connection count (node.getMaxConnections()): ${this.getMaxConnections()}`);
+                console.log(`Reported Neighbor ID at position (node.getNeighborIdAt(exitPosition): ${this.getNeighborIdAt(exitPosition)}`);
+                console.log(`Attempted connection position (exitPosition): ${exitPosition}`);
+                console.log('--------------------');
 
                 throw( "Two-Way conneciton failed.  Indicated node will not tolerate any more additonal connections, " +
                     "maximum reached.")
@@ -241,13 +256,19 @@ export class MazeNode {
      */
     public isConnectionPointOpen( point: number ): boolean {
 
-        if ( this.maxExits >= 0 && this.maxExits <= this.getOccupiedConnectionPoints().length) {
+        if ( this.getMaxConnections() >= 0 && (this.getOccupiedConnectionPoints().length + 1) > this.getMaxConnections()) {
+
+            console.log(`--- isConnectionPointOpen -- start -- `);
+            console.log('Too Many Connection Points!  getMaxConnections() is false');
+            console.log(`this.getOccupiedConnectionPoitns().length + 1: ${this.getOccupiedConnectionPoints().length + 1}`);
+            console.log(`this.getMaxConnections(): ${this.getMaxConnections()}`);
+            console.log(`${this.getOccupiedConnectionPoints().length + 1} > ${this.getMaxConnections()}`);
 
             return false;
         }
 
         this.cardinality.validateConnectionPoint( point );
-        return ( this.neighbors[point] === undefined );
+        return ( this.neighbors[point] === undefined )
     }
 
     /**

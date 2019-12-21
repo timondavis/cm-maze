@@ -4,6 +4,10 @@ import {NodeLocation} from "./MazeCoordinates/NodeLocation";
 import {Compass4} from "./Behavior/Compass4";
 import {Maze} from "./Maze";
 import {MazeBuilderExitPlacement} from "./MazeBuilder/MazeBuilderExitPlacement";
+import {ExitPlacementBehavior} from "./MazeBuilder/ExitPlacementBehavior/ExitPlacementBehavior";
+import {InternalExitsStrategy} from "./MazeBuilder/ExitPlacementBehavior/InternalExitsStrategy";
+import {ExternalExitsOpenStrategy} from "./MazeBuilder/ExitPlacementBehavior/ExternalExitsOpenStrategy";
+import {ExternalExitsSealedStrategy} from "./MazeBuilder/ExitPlacementBehavior/ExternalExitsSealedStrategy";
 
 /**
  * @class MazeBuilder
@@ -55,8 +59,32 @@ export class MazeBuilder {
         this.cardinality = (configs && configs.hasOwnProperty('cardinality' )) ? configs.cardinality : new Compass4();
         this.complexity = (configs && configs.hasOwnProperty('complexity' )) ? configs.complexity : 100;
         this.exitPlacement = (configs && configs.hasOwnProperty('exitPlacement')) ?
-            configs.exitPlacement : MazeBuilderExitPlacement.INTERNAL;
+            configs.exitPlacement : MazeBuilderExitPlacement.EXTERNAL_OPEN;
+    }
 
+    private placeExits() {
+        let exitsStrategy: ExitPlacementBehavior;
+        switch(this.exitPlacement) {
+            case(MazeBuilderExitPlacement.INTERNAL): {
+                exitsStrategy = new InternalExitsStrategy(this.maze);
+                break;
+            }
+            case(MazeBuilderExitPlacement.EXTERNAL_OPEN): {
+                exitsStrategy = new ExternalExitsOpenStrategy(this.maze);
+                break;
+            }
+            case(MazeBuilderExitPlacement.EXTERNAL_SEALED): {
+                exitsStrategy = new ExternalExitsSealedStrategy(this.maze);
+                break;
+            }
+            default: {
+                throw `Invalid exit strategy supplied: ${this.exitPlacement}`;
+                break;
+            }
+        }
+
+        exitsStrategy.placeEntrance();
+        exitsStrategy.placeExit();
     }
 
     /**
@@ -84,12 +112,12 @@ export class MazeBuilder {
         this.maze.setCardinality( this.cardinality );
         this.maze.setNodes( this.normalizeNodeCoordinates() );
         this.maze.setCurrentNode( this.entry );
-        this.maze.setStartNode( this.entry );
-        this.maze.setFinishNode( this.selectRandomNode() );
         this.maze.setDimensions( this.getDimensions() );
+        this.placeExits();
 
         return this.maze;
     }
+
 
     /**
      * Convenience function (static) for shorthand randomization.
@@ -287,8 +315,7 @@ export class MazeBuilder {
         } else {
            tempNextNode = new MazeNode( this.cardinality );
            tempNextNode.setLocation(nextCoordinates);
-
-           tempNextNode.setMaxConnections(MazeBuilder.rand(this.cardinality.getConnectionPointCount() - 1, 1));
+           tempNextNode.setMaxConnections(Math.ceil(Math.random() * this.cardinality.getConnectionPointCount()));
 
            this.maze.addNode(tempNextNode);
         }

@@ -1,33 +1,42 @@
 import {Maze} from "../../Maze";
 import {MazeAnalysis} from "../../Maze/MazeAnalysis";
-import {NodeLocation2D} from "../../MazeCoordinates/NodeLocation2D"
 import {MazeNode} from "../../MazeNode";
+import {Cardinality} from "../../Behavior/Cardinality";
+import {MazeBuilder} from "../../MazeBuilder";
 
-export abstract class GoalStrategy {
+export abstract class ExitPlacementBehavior {
 
     protected entranceNodeId: string;
     protected directionIntoEntrance: number;
     protected exitNodeId: string;
-    protected directionIntoExit: number;
+    protected static exitId: number = 0;
 
     constructor(protected maze: Maze, protected mazeAnalysis: MazeAnalysis) {}
 
     abstract placeEntrance(): void;
     abstract placeExit(): void;
 
+    protected generateExitNode(cardinality: Cardinality) {
+        let node = new MazeNode(cardinality, 'EXIT-' + ExitPlacementBehavior.exitId);
+        node.setMaxConnections(cardinality.getConnectionPointCount());
+        return node;
+    }
+
     /**
      * Given the direction from which a vacant node location would enter into an occupied node location,
      * select a node that fits this description.
      *
      * @param direction
+     * @param cardinality
      * @param cardinalityPointCandidates
      */
-    protected findBorderNodeEnteringFromDirection(direction: number, excludedNodeIds: string[] = []): MazeNode {
+    protected findBorderNodeEnteringFromDirection(direction: number, cardinality: Cardinality, excludedNodeIds: string[] = []): MazeNode {
         let nodesAvailableFromDirection: string[];
         let randomNodeIndex: number;
         let selectedNode: MazeNode = null;
 
-        nodesAvailableFromDirection = this.mazeAnalysis.nodeIdsWithVacanciesInDirection.get(direction);
+        // Below is verified manually - works!
+        nodesAvailableFromDirection = this.mazeAnalysis.nodeIdsWithVacanciesAtDirection.get(cardinality.getOpposingConnectionPoint(direction));
 
         while(nodesAvailableFromDirection.length > 0) {
 
@@ -36,8 +45,6 @@ export abstract class GoalStrategy {
             selectedNode = this.maze.getNodeWithId(nodesAvailableFromDirection[randomNodeIndex]);
 
             if (excludedNodeIds.indexOf(selectedNode.getId()) === -1) {
-                this.entranceNodeId = selectedNode.getId();
-                this.exitNodeId = selectedNode.getId();
                 break;
             } else {
                 nodesAvailableFromDirection.splice(nodesAvailableFromDirection.indexOf(selectedNode.getId()), 1);
@@ -48,12 +55,12 @@ export abstract class GoalStrategy {
     }
 
     protected findBorderNodeEnteringFromRandomDirection(excludedNodeIds: string[] = [], excludedDirections: number[] = []): { node: MazeNode, direction: number} {
-        let cardinalityPointsRemaining: number[];
+        let cardinalityPointsRemaining: number[] = [];
         let cardinalityPoints = this.maze.getCardinality().getConnectionPointCount();
         let selectedNode: MazeNode;
         let randomCardinalityPoint: number;
         for ( let i = 0 ; i < cardinalityPoints ; i++ ) {
-            if (excludedDirections.indexOf(i) !== -1) {
+            if (excludedDirections.indexOf(i) === -1) {
                 cardinalityPointsRemaining.push(i);
             }
         }
@@ -66,15 +73,27 @@ export abstract class GoalStrategy {
 
             randomCardinalityPoint = Math.floor(Math.random() * (cardinalityPointsRemaining.length - 1));
 
-            if (selectedNode = this.findBorderNodeEnteringFromDirection(randomCardinalityPoint)) {
-                if (excludedNodeIds.indexOf(selectedNode.getId()) === -1) {
-                    break;
-                }
+            if (excludedDirections.indexOf(randomCardinalityPoint) === -1) {
+                selectedNode = this.findBorderNodeEnteringFromDirection(randomCardinalityPoint, this.maze.getCardinality())
+                break;
             } else {
                 cardinalityPointsRemaining.splice(cardinalityPointsRemaining.indexOf(randomCardinalityPoint), 1);
             }
         }
 
         return { node: selectedNode, direction: randomCardinalityPoint };
+    }
+
+    /**
+     * Select a random node on the existing maze.
+     *
+     * @returns {MazeNode}
+     */
+    protected selectRandomNode() : MazeNode {
+
+        let coordinateList = Object.keys( this.maze.getNodes() );
+        let index = MazeBuilder.rand( coordinateList.length - 1, 0 );
+
+        return this.maze.getNodes()[coordinateList[index]];
     }
 }
