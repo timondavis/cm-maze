@@ -18,7 +18,6 @@
   },
   "nodemonConfig": {
     "ignore": [
-      "lib/*"
     ]
   },
   "devDependencies": {
