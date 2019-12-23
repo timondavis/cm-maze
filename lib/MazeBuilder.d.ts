@@ -41,6 +41,7 @@ export declare class MazeBuilder {
      * @param configs : any
      */
     constructor(configs?: any);
+    private placeExits;
     /**
      * Build a new randomized maze instance based on local instance configurations
      *

@@ -1,9 +1,9 @@
-import {GoalStrategy} from "./GoalStrategy";
+import {ExitPlacementBehavior} from "./ExitPlacementBehavior";
 import {Maze} from "../../Maze";
 import {MazeAnalysis} from "../../Maze/MazeAnalysis";
 import {MazeNode} from "../../MazeNode";
 
-export class ExternalExitsSealedStrategy extends GoalStrategy {
+export class ExternalExitsSealedStrategy extends ExitPlacementBehavior {
 
     constructor(maze: Maze) {
         super(maze, new MazeAnalysis(maze));
@@ -16,8 +16,12 @@ export class ExternalExitsSealedStrategy extends GoalStrategy {
             throw "Entrance Node could not be established."
         }
 
-        this.entranceNodeId = nodeData.node.getId();
-        this.directionIntoEntrance = nodeData.direction;
+        let node = nodeData.node;
+        let direction = nodeData.direction;
+
+        this.entranceNodeId = node.getId();
+        this.directionIntoEntrance = direction;
+        this.maze.setStartNode(node);
     }
 
     placeExit() {
@@ -27,7 +31,12 @@ export class ExternalExitsSealedStrategy extends GoalStrategy {
             throw "Exit Node could not be established";
         }
 
-        this.exitNodeId = nodeData.node.getId();
-        this.directionIntoExit = nodeData.direction;
+        let node = nodeData.node;
+        let direction = nodeData.direction;
+
+        this.exitNodeId = node.getId();
+        this.directionIntoEntrance = direction;
+
+        this.maze.setFinishNode(node);
     }
 }

@@ -24,7 +24,7 @@ export class MazeAnalysis {
      * The array of strings is a list of ids for nodes which have a vacancy in the adjacent node in the indicated direction.
      * "Vacancy" means that there is no node in the maze at the position in question.
      */
-    public get nodeIdsWithVacanciesInDirection() : Map<number, string[]> {
+    public get nodeIdsWithVacanciesAtDirection() : Map<number, string[]> {
         return this._nodeIdsWithVacantNeighborsInDirection;
     }
 
@@ -46,7 +46,7 @@ export class MazeAnalysis {
 
         // Initialize arrays for directional neighbor vacancies
         for (let c = 0 ; c < this.mazeCardinalityPoints ; c++ ) {
-            this._nodeIdsWithVacantNeighborsInDirection[c] = [];
+            this._nodeIdsWithVacantNeighborsInDirection.set(c, []);
         }
 
         // Initialize array for no-directional neighbor vacancies
@@ -69,18 +69,18 @@ export class MazeAnalysis {
             for ( let y = 0 ; y < this.maze.getDimensions()[1]; y++ ) {
 
                 vacantNodeNeighborFound = false;
-                node = this.mazeLocationIndex[new NodeLocation2D([x, y]).toString() ];
+                node = this.mazeLocationIndex.get(new NodeLocation2D([x, y]).toString());
                 if (node != null) {
-                   for( let exitPosition = 0 ; exitPosition < exitPointsTotal ; exitPosition++ ) {
-                       if (this.neighborInDirectionIsVacant(exitPosition, node)) {
-                           this._nodeIdsWithVacantNeighborsInDirection.get(exitPosition).push(node.getId());
-                           vacantNodeNeighborFound = true;
-                       }
-                   }
-                }
+                    for( let exitPosition = 0 ; exitPosition < exitPointsTotal ; exitPosition++ ) {
+                        if (this.neighborInDirectionIsVacant(exitPosition, node)) {
+                            this._nodeIdsWithVacantNeighborsInDirection.get(exitPosition).push(node.getId());
+                            vacantNodeNeighborFound = true;
+                        }
+                    }
 
-                if (!vacantNodeNeighborFound) {
-                    this._nodeIdsWithNoVacantNeighborsInAnyDirection.push(node.getId());
+                    if (!vacantNodeNeighborFound) {
+                        this._nodeIdsWithNoVacantNeighborsInAnyDirection.push(node.getId());
+                    }
                 }
             }
         }
@@ -92,14 +92,8 @@ export class MazeAnalysis {
      * @param exitIndex
      * @param node
      */
-    private neighborInDirectionIsVacant(exitIndex: number, node: MazeNode) {
+    private neighborInDirectionIsVacant(exitIndex: number, node: MazeNode): boolean {
 
-        let location: NodeLocation2D = <NodeLocation2D> node.getCardinality().getNextLocation(node.getLocation(), exitIndex);
-
-        if (this.mazeLocationIndex.has(location.toString())) {
-            return true;
-        }
-
-        return false;
+        return  (typeof node.getNeighborIdAt(exitIndex) === 'undefined');
     }
 }

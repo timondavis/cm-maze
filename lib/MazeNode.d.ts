@@ -42,7 +42,7 @@ export declare class MazeNode {
      * than what is dictated by this value.
      */
     protected maxExits: number;
-    constructor(cardinality: Cardinality, id?: string, coordinates?: NodeLocation);
+    constructor(cardinality: Cardinality, id?: string, coordinates?: NodeLocation, maxConnections?: number);
     getId(): string;
     /**
      * Connects one MazeNode instance to another.  Implicitly bi-directional, but directed edges between nodes
