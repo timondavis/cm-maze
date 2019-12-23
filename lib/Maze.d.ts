@@ -1,7 +1,6 @@
 import { Cardinality } from "./Behavior/Cardinality";
 import { MazeNode } from "./MazeNode";
 import { NodeLocation } from "./MazeCoordinates/NodeLocation";
-import { NodeLocation2D } from "./MazeCoordinates/NodeLocation2D";
 /**
  * @class Maze
  *
@@ -169,7 +168,7 @@ export declare class Maze {
      * @returns {MazeNode}
      */
     getCurrentNode(): MazeNode;
-    getLocationKeyIndex(): Map<NodeLocation2D, MazeNode>;
+    getLocationKeyIndex(): Map<string, MazeNode>;
     /**
      * Move the 'current' node pointer for this maze in the indicated direction, if available.  Returns
      * the new node if successful, or otherwise FALSE
