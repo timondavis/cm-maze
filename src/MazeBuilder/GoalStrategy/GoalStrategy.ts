@@ -54,3 +54,27 @@ export abstract class GoalStrategy {
         let randomCardinalityPoint: number;
         for ( let i = 0 ; i < cardinalityPoints ; i++ ) {
             if (excludedDirections.indexOf(i) !== -1) {
+                cardinalityPointsRemaining.push(i);
+            }
+        }
+
+        if (!cardinalityPointsRemaining || cardinalityPointsRemaining.length <= 0) {
+            throw "No valid cardinality points available for random node selection";
+        }
+
+        while (cardinalityPointsRemaining.length > 0) {
+
+            randomCardinalityPoint = Math.floor(Math.random() * (cardinalityPointsRemaining.length - 1));
+
+            if (selectedNode = this.findBorderNodeEnteringFromDirection(randomCardinalityPoint)) {
+                if (excludedNodeIds.indexOf(selectedNode.getId()) === -1) {
+                    break;
+                }
+            } else {
+                cardinalityPointsRemaining.splice(cardinalityPointsRemaining.indexOf(randomCardinalityPoint), 1);
+            }
+        }
+
+        return { node: selectedNode, direction: randomCardinalityPoint };
+    }
+}
