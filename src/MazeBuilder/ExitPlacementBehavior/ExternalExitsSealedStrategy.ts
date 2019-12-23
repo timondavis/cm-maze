@@ -35,7 +35,8 @@ export class ExternalExitsSealedStrategy extends ExitPlacementBehavior {
         let direction = nodeData.direction;
 
         this.exitNodeId = node.getId();
-        this.directionIntoExit = direction;
+        this.directionIntoEntrance = direction;
+
         this.maze.setFinishNode(node);
     }
 }

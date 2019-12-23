@@ -59,7 +59,7 @@ export class MazeBuilder {
         this.cardinality = (configs && configs.hasOwnProperty('cardinality' )) ? configs.cardinality : new Compass4();
         this.complexity = (configs && configs.hasOwnProperty('complexity' )) ? configs.complexity : 100;
         this.exitPlacement = (configs && configs.hasOwnProperty('exitPlacement')) ?
-            configs.exitPlacement : MazeBuilderExitPlacement.EXTERNAL_OPEN;
+            configs.exitPlacement : MazeBuilderExitPlacement.EXTERNAL_SEALED;
     }
 
     private placeExits() {
