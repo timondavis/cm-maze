@@ -269,7 +269,7 @@ describe( 'Maze', () => {
         // Indexes and nodes should have contents
         expect(nodes).to.not.be.null;
         expect(indexedNodes).to.not.be.null;
-        expect(Object.keys(indexedNodes)).length.to.be.above(0);
+        expect(indexedNodes.size).to.be.above(0);
 
         //
         let notes : string[] = [];
@@ -280,7 +280,7 @@ describe( 'Maze', () => {
         });
         //
 
-        expect(Object.keys(indexedNodes).length).be.equal(Object.keys(nodes).length);
+        expect(indexedNodes.size).be.equal(Object.keys(nodes).length);
 
         let node: MazeNode;
         let correspondingNode: MazeNode;
@@ -292,7 +292,7 @@ describe( 'Maze', () => {
         // When we're done, all node pointers should point to null.
         for (let x = 0 ; x < maze.getDimensions()[0] ; x++) {
             for (let y = 0 ; y < maze.getDimensions()[1] ; y++) {
-                node = indexedNodes[new NodeLocation2D([x, y]).toString()];
+                node = indexedNodes.get(new NodeLocation2D([x, y]).toString());
 
                 if (typeof node === 'undefined') { continue; }
 
@@ -316,5 +316,4 @@ describe( 'Maze', () => {
             expect(maze.getNodeWithId(key)).to.be.null;
         })
     })
-
 });

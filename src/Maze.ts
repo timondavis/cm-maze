@@ -57,10 +57,20 @@ export class Maze {
      */
     protected finish: MazeNode;
 
+    private id: string;
+
     public constructor(mazeData: any = null) {
         if (mazeData === null) { return; }
 
         this.cardinality = mazeData.cardinality;
+        this.id = Maze.generateKey();
+    }
+
+    /**
+     * Get the unique GUID for this maze
+     */
+    public getId() {
+        return this.id;
     }
 
 
@@ -69,16 +79,17 @@ export class Maze {
      *
      * @param {CardinalityBehavior} cardinality
      */
-    public setCardinality(cardinality : Cardinality ) {
+    public setCardinality(cardinality : Cardinality) {
         this.cardinality = cardinality;
     }
+
 
     /**
      * Get the cardinality  for nodes on this maze.
      *
      * @returns {Cardinality}
      */
-    public getCardinality() : Cardinality {
+    public getCardinality(): Cardinality {
 
         return this.cardinality;
     }
@@ -88,7 +99,7 @@ export class Maze {
      *
      * @param {{[p: string]: MazeNode}} nodes
      */
-    public setNodes( nodes: { [key:string] : MazeNode } ) {
+    public setNodes(nodes: { [key:string] : MazeNode }) {
 
         this.nodes = nodes;
         this.size = Object.keys( nodes ).length;
@@ -278,7 +289,7 @@ export class Maze {
         return this.currentNode;
     }
 
-    public getLocationKeyIndex(): { [location: string] : MazeNode } {
+    public getLocationKeyIndex(): Map<string, MazeNode> {
 
         let node: MazeNode;
         let location : NodeLocation;
@@ -323,16 +334,27 @@ export class Maze {
         return mazeArray;
     }
 
-    private generate2DMazeIndex(mazeArray: MazeNode[][]) : {[location:string] : MazeNode} {
-        let index : { [location: string] : MazeNode} = {};
+    private generate2DMazeIndex(mazeArray: MazeNode[][]) : Map<string, MazeNode> {
+        let index : Map<string, MazeNode> = new Map<string, MazeNode>();
+
         for ( let x = 0 ; x < this.dimensions[0] ; x++ ) {
             for ( let y = 0 ; y < this.dimensions[1] ; y++ ) {
                 if (mazeArray[x][y] !== null) {
-                    index[mazeArray[x][y].getLocation().toString()] = mazeArray[x][y];
+                    index.set(mazeArray[x][y].getLocation().toString(),  mazeArray[x][y]);
                 }
             }
         }
 
         return index;
+    }
+
+
+    /**
+     * Generate a unique key
+     */
+    private static generateKey() {
+
+        let uuid = require('uuid/v4');
+        return uuid();
     }
 }

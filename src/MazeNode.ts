@@ -51,13 +51,13 @@ export class MazeNode {
      */
     protected maxExits: number;
 
-    public constructor(cardinality: Cardinality, id: string = null, coordinates? : NodeLocation) {
+    public constructor(cardinality: Cardinality, id: string = null, coordinates? : NodeLocation, maxConnections: number = null) {
 
         this.cardinality = cardinality;
         this.neighbors = new Array<string>( cardinality.getConnectionPointCount() );
 
         this.coordinates = ( coordinates ) ? coordinates : this.cardinality.generateNodeLocation();
-        this.maxExits = -1;
+        this.maxExits = (maxConnections) ? maxConnections : this.cardinality.getConnectionPointCount();
 
         this.mazeNodeId = (id) ? id : MazeNode.generateKey();
     }
@@ -80,7 +80,7 @@ export class MazeNode {
         if ( ! this.isConnectionPointOpen(exitPosition) )  {
 
             throw( "One-Way connection failed: " +
-                "Indicated node will not tolerate any more additional connections - maximum reached." );
+                "Indicated node reports that given exit is not available for connection.." );
         }
 
         if ( exitPosition >= this.cardinality.getConnectionPointCount() || exitPosition < 0 ) {
@@ -241,13 +241,12 @@ export class MazeNode {
      */
     public isConnectionPointOpen( point: number ): boolean {
 
-        if ( this.maxExits >= 0 && this.maxExits <= this.getOccupiedConnectionPoints().length) {
-
+        if ( this.getMaxConnections() >= 0 && (this.getOccupiedConnectionPoints().length + 1) > this.getMaxConnections()) {
             return false;
         }
 
         this.cardinality.validateConnectionPoint( point );
-        return ( this.neighbors[point] === undefined );
+        return ( this.neighbors[point] === undefined )
     }
 
     /**

@@ -50,7 +50,12 @@ export declare class Maze {
      * @type {MazeNode}
      */
     protected finish: MazeNode;
+    private id;
     constructor(mazeData?: any);
+    /**
+     * Get the unique GUID for this maze
+     */
+    getId(): string;
     /**
      * Set the cardinality behavior for nodes on this maze.
      *
@@ -168,9 +173,7 @@ export declare class Maze {
      * @returns {MazeNode}
      */
     getCurrentNode(): MazeNode;
-    getLocationKeyIndex(): {
-        [location: string]: MazeNode;
-    };
+    getLocationKeyIndex(): Map<string, MazeNode>;
     /**
      * Move the 'current' node pointer for this maze in the indicated direction, if available.  Returns
      * the new node if successful, or otherwise FALSE
@@ -181,4 +184,8 @@ export declare class Maze {
     move(direction: number): MazeNode | boolean;
     private prepareMazeIndexArray;
     private generate2DMazeIndex;
+    /**
+     * Generate a unique key
+     */
+    private static generateKey;
 }

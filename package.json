@@ -17,9 +17,7 @@
     "uuid": "^3.3.3"
   },
   "nodemonConfig": {
-    "ignore": [
-      "lib/*"
-    ]
+    "ignore": []
   },
   "devDependencies": {
     "concurrently": "3.5.1",
