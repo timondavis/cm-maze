@@ -50,4 +50,5 @@ export declare class Compass4 extends Cardinality {
      * @returns {NodeLocation}
      */
     generateNodeLocation(position?: number[]): NodeLocation;
+    roundConnectionPointToPrimeCardinality(connectionPoint: number): number;
 }
