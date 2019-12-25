@@ -79,13 +79,6 @@ export class MazeNode {
 
         if ( ! this.isConnectionPointOpen(exitPosition) )  {
 
-            console.log('---On Entry---');
-            console.log(`Node ID (this.getId()): ${this.getId()}`);
-            console.log(`Current connection count (this.getOccupiedConnectionPoints().length): ${this.getOccupiedConnectionPoints().length}`);
-            console.log(`Maximum connection count (this.getMaxConnections()): ${this.getMaxConnections()}`);
-            console.log(`Reported Neighbor ID at position (this.getNeighborIdAt(exitPosition): ${this.getNeighborIdAt(exitPosition)}`);
-            console.log(`Attempted connection position (exitPosition): ${exitPosition}`);
-            console.log('--------------');
             throw( "One-Way connection failed: " +
                 "Indicated node reports that given exit is not available for connection.." );
         }
@@ -103,14 +96,6 @@ export class MazeNode {
         if ( autoConnect ) {
 
             if ( ! node.isConnectionPointOpen(node.getCardinality().getOpposingConnectionPoint(exitPosition)) ) {
-
-                console.log('---On Autoconnect---');
-                console.log(`Node ID (this.getId()): ${this.getId()}`);
-                console.log(`Current connection count (node.getOccupiedConnectionPoints().length): ${this.getOccupiedConnectionPoints().length}`);
-                console.log(`Maximum connection count (node.getMaxConnections()): ${this.getMaxConnections()}`);
-                console.log(`Reported Neighbor ID at position (node.getNeighborIdAt(exitPosition): ${this.getNeighborIdAt(exitPosition)}`);
-                console.log(`Attempted connection position (exitPosition): ${exitPosition}`);
-                console.log('--------------------');
 
                 throw( "Two-Way conneciton failed.  Indicated node will not tolerate any more additonal connections, " +
                     "maximum reached.")
@@ -257,13 +242,6 @@ export class MazeNode {
     public isConnectionPointOpen( point: number ): boolean {
 
         if ( this.getMaxConnections() >= 0 && (this.getOccupiedConnectionPoints().length + 1) > this.getMaxConnections()) {
-
-            console.log(`--- isConnectionPointOpen -- start -- `);
-            console.log('Too Many Connection Points!  getMaxConnections() is false');
-            console.log(`this.getOccupiedConnectionPoitns().length + 1: ${this.getOccupiedConnectionPoints().length + 1}`);
-            console.log(`this.getMaxConnections(): ${this.getMaxConnections()}`);
-            console.log(`${this.getOccupiedConnectionPoints().length + 1} > ${this.getMaxConnections()}`);
-
             return false;
         }
 

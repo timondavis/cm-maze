@@ -17,6 +17,15 @@ export abstract class Cardinality {
         this.cardinalityId = cardinalityId;
     }
 
+	/**
+	 * In some use cases, the most basic cardinality points are the only valid points for the operation.  Call
+	 * this method to 'round' the connection point up to its closest valid connection point.
+	 *
+	 * @param connectionPoint: number
+	 * @return number
+	 */
+	public abstract roundConnectionPointToPrimeCardinality(connectionPoint: number);
+
     /**
      * Ensure the indicated position is valid given this coordinates cardinality
      *

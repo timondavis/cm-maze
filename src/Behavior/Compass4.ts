@@ -78,4 +78,8 @@ export class Compass4 extends Cardinality {
 
         return ( position ) ? new NodeLocation2D( position ) : new NodeLocation2D( [0,0] );
     }
+
+	public roundConnectionPointToPrimeCardinality(connectionPoint: number) {
+    	return connectionPoint;
+	}
 }

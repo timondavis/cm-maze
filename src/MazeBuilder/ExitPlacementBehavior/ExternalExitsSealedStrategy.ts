@@ -5,38 +5,34 @@ import {MazeNode} from "../../MazeNode";
 
 export class ExternalExitsSealedStrategy extends ExitPlacementBehavior {
 
+	private consumedNodeIds: string[] = [];
+
     constructor(maze: Maze) {
         super(maze, new MazeAnalysis(maze));
     }
 
     placeEntrance() {
 
-        let nodeData : {node: MazeNode, direction: number} = this.findBorderNodeEnteringFromRandomDirection();
-        if (!nodeData.node) {
+        let node : MazeNode = this.findRandomBorderNode(this.consumedNodeIds);
+        if (!node) {
             throw "Entrance Node could not be established."
         }
 
-        let node = nodeData.node;
-        let direction = nodeData.direction;
+        node.setName("Entrance");
 
-        this.entranceNodeId = node.getId();
-        this.directionIntoEntrance = direction;
+        this.consumedNodeIds.push(node.getId());
         this.maze.setStartNode(node);
     }
 
     placeExit() {
 
-        let nodeData : {node: MazeNode, direction: number} = this.findBorderNodeEnteringFromRandomDirection([this.entranceNodeId]);
-        if (!nodeData.node) {
+        let node : MazeNode = this.findRandomBorderNode(this.consumedNodeIds);
+        if (!node) {
             throw "Exit Node could not be established";
         }
 
-        let node = nodeData.node;
-        let direction = nodeData.direction;
-
-        this.exitNodeId = node.getId();
-        this.directionIntoEntrance = direction;
-
-        this.maze.setFinishNode(node);
+        node.setName("Exit");
+		this.consumedNodeIds.push(node.getId());
+		this.maze.setFinishNode(node);
     }
 }

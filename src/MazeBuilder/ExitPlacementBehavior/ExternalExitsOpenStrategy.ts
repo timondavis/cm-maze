@@ -5,80 +5,52 @@ import {MazeNode} from "../../MazeNode";
 
 export class ExternalExitsOpenStrategy extends ExitPlacementBehavior {
 
+	private consumedNodeIds: string[] = [];
+
     constructor(maze: Maze) {
         super(maze, new MazeAnalysis(maze));
     }
 
     placeEntrance() {
 
-        let nodeData : {node: MazeNode, direction: number} = this.findBorderNodeEnteringFromRandomDirection();
-        if (!nodeData.node) {
+    	let exitPoint = Math.floor(Math.random() * this.maze.getCardinality().getConnectionPointCount());
+    	exitPoint = this.maze.getCardinality().roundConnectionPointToPrimeCardinality(exitPoint);
+        let node :  MazeNode = this.findRandomNodeAdjacentToBorderAtExitPoint(exitPoint, this.consumedNodeIds);
+        if (!node) {
             throw "Entrance Node could not be established."
         }
 
-        let node = nodeData.node;
-        let direction = nodeData.direction;
-
-        // Identified node may have maxed out its max connections - set at random by the maze builder.  Increment
-        // by 1 as long as it is valid to do so (if its not valid, something went wrong - candidate nodes should not be maxed out
-        // on total potential exit points).
-        if (node.getOccupiedConnectionPoints().length >= node.getMaxConnections()) {
-
-            if (node.getMaxConnections() < node.getCardinality().getConnectionPointCount()) {
-                node.setMaxConnections(node.getMaxConnections() + 1);
-            } else {
-
-                throw "Attempting to increment max connections on a node already at max.  " +
-                "This scenario indicates an invalild state - nodes with maximum possible connections in place " +
-                "should not have been supplied."
-            }
+        // We know we're flush with at least one empty side, so if we've already maxed out the node's connection points,
+		// raise the ceiling to one extra point.
+        if (node.getOccupiedConnectionPoints().length == node.getMaxConnections()) {
+			node.setMaxConnections(node.getMaxConnections() + 1);
         }
 
-        this.entranceNodeId = node.getId();
-        this.directionIntoEntrance = direction;
-        try {
-            node.connectTo(this.generateExitNode(node.getCardinality()),  this.maze.getCardinality().getOpposingConnectionPoint(direction));
-        }
-        catch (ex) {
-            let a = 1;
-        }
+		let nextNode = this.generateExitNode(node.getCardinality());
+		node.connectTo(nextNode, exitPoint);
+		this.consumedNodeIds.push(node.getId());
+
         this.maze.setStartNode(node);
     }
 
     placeExit() {
 
-        let nodeData : {node: MazeNode, direction: number} = this.findBorderNodeEnteringFromRandomDirection([this.entranceNodeId]);
-        if (!nodeData.node) {
-            throw "Exit Node could not be established";
-        }
+		let exitPoint = Math.floor(Math.random() * this.maze.getCardinality().getConnectionPointCount());
+		let node: MazeNode = this.findRandomNodeAdjacentToBorderAtExitPoint(exitPoint, this.consumedNodeIds);
+		if (!node) {
+			throw "Exit Node could not be established."
+		}
 
-        let node = nodeData.node;
-        let direction = nodeData.direction;
+		// We know we're flush with at least one empty side, so if we've already maxed out the node's connection points,
+		// raise the ceiling to one extra point.
+		if (node.getOccupiedConnectionPoints().length == node.getMaxConnections()) {
+			node.setMaxConnections(node.getMaxConnections() + 1);
+		}
 
-        // Identified node may have maxed out its max connections - set at random by the maze builder.  Increment
-        // by 1 as long as it is valid to do so (if its not valid, something went wrong - candidate nodes should not be maxed out
-        // on total potential exit points).
-        if (nodeData.node.getOccupiedConnectionPoints().length >= nodeData.node.getMaxConnections()) {
+		let nextNode = this.generateExitNode(node.getCardinality());
+		node.connectTo(nextNode, exitPoint);
+		this.consumedNodeIds.push(node.getId());
 
-            if (nodeData.node.getMaxConnections() < nodeData.node.getCardinality().getConnectionPointCount()) {
-                nodeData.node.setMaxConnections(nodeData.node.getMaxConnections() + 1);
-            } else {
-
-                throw "Attempting to increment max connections on a node already at max.  " +
-                "This scenario indicates an invalild state - nodes with maximum possible connections in place " +
-                "should not have been supplied."
-            }
-        }
-
-        this.exitNodeId = node.getId();
-        this.directionIntoEntrance = direction;
-        try {
-            node.connectTo(this.generateExitNode(node.getCardinality()),  this.maze.getCardinality().getOpposingConnectionPoint(direction));
-        }
-        catch(ex) {
-            let a = 1;
-        }
-
-        this.maze.setFinishNode(node);
-    }
+		this.maze.setFinishNode(node);
+	}
 }

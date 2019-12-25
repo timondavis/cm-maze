@@ -23,18 +23,10 @@ describe ('MazeAnalysis', () => {
 
             for (let direction = 0 ; direction < 4 ; direction++) {
 
-                nodeIds = analysis.nodeIdsWithVacanciesAtDirection.get(direction);
+                nodeIds = analysis.nodeIdsAdjacentToBorderAtExitPoint.get(direction);
 
                 for (let idIndex = 0 ; idIndex < nodeIds.length ; idIndex++) {
                     node = maze.getNodeWithId(nodeIds[idIndex]);
-
-                    if (node === null) {
-                        console.log(`Missing Node ID: ${nodeIds[direction]}`);
-                        console.log(`Node ID List: ${nodeIds}`);
-                        console.log(`i: ${direction}`);
-                        console.log(`idIndex: ${idIndex}`);
-                    }
-
                     expect(node.getNeighborIdAt(direction)).to.be.undefined;
                 }
             }

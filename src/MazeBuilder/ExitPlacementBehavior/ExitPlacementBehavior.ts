@@ -6,10 +6,7 @@ import {MazeBuilder} from "../../MazeBuilder";
 
 export abstract class ExitPlacementBehavior {
 
-    protected entranceNodeId: string;
-    protected directionIntoEntrance: number;
-    protected exitNodeId: string;
-    protected static exitId: number = 0;
+    private static generatedExitCount: number = 0;
 
     constructor(protected maze: Maze, protected mazeAnalysis: MazeAnalysis) {}
 
@@ -17,71 +14,43 @@ export abstract class ExitPlacementBehavior {
     abstract placeExit(): void;
 
     protected generateExitNode(cardinality: Cardinality) {
-        let node = new MazeNode(cardinality, 'EXIT-' + ExitPlacementBehavior.exitId);
+
+        let node = new MazeNode(cardinality, `EXIT-${ExitPlacementBehavior.generatedExitCount}`);
         node.setMaxConnections(cardinality.getConnectionPointCount());
+        node.setName(`Exit-${ExitPlacementBehavior.generatedExitCount}`);
+        ExitPlacementBehavior.generatedExitCount++;
+
         return node;
     }
 
-    /**
-     * Given the direction from which a vacant node location would enter into an occupied node location,
-     * select a node that fits this description.
-     *
-     * @param direction
-     * @param cardinality
-     * @param cardinalityPointCandidates
-     */
-    protected findBorderNodeEnteringFromDirection(direction: number, cardinality: Cardinality, excludedNodeIds: string[] = []): MazeNode {
-        let nodesAvailableFromDirection: string[];
-        let randomNodeIndex: number;
-        let selectedNode: MazeNode = null;
+    protected findRandomNodeAdjacentToBorderAtExitPoint(exitPoint: number, excludedNodeIds: string[] = []): MazeNode {
 
-        // Below is verified manually - works!
-        nodesAvailableFromDirection = this.mazeAnalysis.nodeIdsWithVacanciesAtDirection.get(cardinality.getOpposingConnectionPoint(direction));
+    	// Copy an array of border node IDs from the maze analysis
+    	let availableNodeIds = [];
+    	this.mazeAnalysis.nodeIdsAdjacentToBorderAtExitPoint.get(exitPoint).forEach((id) => {
+    			availableNodeIds.push(id);
+		});
 
-        while(nodesAvailableFromDirection.length > 0) {
+    	// If there are excluded IDs, remove them from the collection of available IDs
+		if (excludedNodeIds.length > 0) {
+			for ( let excludedIdIndex = 0 ; excludedIdIndex < excludedNodeIds.length ; excludedIdIndex++) {
+				availableNodeIds = availableNodeIds.filter(id => id !== excludedNodeIds[excludedIdIndex]);
+			}
+		}
 
-            // Pick Random Node from Collection
-            randomNodeIndex = Math.floor(Math.random() * (nodesAvailableFromDirection.length - 1));
-            selectedNode = this.maze.getNodeWithId(nodesAvailableFromDirection[randomNodeIndex]);
+		// Pick a random node ID and ship it back.
+		if (availableNodeIds.length == 0) {
+			throw `Could not find any eligible border nodes to select at exit point ${exitPoint}`;
+		}
 
-            if (excludedNodeIds.indexOf(selectedNode.getId()) === -1) {
-                break;
-            } else {
-                nodesAvailableFromDirection.splice(nodesAvailableFromDirection.indexOf(selectedNode.getId()), 1);
-            }
-        }
+		return this.selectRandomNodeFromIdCollection(availableNodeIds);
+	}
 
-        return selectedNode;
-    }
+    protected findRandomBorderNode(excludedNodeIds: string[] = []): MazeNode {
 
-    protected findBorderNodeEnteringFromRandomDirection(excludedNodeIds: string[] = [], excludedDirections: number[] = []): { node: MazeNode, direction: number} {
-        let cardinalityPointsRemaining: number[] = [];
-        let cardinalityPoints = this.maze.getCardinality().getConnectionPointCount();
-        let selectedNode: MazeNode;
-        let randomCardinalityPoint: number;
-        for ( let i = 0 ; i < cardinalityPoints ; i++ ) {
-            if (excludedDirections.indexOf(i) === -1) {
-                cardinalityPointsRemaining.push(i);
-            }
-        }
-
-        if (!cardinalityPointsRemaining || cardinalityPointsRemaining.length <= 0) {
-            throw "No valid cardinality points available for random node selection";
-        }
-
-        while (cardinalityPointsRemaining.length > 0) {
-
-            randomCardinalityPoint = Math.floor(Math.random() * (cardinalityPointsRemaining.length - 1));
-
-            if (excludedDirections.indexOf(randomCardinalityPoint) === -1) {
-                selectedNode = this.findBorderNodeEnteringFromDirection(randomCardinalityPoint, this.maze.getCardinality())
-                break;
-            } else {
-                cardinalityPointsRemaining.splice(cardinalityPointsRemaining.indexOf(randomCardinalityPoint), 1);
-            }
-        }
-
-        return { node: selectedNode, direction: randomCardinalityPoint };
+    	let exitPoint: number = Math.floor(Math.random() * this.maze.getCardinality().getConnectionPointCount());
+    	exitPoint = this.maze.getCardinality().roundConnectionPointToPrimeCardinality(exitPoint);
+    	return this.findRandomNodeAdjacentToBorderAtExitPoint(exitPoint, []);
     }
 
     /**
@@ -96,4 +65,13 @@ export abstract class ExitPlacementBehavior {
 
         return this.maze.getNodes()[coordinateList[index]];
     }
+
+    private selectRandomNodeFromIdCollection(availableNodeIds: string[]) : MazeNode {
+
+		let availableNodeIndex: number; let nodeId: string;
+
+		availableNodeIndex = Math.floor(Math.random() * availableNodeIds.length);
+		nodeId = availableNodeIds[availableNodeIndex];
+		return this.maze.getNodeWithId(nodeId);
+	}
 }
