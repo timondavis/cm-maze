@@ -21,5 +21,4 @@ export class InternalExitsStrategy extends ExitPlacementBehavior {
         } while (randomNode === this.maze.getStartNode());
         this.maze.setFinishNode(randomNode);
     }
-
 }

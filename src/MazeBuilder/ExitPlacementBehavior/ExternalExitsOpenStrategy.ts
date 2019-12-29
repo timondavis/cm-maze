@@ -27,6 +27,7 @@ export class ExternalExitsOpenStrategy extends ExitPlacementBehavior {
         }
 
 		let nextNode = this.generateExitNode(node.getCardinality());
+        this.maze.addNode(nextNode, false);
 		node.connectTo(nextNode, exitPoint);
 		this.consumedNodeIds.push(node.getId());
 
@@ -36,6 +37,7 @@ export class ExternalExitsOpenStrategy extends ExitPlacementBehavior {
     placeExit() {
 
 		let exitPoint = Math.floor(Math.random() * this.maze.getCardinality().getConnectionPointCount());
+		exitPoint = this.maze.getCardinality().roundConnectionPointToPrimeCardinality(exitPoint);
 		let node: MazeNode = this.findRandomNodeAdjacentToBorderAtExitPoint(exitPoint, this.consumedNodeIds);
 		if (!node) {
 			throw "Exit Node could not be established."
@@ -48,6 +50,7 @@ export class ExternalExitsOpenStrategy extends ExitPlacementBehavior {
 		}
 
 		let nextNode = this.generateExitNode(node.getCardinality());
+		this.maze.addNode(nextNode, false);
 		node.connectTo(nextNode, exitPoint);
 		this.consumedNodeIds.push(node.getId());
 
