@@ -28,12 +28,6 @@ export declare class Maze {
      */
     protected currentNode: MazeNode;
     /**
-     * The # of nodes in this maze
-     *
-     * @type {number}
-     */
-    protected size: number;
-    /**
      * Contains the size of the range for each dimension of the maze.
      * @type {any[]}
      */
@@ -52,6 +46,7 @@ export declare class Maze {
     protected finish: MazeNode;
     private id;
     constructor(mazeData?: any);
+    get size(): number;
     /**
      * Get the unique GUID for this maze
      */

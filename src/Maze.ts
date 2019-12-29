@@ -31,13 +31,6 @@ export class Maze {
     protected currentNode : MazeNode;
 
     /**
-     * The # of nodes in this maze
-     *
-     * @type {number}
-     */
-    protected size : number;
-
-    /**
      * Contains the size of the range for each dimension of the maze.
      * @type {any[]}
      */
@@ -65,6 +58,10 @@ export class Maze {
         this.cardinality = mazeData.cardinality;
         this.id = Maze.generateKey();
     }
+
+    public get size(): number {
+    	return Object.keys(this.nodes).length;
+	}
 
     /**
      * Get the unique GUID for this maze
@@ -102,7 +99,6 @@ export class Maze {
     public setNodes(nodes: { [key:string] : MazeNode }) {
 
         this.nodes = nodes;
-        this.size = Object.keys( nodes ).length;
     }
 
     /**
@@ -159,7 +155,7 @@ export class Maze {
      * @param mazeNode
      */
     public addNode(mazeNode: MazeNode, demandUniqueLocations: boolean = true) {
-        if (demandUniqueLocations && this.getNodeAtLocation(mazeNode.getLocation())) { throw "Duplicate key assignment on Maze nodes"; }
+        if (demandUniqueLocations && this.getNodeAtLocation(mazeNode.getLocation())) { throw "Duplicate location assignment on Maze nodes"; }
         this.nodes[mazeNode.getId()] = mazeNode;
     }
 

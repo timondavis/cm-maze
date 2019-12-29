@@ -27,6 +27,7 @@ describe ('MazeAnalysis', () => {
 
                 for (let idIndex = 0 ; idIndex < nodeIds.length ; idIndex++) {
                     node = maze.getNodeWithId(nodeIds[idIndex]);
+                    if (node && node.getId().indexOf('EXIT-'))
                     expect(node.getNeighborIdAt(direction) === undefined ||
 						node.getNeighborIdAt(direction).indexOf('EXIT-') === 0).to.be.true;
                 }
