@@ -16,7 +16,7 @@ export class PathFinder {
 
 		considered.insert(startingNode);
 
-		while(considered.length > 0) {
+		while(considered.getLength() > 0) {
 
 			let currentPathNode = considered.unshift();
 
@@ -94,7 +94,7 @@ class PathFinderNodeList {
 
 	public list: PathFinderNode[] = [];
 
-	public get length() {
+	public getLength() {
 		return this.list.length;
 	}
 

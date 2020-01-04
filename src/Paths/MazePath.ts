@@ -58,7 +58,7 @@ export class MazePath {
 		this._path.push(nodeId);
 	}
 
-	public get length() {
+	public getLength() {
 		return this._path.length;
 	}
 }

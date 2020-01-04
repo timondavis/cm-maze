@@ -18,7 +18,7 @@ describe( 'PathFinder', () => {
 		let isPathConnected = false;
 		let isPathGuaranteedToFinishOnCorrectNode = false;
 
-		expect(path.length).to.be.greaterThan(0);
+		expect(path.getLength()).to.be.greaterThan(0);
 
 		while( path.next() ) {
 			isPathGuaranteedToFinishOnCorrectNode = false;
