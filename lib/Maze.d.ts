@@ -46,7 +46,6 @@ export declare class Maze {
     protected finish: MazeNode;
     private id;
     constructor(mazeData?: any);
-    get size(): number;
     /**
      * Get the unique GUID for this maze
      */
