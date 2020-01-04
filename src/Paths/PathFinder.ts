@@ -5,85 +5,121 @@ import {MazePathTuple} from "./MazePathTuple";
 
 export class PathFinder {
 
-	private shortestPathLength: number = -1;
-	private originNode: MazeNode = null;
+	public static findPath(fromNodeId: string, toNodeId: string, maze:Maze ) : MazePath {
 
-	// Root MazeNode Index ID: number => ( <MazePathStart, MazePathFinish>: number => path : MazePath )
-	private paths: Map<MazePathTuple, MazePath> = new Map<MazePathTuple, MazePath>();
+		let considered = new PathFinderNodeList();
+		let visited = new Map<string, PathFinderNode>();
+		let startingNode = new PathFinderNode(fromNodeId);
 
-	constructor(private maze: Maze) {}
+		startingNode.distance = 0;
+		startingNode.previous = null;
 
-	public findPath(fromNode: MazeNode, toNode: MazeNode) {
-		this.shortestPathLength = -1;
-		this.originNode = fromNode;
+		considered.insert(startingNode);
 
-		let pathsFound: MazePath[] = [];
-		this.findPaths(fromNode, toNode, new MazePath(),  pathsFound, -1 , 0);
+		while(considered.length > 0) {
 
-		let shortestPath = null;
-		for (let i = 0 ; i < pathsFound.length ; i++) {
-			if (shortestPath == null) {
-				shortestPath = pathsFound[i];
+			let currentPathNode = considered.unshift();
+
+			if (currentPathNode.id === toNodeId) {
+				return PathFinder.buildPath(currentPathNode, visited);
 			}
 
-			if (shortestPath.length > pathsFound[i].length && fromNode.getId() == pathsFound[i].next()) {
-				pathsFound[i].reset();
-				shortestPath = pathsFound[i];
-			}
+			let currentMazeNode = maze.getNodeWithId(currentPathNode.id);
 
-			pathsFound[i].reset();
+			let neighborPathNode: PathFinderNode;
+			let thisPathDistance: number;
+			currentMazeNode.getNeighborIds().forEach((id) => {
+
+				if (!visited.has(id)) {
+					neighborPathNode = new PathFinderNode(id);
+					thisPathDistance = currentPathNode.distance + 1;
+
+					if (neighborPathNode.distance == -1 ) {
+						neighborPathNode.distance = thisPathDistance;
+						neighborPathNode.previous = currentPathNode;
+					}
+
+					if (thisPathDistance < neighborPathNode.distance) {
+						neighborPathNode.previous = currentPathNode;
+						neighborPathNode.previous = currentPathNode;
+					}
+
+					considered.insert(neighborPathNode);
+				}
+			});
+
+			visited.set(currentPathNode.id, currentPathNode);
 		}
-
-		return shortestPath;
 	}
 
+	private static buildGraphMap(maze: Maze): Map<string, PathFinderNode> {
 
-	/**
-	 * Find paths from one point to another.  Once a path is identified, only equal sized or smaller paths will be considered.
-	 *
-	 * @param fromNode
-	 * @param toNode
-	 * @param path
-	 * @param lastExitPosition
-	 * @param validPaths
-	 * @param depth
-	 * @param shortestPathLength
-	 */
-	private findPaths(fromNode: MazeNode, toNode: MazeNode, path: MazePath, pathsConnecting: MazePath[],
-							lastExitPosition: number,  depth: number) : MazePath[] {
+		let graph = new Map<string, PathFinderNode>();
 
-		path = (path) ? path : new MazePath();
+		maze.forEachNode((node, nodeId) => {
+			graph.set(nodeId, new PathFinderNode(nodeId));
+		});
 
-		if (!path.append(fromNode.getId())) { return; }
+		return graph;
+	}
 
-		let connectionPoints = fromNode.getOccupiedConnectionPoints();
+	private static buildPath(current, visited): MazePath {
 
-		if (path.length >= this.shortestPathLength && this.shortestPathLength > 0) {
+		let reversePath: PathFinderNode[] = [];
+		let mazePath = new MazePath();
+
+		reversePath.push(current);
+
+		while (current.previous !== null) {
+			current = current.previous;
+			reversePath.push(current);
+		}
+
+		for (let i = reversePath.length - 1 ; i >= 0 ; i--) {
+			mazePath.append(reversePath[i].id);
+		}
+
+		return mazePath;
+	}
+}
+
+class PathFinderNode {
+	previous: PathFinderNode = null;
+	distance: number = -1;
+
+	constructor(public id: string) {}
+}
+
+class PathFinderNodeList {
+
+	public list: PathFinderNode[] = [];
+
+	public get length() {
+		return this.list.length;
+	}
+
+	public insert(node: PathFinderNode) {
+		if (this.list.length == 0) {
+			this.list[0] = node;
 			return;
 		}
 
-		if (path.first() === this.originNode.getId() && fromNode.getId() === toNode.getId()) {
-			this.shortestPathLength = path.length;
-			pathsConnecting.push(path);
-			return;
+		for (let i = 0 ; i < this.list.length ; i++) {
+			if (node.distance >= this.list[i].distance) {
+				this.list.splice(i, 0, node);
+				break;
+			}
+		}
+	}
+
+	public unshift() : PathFinderNode {
+
+		if (this.list.length == 0) {
+			return null;
 		}
 
-		for (let i = 0 ; i < connectionPoints.length ; i++) {
-			let nextNode = this.maze.getNodeWithId(fromNode.getNeighborIdAt(connectionPoints[i]));
-
-			// Don't allow the same node to be counted twice.  Don't look back at the last node in the series.
-			if (!path.isNodeIdUniqueToPath(nextNode.getId())) { continue; }
-			if (lastExitPosition === connectionPoints[i]) { continue; }
-
-			// Clone the path and plug it into recursion
-			let pathClone = new MazePath(path);
-			this.findPaths(
-				this.maze.getNodeWithId(fromNode.getNeighborIdAt(connectionPoints[i])),
-				toNode,
-				pathClone,
-				pathsConnecting,
-				this.maze.getCardinality().getOpposingConnectionPoint(connectionPoints[i]),
-				depth++);
-		}
+		let item = this.list[0];
+		this.list.splice(0, 1);
+		return item;
 	}
 }
