@@ -14,7 +14,7 @@ export class MazePath {
 		this._pathId = MazePath.pathIdCounter;
 	}
 
-	public get pathId() {
+	public getPathId() {
 		return this._pathId;
 	}
 
