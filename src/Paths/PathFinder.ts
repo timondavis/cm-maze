@@ -1,10 +1,25 @@
 import {Maze} from "../Maze";
 import {MazePath} from "./MazePath";
 
+/**
+ * Static methods to find minimal paths between maze nodes.
+ */
 export class PathFinder {
 
+	/**
+	 * Get a path between two nodes on the given maze.  Nodes identified by ID.
+	 *
+	 * @param fromNodeId
+	 * @param toNodeId
+	 * @param maze
+	 *
+	 * @return MazePath
+	 */
 	public static findPath(fromNodeId: string, toNodeId: string, maze:Maze ) : MazePath {
 
+		// My own poor attempt as Dijkstra's path finding algorithm.  Starting with the first node,
+		// continue considering path distances to potential nodes and recording the results.  Keep branching out to the
+		// next node until target node is found.  When found, trace the path backward to start and capture as MazePath - TAD.
 		let considered = new PathFinderNodeList();
 		let visited = new Map<string, PathFinderNode>();
 		let startingNode = new PathFinderNode(fromNodeId);
@@ -19,7 +34,7 @@ export class PathFinder {
 			let currentPathNode = considered.unshift();
 
 			if (currentPathNode.id === toNodeId) {
-				return PathFinder.buildPath(currentPathNode, visited);
+				return PathFinder.buildPath(currentPathNode);
 			}
 
 			let currentMazeNode = maze.getNodeWithId(currentPathNode.id);
@@ -48,18 +63,7 @@ export class PathFinder {
 		}
 	}
 
-	private static buildGraphMap(maze: Maze): Map<string, PathFinderNode> {
-
-		let graph = new Map<string, PathFinderNode>();
-
-		maze.forEachNode((node, nodeId) => {
-			graph.set(nodeId, new PathFinderNode(nodeId));
-		});
-
-		return graph;
-	}
-
-	private static buildPath(current, visited): MazePath {
+	private static buildPath(current): MazePath {
 
 		let reversePath: PathFinderNode[] = [];
 		let mazePath = new MazePath();
@@ -79,6 +83,10 @@ export class PathFinder {
 	}
 }
 
+/**
+ * Special private node class.  This node represents a maze node, but tracks its path tracking metadata, separate
+ * from the actual maze node value.
+ */
 class PathFinderNode {
 	previous: PathFinderNode = null;
 	distance: number = -1;
@@ -86,20 +94,17 @@ class PathFinderNode {
 	constructor(public id: string) {}
 }
 
+/**
+ * Simple ordered list implementation.  Could be improved with indexing!  But generally just keeps and ordered list which
+ * pops off the lowest distance value among all registered nodes.
+ */
 class PathFinderNodeList {
 
 	private _length = 0;
-
 	public head: PathFinderNodeListNode;
-	public currentPointer: PathFinderNodeListNode;
-
 
 	public getLength() {
 		return this._length;
-	}
-
-	public reset() {
-		this.currentPointer = this.head;
 	}
 
 	public insert(newPathNode: PathFinderNode) {
@@ -133,6 +138,11 @@ class PathFinderNodeList {
 		}
 	}
 
+	/**
+	 * Pop the left value off of the list and return.  It will have the lowest distance value among all nodes in the list.
+	 *
+	 * @return PathFinderNode
+	 */
 	public unshift() : PathFinderNode {
 
 		if (!this.head) { return null; }
@@ -148,6 +158,9 @@ class PathFinderNodeList {
 	}
 }
 
+/**
+ * Wrapper for path finder nodes in the PathFinderNodeList.  Simple links to data value and next PathFinderNodeListNode.
+ */
 class PathFinderNodeListNode {
 
 	constructor(public data: PathFinderNode) {}
