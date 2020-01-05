@@ -1,7 +1,5 @@
 import {Maze} from "../Maze";
 import {MazePath} from "./MazePath";
-import {MazeNode} from "../MazeNode";
-import {MazePathTuple} from "./MazePathTuple";
 
 export class PathFinder {
 
@@ -25,14 +23,12 @@ export class PathFinder {
 			}
 
 			let currentMazeNode = maze.getNodeWithId(currentPathNode.id);
-
-			let neighborPathNode: PathFinderNode;
-			let thisPathDistance: number;
 			currentMazeNode.getNeighborIds().forEach((id) => {
 
 				if (!visited.has(id)) {
-					neighborPathNode = new PathFinderNode(id);
-					thisPathDistance = currentPathNode.distance + 1;
+
+					let neighborPathNode = new PathFinderNode(id);
+					let thisPathDistance = currentPathNode.distance + 1;
 
 					if (neighborPathNode.distance == -1 ) {
 						neighborPathNode.distance = thisPathDistance;
@@ -92,34 +88,68 @@ class PathFinderNode {
 
 class PathFinderNodeList {
 
-	public list: PathFinderNode[] = [];
+	private _length = 0;
+
+	public head: PathFinderNodeListNode;
+	public currentPointer: PathFinderNodeListNode;
+
 
 	public getLength() {
-		return this.list.length;
+		return this._length;
 	}
 
-	public insert(node: PathFinderNode) {
-		if (this.list.length == 0) {
-			this.list[0] = node;
+	public reset() {
+		this.currentPointer = this.head;
+	}
+
+	public insert(newPathNode: PathFinderNode) {
+
+		if (this._length === 0) {
+			this.head = new PathFinderNodeListNode(newPathNode);
+			this._length++;
 			return;
 		}
 
-		for (let i = 0 ; i < this.list.length ; i++) {
-			if (node.distance >= this.list[i].distance) {
-				this.list.splice(i, 0, node);
+		let tempListNode = this.head;
+
+		while (tempListNode !== undefined) {
+
+			if (tempListNode.next === undefined) {
+				tempListNode.next = new PathFinderNodeListNode(newPathNode);
+				this._length++;
 				break;
 			}
+
+			if (newPathNode.distance > tempListNode.data.distance &&
+				newPathNode.distance < tempListNode.next.data.distance) {
+				let newListNode = new PathFinderNodeListNode(newPathNode);
+				newListNode.next = tempListNode.next;
+				tempListNode.next = newListNode;
+				this._length++;
+				break;
+			}
+
+			tempListNode = tempListNode.next;
 		}
 	}
 
 	public unshift() : PathFinderNode {
 
-		if (this.list.length == 0) {
-			return null;
-		}
+		if (!this.head) { return null; }
 
-		let item = this.list[0];
-		this.list.splice(0, 1);
-		return item;
+		let node = new PathFinderNode(this.head.data.id);
+		node.distance = this.head.data.distance;
+		node.previous = this.head.data.previous;
+
+		this.head = this.head.next;
+		this._length--;
+
+		return node;
 	}
+}
+
+class PathFinderNodeListNode {
+
+	constructor(public data: PathFinderNode) {}
+	public next: PathFinderNodeListNode;
 }
