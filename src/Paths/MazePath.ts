@@ -1,3 +1,6 @@
+/**
+ * An appendable list of ids belonging to nodes which can be traversed in the given order.
+ */
 export class MazePath {
 
 	private static pathIdCounter: number = 0;
