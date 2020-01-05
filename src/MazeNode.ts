@@ -9,6 +9,11 @@ import {Cardinality} from "./Behavior/Cardinality";
  */
 export class MazeNode {
 
+	/**
+	 * Index ID Incrementor
+	 */
+	private static indexIdCounter: number = 0;
+
     /**
      * Debug Mode
      * @type {boolean}
@@ -32,6 +37,11 @@ export class MazeNode {
      * @type {string}
      */
     protected name: string = "";
+
+	/**
+	 * Unique index assigned to every new node.
+	 */
+	private _indexId: number;
 
     /**
      * Unique string key for maze node
@@ -60,11 +70,18 @@ export class MazeNode {
         this.maxExits = (maxConnections) ? maxConnections : this.cardinality.getConnectionPointCount();
 
         this.mazeNodeId = (id) ? id : MazeNode.generateKey();
+
+        MazeNode.indexIdCounter++;
+        this._indexId = MazeNode.indexIdCounter;
     }
 
     public getId(): string {
         return this.mazeNodeId;
     }
+
+    public getIndexId(): number {
+    	return this._indexId
+	}
 
     /**
      * Connects one MazeNode instance to another.  Implicitly bi-directional, but directed edges between nodes

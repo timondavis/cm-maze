@@ -59,10 +59,6 @@ export class Maze {
         this.id = Maze.generateKey();
     }
 
-    public get size(): number {
-    	return Object.keys(this.nodes).length;
-	}
-
     /**
      * Get the unique GUID for this maze
      */
@@ -195,7 +191,6 @@ export class Maze {
        }
 
        return foundNode;
-
     }
 
     /**
@@ -263,8 +258,8 @@ export class Maze {
      * @returns {number}
      */
     public getSize() : number {
-        return this.size;
-    }
+		return Object.keys(this.nodes).length;
+	}
 
     /**
      * Set the 'current' node pointer at the indicated node.
