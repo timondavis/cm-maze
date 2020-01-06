@@ -5,6 +5,7 @@ import {expect} from 'chai';
 import 'mocha';
 import {MazeNode} from "../../MazeNode";
 import {NodeLocation2D} from "../../MazeCoordinates/NodeLocation2D";
+import {NodeLocation} from "../..";
 
 describe( 'Maze', () => {
 
@@ -31,20 +32,20 @@ describe( 'Maze', () => {
         let nodeCollection: { [key:string] : MazeNode } = {};
         let capturedNodeCollection: { [key:string] : MazeNode };
 
-        nodeCollection[ a.ID ] = a;
-        nodeCollection[ b.ID ] = b;
-        nodeCollection[ c.ID ] = c;
-        nodeCollection[ d.ID ] = d;
-        nodeCollection[ e.ID ] = e;
+        nodeCollection[ a.getId() ] = a;
+        nodeCollection[ b.getId() ] = b;
+        nodeCollection[ c.getId() ] = c;
+        nodeCollection[ d.getId() ] = d;
+        nodeCollection[ e.getId() ] = e;
 
         m.setNodes( nodeCollection );
         capturedNodeCollection = m.getNodes();
 
-        expect( capturedNodeCollection[a.ID] ).to.be.equal( a );
-        expect( capturedNodeCollection[b.ID] ).to.be.equal( b );
-        expect( capturedNodeCollection[c.ID] ).to.be.equal( c );
-        expect( capturedNodeCollection[d.ID] ).to.be.equal( d );
-        expect( capturedNodeCollection[e.ID] ).to.be.equal( e );
+        expect( capturedNodeCollection[a.getId()] ).to.be.equal( a );
+        expect( capturedNodeCollection[b.getId()] ).to.be.equal( b );
+        expect( capturedNodeCollection[c.getId()] ).to.be.equal( c );
+        expect( capturedNodeCollection[d.getId()] ).to.be.equal( d );
+        expect( capturedNodeCollection[e.getId()] ).to.be.equal( e );
     });
 
     it( 'can return nodes residing at the indicated coordinates', () => {
@@ -59,12 +60,12 @@ describe( 'Maze', () => {
         a.setLocation( new NodeLocation2D( [1, 1] ));
         b.setLocation( new NodeLocation2D( [1, 2] ));
 
-        nodeCollection[ a.ID ] = a;
-        nodeCollection[ b.ID ] = b;
+        nodeCollection[ a.getId() ] = a;
+        nodeCollection[ b.getId() ] = b;
 
         m.setNodes( nodeCollection );
 
-        expect( m.getNodeAtLocation( new NodeLocation2D( [1,2] )).ID ).to.be.equal( b.ID );
+        expect( m.getNodeAtLocation( new NodeLocation2D( [1,2] )).getId() ).to.be.equal( b.getId() );
     });
 
     it( 'facilitates definition of "starting" and "ending" nodes', () =>  {
@@ -107,7 +108,7 @@ describe( 'Maze', () => {
 
     it( 'it should report on the current amount of nodes included in the maze', () => {
 
-        let mb: MazeBuilder = new MazeBuilder();
+        let mb: MazeBuilder = new MazeBuilder({});
         let maze: Maze = mb.buildMaze();
 
         let contents = maze.getNodes();
@@ -123,11 +124,11 @@ describe( 'Maze', () => {
         let b = new MazeNode( new Compass4() );
         let c = new MazeNode( new Compass4() );
 
-        let nodeCollection: { [key:string] : MazeNode } = {};
-
         a.setLocation( new NodeLocation2D( [1, 1] ));
         b.setLocation( new NodeLocation2D( [1, 2] ));
         c.setLocation( new NodeLocation2D( [2, 1] ));
+
+        let nodeCollection: { [key:string] : MazeNode } = {};
 
         nodeCollection[ a.getLocation().toString() ] = a;
         nodeCollection[ b.getLocation().toString() ] = b;
@@ -162,11 +163,11 @@ describe( 'Maze', () => {
         a.connectTo( b, C4.S );
         b.connectTo( d, C4.W );
 
-        nodeCollection[ a.ID ] = a;
-        nodeCollection[ b.ID ] = b;
-        nodeCollection[ c.ID ] = c;
-        nodeCollection[ d.ID ] = d;
-        nodeCollection[ e.ID ] = e;
+        nodeCollection[ a.getId() ] = a;
+        nodeCollection[ b.getId() ] = b;
+        nodeCollection[ c.getId() ] = c;
+        nodeCollection[ d.getId() ] = d;
+        nodeCollection[ e.getId() ] = e;
 
         m.setNodes( nodeCollection );
         m.setCurrentNode( a );
@@ -257,4 +258,56 @@ describe( 'Maze', () => {
         expect (() => {JSON.stringify(maze)}).not.to.throw();
     });
 
+    it ( 'provides a method to generate its node collection indexed by location key', () => {
+
+        let mb = new MazeBuilder();
+        let maze = mb.buildMaze();
+        let nodes = maze.getNodes();
+        let indexedNodes = maze.getLocationKeyIndex();
+        let nodesWithNoLocationCount: number = 0;
+
+        // Indexes and nodes should have contents
+        expect(nodes).to.not.be.null;
+        expect(indexedNodes).to.not.be.null;
+        expect(indexedNodes.size).to.be.above(0);
+
+        let node: MazeNode;
+        let correspondingNode: MazeNode;
+        let location: NodeLocation;
+        let nodeId: string;
+
+        // Crawling the maze nodes in order should give us nodes with the corresponding locations.
+        // We'll also compare and delete each node from the nodes list as we encounter them via the index.
+        // When we're done, all node pointers should point to null.
+        for (let x = 0 ; x < maze.getDimensions()[0] ; x++) {
+            for (let y = 0 ; y < maze.getDimensions()[1] ; y++) {
+
+                node = indexedNodes.get(new NodeLocation2D([x, y]).toString());
+                if (node === undefined) { continue; }
+                location = node.getLocation();
+                if ( location === null ) { continue; }
+                correspondingNode = maze.getNodeAtLocation(location);
+
+                if (correspondingNode.getId().indexOf('EXIT-') === 0) { continue; }
+
+                nodeId = node.getId();
+
+                expect(location.getPosition()[0]).to.be.equal(x);
+                expect(location.getPosition()[1]).to.be.equal(y);
+                expect(correspondingNode).to.be.equal(node);
+                expect(maze.getNodeWithId(nodeId)).to.be.equal(node);
+
+                nodes[nodeId] = null;
+                expect(maze.getNodeWithId(nodeId)).to.be.null;
+            }
+        }
+
+        maze.setNodes(nodes);
+        // Go through the nodes list and make sure all entries were deleted from the list.
+        Object.keys(maze.getNodes()).forEach((key) => {
+        	let node = maze.getNodeWithId(key);
+        	if (node && node.getId().indexOf('EXIT-') === 0) { return; }
+            expect(node).to.be.null;
+        })
+    })
 });

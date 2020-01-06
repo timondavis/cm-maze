@@ -97,7 +97,7 @@ describe( 'NodeLocation2D', () => {
 
        const nodeLocation = [ MazeBuilder.rand( r ), MazeBuilder.rand( r ) ];
        mc = new NodeLocation2D(nodeLocation);
-       expect(mc.X).to.be.equal(nodeLocation[0]);
-       expect(mc.Y).to.be.equal(nodeLocation[1]);
+       expect(mc.getX()).to.be.equal(nodeLocation[0]);
+       expect(mc.getY()).to.be.equal(nodeLocation[1]);
    });
 });

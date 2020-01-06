@@ -21,6 +21,10 @@ export declare class MazeBuilder {
      */
     protected entry: MazeNode;
     /**
+     * Which 'mode' logic will be used to determine where the exit and entry points are, and their properties.
+     */
+    protected exitPlacement: string;
+    /**
      *  A Cardinality instance responsible for facilitating node connection and traversal
      *  logic.
      *
@@ -34,10 +38,10 @@ export declare class MazeBuilder {
     /**
      * Constructor
      *
-     * @param {Cardinality} cardinality
-     * @param {number} complexity
+     * @param configs : any
      */
-    constructor(cardinality?: Cardinality, complexity?: number);
+    constructor(configs?: any);
+    private placeExits;
     /**
      * Build a new randomized maze instance based on local instance configurations
      *
@@ -80,16 +84,16 @@ export declare class MazeBuilder {
      * @param {number[]} openConnectionPoints
      * @returns {number}
      */
-    private tryNodeConnectionFromEveryAvailableExit;
+    private attemptNodeConnectionFromEveryAvailableExit;
     /**
-     * Convenince function to simply get the next node WHEN ALL EXIT POINTS ARE CLAIMED
+     * Convenience function to simply get the next node WHEN ALL EXIT POINTS ARE CLAIMED
      *
      * @pre  All exit points on the node must connect to other nodes.  Ignoring this precondition
      * may result in exceptions being thrown.
      *
      * @param {MazeNode} pointer
      */
-    private hopToNextNode;
+    private hopToNextNodeInRandomDirection;
     /**
      * Finds out if there is a neighboring node at the indicated exit.  If a node is found, returns that node,
      * otherwise generates a new node and returns that.  Coordinates will be set on the node returned.
@@ -100,14 +104,16 @@ export declare class MazeBuilder {
      */
     private getNextNodeAtExit;
     /**
-     * Convenience method for producing (or finding), and then reporting the exit point connecting to,
-     * the next node on a given path. Returns the index of the connected path, or -1 if failure took place
+     * Convenience method for producing or finding the next node at the given exitPoint.
+     * If the next node has an available connection point for a logical connection to the supplied pointer,
+     * the connection will be made between the supplied node and the next node.
      *
      * @param {MazeNode} pointer
      * @param {number} exitPoint
-     * @returns {number}
+     * @returns {number}  If successful, the exit position on the supplied pointer, which leads to the adjoining node, will return.
+     *                    Otherwise, -1 will be returned.
      */
-    private buildNextNodeOnRandomPath;
+    private attemptBuildNextNodeOnPath;
     /**
      * If the indicated dictionary has negative node values (a natural result of the current version of
      * the generation process), push all of the node coordinates up so that 0,0 represents the top left.

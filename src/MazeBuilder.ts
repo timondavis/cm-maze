@@ -3,6 +3,11 @@ import {Cardinality} from "./Behavior/Cardinality"
 import {NodeLocation} from "./MazeCoordinates/NodeLocation";
 import {Compass4} from "./Behavior/Compass4";
 import {Maze} from "./Maze";
+import {MazeBuilderExitPlacement} from "./MazeBuilder/MazeBuilderExitPlacement";
+import {ExitPlacementBehavior} from "./MazeBuilder/ExitPlacementBehavior/ExitPlacementBehavior";
+import {InternalExitsStrategy} from "./MazeBuilder/ExitPlacementBehavior/InternalExitsStrategy";
+import {ExternalExitsOpenStrategy} from "./MazeBuilder/ExitPlacementBehavior/ExternalExitsOpenStrategy";
+import {ExternalExitsSealedStrategy} from "./MazeBuilder/ExitPlacementBehavior/ExternalExitsSealedStrategy";
 
 /**
  * @class MazeBuilder
@@ -27,6 +32,11 @@ export class MazeBuilder {
     protected entry : MazeNode;
 
     /**
+     * Which 'mode' logic will be used to determine where the exit and entry points are, and their properties.
+     */
+    protected exitPlacement: string;
+
+    /**
      *  A Cardinality instance responsible for facilitating node connection and traversal
      *  logic.
      *
@@ -42,13 +52,39 @@ export class MazeBuilder {
     /**
      * Constructor
      *
-     * @param {Cardinality} cardinality
-     * @param {number} complexity
+     * @param configs : any
      */
-    public constructor( cardinality? : Cardinality, complexity: number = 100 ) {
+    public constructor( configs: any = null) {
 
-        this.cardinality = ( cardinality ) ? cardinality : new Compass4();
-        this.complexity = complexity;
+        this.cardinality = (configs && configs.hasOwnProperty('cardinality' )) ? configs.cardinality : new Compass4();
+        this.complexity = (configs && configs.hasOwnProperty('complexity' )) ? configs.complexity : 100;
+        this.exitPlacement = (configs && configs.hasOwnProperty('exitPlacement')) ?
+            configs.exitPlacement : MazeBuilderExitPlacement.EXTERNAL_OPEN;
+    }
+
+    private placeExits() {
+        let exitsStrategy: ExitPlacementBehavior;
+        switch(this.exitPlacement) {
+            case(MazeBuilderExitPlacement.INTERNAL): {
+                exitsStrategy = new InternalExitsStrategy(this.maze);
+                break;
+            }
+            case(MazeBuilderExitPlacement.EXTERNAL_OPEN): {
+                exitsStrategy = new ExternalExitsOpenStrategy(this.maze);
+                break;
+            }
+            case(MazeBuilderExitPlacement.EXTERNAL_SEALED): {
+                exitsStrategy = new ExternalExitsSealedStrategy(this.maze);
+                break;
+            }
+            default: {
+                throw `Invalid exit strategy supplied: ${this.exitPlacement}`;
+                break;
+            }
+        }
+
+        exitsStrategy.placeEntrance();
+        exitsStrategy.placeExit();
     }
 
     /**
@@ -76,12 +112,12 @@ export class MazeBuilder {
         this.maze.setCardinality( this.cardinality );
         this.maze.setNodes( this.normalizeNodeCoordinates() );
         this.maze.setCurrentNode( this.entry );
-        this.maze.setStartNode( this.entry );
-        this.maze.setFinishNode( this.selectRandomNode() );
         this.maze.setDimensions( this.getDimensions() );
+        this.placeExits();
 
         return this.maze;
     }
+
 
     /**
      * Convenience function (static) for shorthand randomization.
@@ -110,38 +146,49 @@ export class MazeBuilder {
     public generateRandomPathFrom( pointer : MazeNode, depth: number = this.complexity ) : MazeBuilder {
 
         let newDirection = -1;
-        let openExits: number[] = [];
+        let exitsAvailable: number[] = [];
         let occupiedExits: number[];
         let nextExitPosition: number;
 
         // Create node connections (to new or existing nodes) - 1 for each level of depth declared.
         for ( let i = 0 ; i < depth ; i++ ) {
 
-            // Pick a random exit point on this node.  If there is no open exit, traverse to the next node and continue.
-            openExits = pointer.getOpenConnectionPoints();
-            if (openExits.length == 0) {
-                pointer = this.hopToNextNode(pointer);
+            exitsAvailable = pointer.getAvailableConnectionPoints();
+
+            /**
+             * If node connections are all employed, traverse to a random neighboring node.
+             */
+            if (exitsAvailable.length == 0) {
+                pointer = this.hopToNextNodeInRandomDirection(pointer);
                 continue;
             }
-            newDirection = openExits[MazeBuilder.rand(openExits.length - 1, 0)];
 
-            // Start by attempting to connect to a random new or existing node gracefully...
-            nextExitPosition = this.buildNextNodeOnRandomPath( pointer, newDirection );
+            /**
+             * Otherwise, we'll pick a direction for travel based on the exits available.
+             */
+            // Pick a random direction
+            newDirection = exitsAvailable[MazeBuilder.rand(exitsAvailable.length - 1, 0)];
+
+            // Start by attempting to connect to a random new or existing node gracefully.  If found,
+            // traverse to new direction.
+            nextExitPosition = this.attemptBuildNextNodeOnPath( pointer, newDirection );
             if ( nextExitPosition >= 0 ) {
                 let pointerId = pointer.getNeighborIdAt( nextExitPosition );
                 pointer = this.maze.getNodeWithId(pointerId);
                 continue;
             }
 
-            // ... look for alternative ways of extending to another node if necessary...
-            nextExitPosition = this.tryNodeConnectionFromEveryAvailableExit( pointer, openExits );
+            // If our selected direction is not available, disregard randomization and attempt to
+            // connect to, or build, a node in the indicated direction.  If such a node is found, traverse in the
+            // new direction.
+            nextExitPosition = this.attemptNodeConnectionFromEveryAvailableExit( pointer, exitsAvailable );
             if ( nextExitPosition >= 0 ) {
                 let pointerId = pointer.getNeighborIdAt( nextExitPosition );
                 pointer = this.maze.getNodeWithId(pointerId);
                 continue;
             }
 
-            // .. retreat if unsuccessful, fallback to a previously connected node ...
+            // If no valid exit point could be found, traverse to previous node.
             occupiedExits = pointer.getOccupiedConnectionPoints();
 
             if ( occupiedExits.length > 0 ) {
@@ -149,7 +196,7 @@ export class MazeBuilder {
                 pointer = this.maze.getNodeWithId(pointerId);
             }
 
-            // .. and, finally, surrender if we can't find any valid connected nodes.
+            // No valid exits could be found.  Stop searching and do not traverse.  Result is that the current node will be returned.
             break;
         }
 
@@ -199,7 +246,7 @@ export class MazeBuilder {
      * @param {number[]} openConnectionPoints
      * @returns {number}
      */
-    private tryNodeConnectionFromEveryAvailableExit( pointer: MazeNode, openConnectionPoints: number[] ): number {
+    private attemptNodeConnectionFromEveryAvailableExit( pointer: MazeNode, openConnectionPoints: number[] ): number {
 
         let validExitIndexFound: boolean = false;
         let newDirection = -1;
@@ -211,7 +258,7 @@ export class MazeBuilder {
             newDirection = openConnectionPoints[index];
             openConnectionPoints = openConnectionPoints.splice( index, 1 );
 
-            candidateExitPosition = this.buildNextNodeOnRandomPath( pointer, newDirection );
+            candidateExitPosition = this.attemptBuildNextNodeOnPath( pointer, newDirection );
 
             if ( candidateExitPosition > 0 ) {
                 validExitIndexFound = true;
@@ -223,14 +270,14 @@ export class MazeBuilder {
     }
 
     /**
-     * Convenince function to simply get the next node WHEN ALL EXIT POINTS ARE CLAIMED
+     * Convenience function to simply get the next node WHEN ALL EXIT POINTS ARE CLAIMED
      *
      * @pre  All exit points on the node must connect to other nodes.  Ignoring this precondition
      * may result in exceptions being thrown.
      *
      * @param {MazeNode} pointer
      */
-    private hopToNextNode( pointer: MazeNode ) : MazeNode {
+    private hopToNextNodeInRandomDirection( pointer: MazeNode ) : MazeNode {
 
         return this.maze.getNodeWithId(pointer.getNeighborIdAt(
             MazeBuilder.rand(
@@ -254,20 +301,21 @@ export class MazeBuilder {
         let lastCoordinates: NodeLocation;
         let nextCoordinates: NodeLocation;
         let tempNextNode: MazeNode;
+        let nodeAtNextLocation : MazeNode;
 
         // Determine coordinates for the new and existing nodes
         lastCoordinates = pointer.getLocation();
         nextCoordinates = this.cardinality.getNextLocation(lastCoordinates, exitPoint);
+        nodeAtNextLocation = this.maze.getNodeAtLocation(nextCoordinates);
 
         // If the next node's coordinate is already taken point our Next Node to that node.  Otherwise,
         // if the space in unoccupied, create a new node.
-        if( this.maze.containsNodeWithId(nextCoordinates.toString())) {
-           tempNextNode = this.maze.getNodeWithId(nextCoordinates.toString());
+        if( nodeAtNextLocation ) {
+           tempNextNode = nodeAtNextLocation;
         } else {
            tempNextNode = new MazeNode( this.cardinality );
            tempNextNode.setLocation(nextCoordinates);
-
-           tempNextNode.setMaxConnections(MazeBuilder.rand(this.cardinality.getConnectionPointCount() - 1, 1));
+           tempNextNode.setMaxConnections(Math.ceil(Math.random() * this.cardinality.getConnectionPointCount()));
 
            this.maze.addNode(tempNextNode);
         }
@@ -276,14 +324,19 @@ export class MazeBuilder {
     }
 
     /**
-     * Convenience method for producing (or finding), and then reporting the exit point connecting to,
-     * the next node on a given path. Returns the index of the connected path, or -1 if failure took place
+     * Convenience method for producing or finding the next node at the given exitPoint.
+     * If the next node has an available connection point for a logical connection to the supplied pointer,
+     * the connection will be made between the supplied node and the next node.
      *
      * @param {MazeNode} pointer
      * @param {number} exitPoint
-     * @returns {number}
+     * @returns {number}  If successful, the exit position on the supplied pointer, which leads to the adjoining node, will return.
+     *                    Otherwise, -1 will be returned.
      */
-    private buildNextNodeOnRandomPath( pointer: MazeNode, exitPoint : number ) : number {
+    private attemptBuildNextNodeOnPath( pointer: MazeNode, exitPoint : number ) : number {
+
+        if (!pointer.isConnectionPointOpen(exitPoint)) { return - 1;}
+
         let tempNextNode: MazeNode;
 
         // Get or create the node at the next position.
@@ -291,9 +344,9 @@ export class MazeBuilder {
 
         // If the logical entry point is open on the next node, we'll connect the nodes and traverse
         // to the next node.
-        if ( pointer.isConnectionPointOpen(exitPoint) && tempNextNode.isConnectionPointOpen(this.cardinality.getOpposingConnectionPoint(exitPoint))) {
+        if (tempNextNode.isConnectionPointOpen(this.cardinality.getOpposingConnectionPoint(exitPoint))) {
 
-            pointer.connectTo( tempNextNode, exitPoint );
+            pointer.connectTo(tempNextNode, exitPoint);
             return exitPoint;
         }
 
@@ -322,8 +375,7 @@ export class MazeBuilder {
         for ( let i = 0 ; i < dimensionsUsed ; i++ ) {
 
             Object.keys( this.maze.getNodes() ).forEach( (key) => {
-
-                currentValue = this.maze.getNodes()[key].getLocation().getAxisPoint(i);
+                currentValue = this.maze.getNodeWithId(key).getLocation().getAxisPoint(i);
                 currentMin = ( currentValue < currentMin ) ? currentValue : currentMin;
             });
 
@@ -332,7 +384,6 @@ export class MazeBuilder {
 
         // O(d)
         for( let i = 0 ; i < dimensionsUsed ; i++ ) {
-
             adjustmentsByIndex[i] = Math.abs( minCoordinateValuesInrange[i] );
         }
 
@@ -341,17 +392,16 @@ export class MazeBuilder {
 
             Object.keys( this.maze.getNodes() ).forEach( (key) => {
 
-                currentNode = this.maze.getNodes()[key];
+                currentNode = this.maze.getNodeWithId(key);
                 currentNode.getLocation().adjustAxisPoint(i, adjustmentsByIndex[i]);
-                currentNode.setName('[' + currentNode.getLocation().getPosition().toString() + ']');
             });
         }
 
         // O(n)
         Object.keys( this.maze.getNodes() ).forEach( (key) => {
 
-            currentNode = this.maze.getNodes()[key];
-            adjustedCoordinates[currentNode.getLocation().toString()] = currentNode;
+            currentNode = this.maze.getNodeWithId(key);
+            adjustedCoordinates[currentNode.getId()] = currentNode;
         });
 
         return adjustedCoordinates;

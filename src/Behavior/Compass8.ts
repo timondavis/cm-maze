@@ -26,6 +26,12 @@ export enum C8 {
  */
 export class Compass8 extends Cardinality {
 
+    public typeId: string = 'Compass8';
+
+    public constructor() {
+        super('Compass8');
+    }
+
     /**
      * Get the cardinality for this behavior
      *
@@ -123,4 +129,9 @@ export class Compass8 extends Cardinality {
 
         return ( position ) ? new NodeLocation2D( position ) : new NodeLocation2D( [0,0] );
     }
+
+	public roundConnectionPointToPrimeCardinality(connectionPoint: number) {
+
+    	return (connectionPoint % 2 == 0) ? connectionPoint : connectionPoint -1;
+	}
 }

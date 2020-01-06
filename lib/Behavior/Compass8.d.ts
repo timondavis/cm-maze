@@ -30,6 +30,8 @@ export declare enum C8 {
  * Behavior class for 2D Maze nodes with 8 possible points connecting points.
  */
 export declare class Compass8 extends Cardinality {
+    typeId: string;
+    constructor();
     /**
      * Get the cardinality for this behavior
      *
@@ -57,4 +59,5 @@ export declare class Compass8 extends Cardinality {
      * @returns {NodeLocation}
      */
     generateNodeLocation(position?: number[]): NodeLocation;
+    roundConnectionPointToPrimeCardinality(connectionPoint: number): number;
 }

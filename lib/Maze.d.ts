@@ -28,12 +28,6 @@ export declare class Maze {
      */
     protected currentNode: MazeNode;
     /**
-     * The # of nodes in this maze
-     *
-     * @type {number}
-     */
-    protected size: number;
-    /**
      * Contains the size of the range for each dimension of the maze.
      * @type {any[]}
      */
@@ -50,6 +44,12 @@ export declare class Maze {
      * @type {MazeNode}
      */
     protected finish: MazeNode;
+    private id;
+    constructor(mazeData?: any);
+    /**
+     * Get the unique GUID for this maze
+     */
+    getId(): string;
     /**
      * Set the cardinality behavior for nodes on this maze.
      *
@@ -96,7 +96,7 @@ export declare class Maze {
      * @param key
      * @param mazeNode
      */
-    addNode(mazeNode: MazeNode): void;
+    addNode(mazeNode: MazeNode, demandUniqueLocations?: boolean): void;
     /**
      * Iterate through the maze nodes by calling in a callback function.  Callback
      * function will be processed on each MazeNode in the collection.
@@ -167,6 +167,7 @@ export declare class Maze {
      * @returns {MazeNode}
      */
     getCurrentNode(): MazeNode;
+    getLocationKeyIndex(): Map<string, MazeNode>;
     /**
      * Move the 'current' node pointer for this maze in the indicated direction, if available.  Returns
      * the new node if successful, or otherwise FALSE
@@ -175,4 +176,10 @@ export declare class Maze {
      * @returns {MazeNode | boolean}
      */
     move(direction: number): MazeNode | boolean;
+    private prepareMazeIndexArray;
+    private generate2DMazeIndex;
+    /**
+     * Generate a unique key
+     */
+    private static generateKey;
 }

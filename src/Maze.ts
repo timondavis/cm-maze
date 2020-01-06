@@ -31,13 +31,6 @@ export class Maze {
     protected currentNode : MazeNode;
 
     /**
-     * The # of nodes in this maze
-     *
-     * @type {number}
-     */
-    protected size : number;
-
-    /**
      * Contains the size of the range for each dimension of the maze.
      * @type {any[]}
      */
@@ -57,22 +50,39 @@ export class Maze {
      */
     protected finish: MazeNode;
 
+    private id: string;
+
+    public constructor(mazeData: any = null) {
+        if (mazeData === null) { return; }
+
+        this.cardinality = mazeData.cardinality;
+        this.id = Maze.generateKey();
+    }
+
+    /**
+     * Get the unique GUID for this maze
+     */
+    public getId() {
+        return this.id;
+    }
+
 
     /**
      * Set the cardinality behavior for nodes on this maze.
      *
      * @param {CardinalityBehavior} cardinality
      */
-    public setCardinality(cardinality : Cardinality ) {
+    public setCardinality(cardinality : Cardinality) {
         this.cardinality = cardinality;
     }
+
 
     /**
      * Get the cardinality  for nodes on this maze.
      *
      * @returns {Cardinality}
      */
-    public getCardinality() : Cardinality {
+    public getCardinality(): Cardinality {
 
         return this.cardinality;
     }
@@ -82,10 +92,9 @@ export class Maze {
      *
      * @param {{[p: string]: MazeNode}} nodes
      */
-    public setNodes( nodes: { [key:string] : MazeNode } ) {
+    public setNodes(nodes: { [key:string] : MazeNode }) {
 
         this.nodes = nodes;
-        this.size = Object.keys( nodes ).length;
     }
 
     /**
@@ -141,9 +150,9 @@ export class Maze {
      * @param key
      * @param mazeNode
      */
-    public addNode(mazeNode: MazeNode) {
-        if (this.nodes.hasOwnProperty(mazeNode.ID)) { throw "Duplicate key assignment on Maze nodes"; }
-        this.nodes[mazeNode.ID] = mazeNode;
+    public addNode(mazeNode: MazeNode, demandUniqueLocations: boolean = true) {
+        if (demandUniqueLocations && this.getNodeAtLocation(mazeNode.getLocation())) { throw "Duplicate location assignment on Maze nodes"; }
+        this.nodes[mazeNode.getId()] = mazeNode;
     }
 
     /**
@@ -167,12 +176,15 @@ export class Maze {
     public getNodeAtLocation( location : NodeLocation ) : MazeNode {
 
        const keys = Object.keys(this.nodes);
+       let tryNode: MazeNode = null;
        let foundNode: MazeNode = null;
        let key: string = "";
 
        for (let keyIndex = 0 ; keyIndex < keys.length ; keyIndex++) {
            key = keys[keyIndex];
-           if (this.nodes[key].getLocation().toString() === location.toString()) {
+           tryNode = this.getNodeWithId(key);
+
+           if (tryNode && tryNode.getLocation().toString() === location.toString()) {
                foundNode = this.nodes[key];
                break;
            }
@@ -246,8 +258,8 @@ export class Maze {
      * @returns {number}
      */
     public getSize() : number {
-        return this.size;
-    }
+		return Object.keys(this.nodes).length;
+	}
 
     /**
      * Set the 'current' node pointer at the indicated node.
@@ -268,6 +280,21 @@ export class Maze {
         return this.currentNode;
     }
 
+    public getLocationKeyIndex(): Map<string, MazeNode> {
+
+        let node: MazeNode;
+        let location : NodeLocation;
+        let mazeArray : MazeNode[][] = this.prepareMazeIndexArray();
+
+        Object.keys(this.getNodes()).forEach((key) => {
+            node = <MazeNode> this.getNodeWithId(key);
+            location = node.getLocation();
+            mazeArray[location.getPosition()[0]][location.getPosition()[1]] = node;
+        });
+
+        return this.generate2DMazeIndex(mazeArray);
+    }
+
     /**
      * Move the 'current' node pointer for this maze in the indicated direction, if available.  Returns
      * the new node if successful, or otherwise FALSE
@@ -283,5 +310,42 @@ export class Maze {
         }
 
         return false;
+    }
+
+    private prepareMazeIndexArray(): MazeNode[][] {
+        let mazeArray : MazeNode[][] = [];
+
+        for (let x = 0 ; x < this.dimensions[0] ; x++ ) {
+            mazeArray[x] = [];
+            for (let y = 0 ; y < this.dimensions[1] ; y++ ) {
+                mazeArray[x][y] = null;
+            }
+        }
+
+        return mazeArray;
+    }
+
+    private generate2DMazeIndex(mazeArray: MazeNode[][]) : Map<string, MazeNode> {
+        let index : Map<string, MazeNode> = new Map<string, MazeNode>();
+
+        for ( let x = 0 ; x < this.dimensions[0] ; x++ ) {
+            for ( let y = 0 ; y < this.dimensions[1] ; y++ ) {
+                if (mazeArray[x][y] !== null) {
+                    index.set(mazeArray[x][y].getLocation().toString(),  mazeArray[x][y]);
+                }
+            }
+        }
+
+        return index;
+    }
+
+
+    /**
+     * Generate a unique key
+     */
+    private static generateKey() {
+
+        let uuid = require('uuid/v4');
+        return uuid();
     }
 }

@@ -8,6 +8,10 @@ import { Cardinality } from "./Behavior/Cardinality";
  */
 export declare class MazeNode {
     /**
+     * Index ID Incrementor
+     */
+    private static indexIdCounter;
+    /**
      * Debug Mode
      * @type {boolean}
      */
@@ -28,6 +32,10 @@ export declare class MazeNode {
      */
     protected name: string;
     /**
+     * Unique index assigned to every new node.
+     */
+    private _indexId;
+    /**
      * Unique string key for maze node
      */
     protected mazeNodeId: string;
@@ -42,8 +50,9 @@ export declare class MazeNode {
      * than what is dictated by this value.
      */
     protected maxExits: number;
-    constructor(cardinality: Cardinality, id?: string, coordinates?: NodeLocation);
-    get ID(): string;
+    constructor(cardinality: Cardinality, id?: string, coordinates?: NodeLocation, maxConnections?: number);
+    getId(): string;
+    getIndexId(): number;
     /**
      * Connects one MazeNode instance to another.  Implicitly bi-directional, but directed edges between nodes
      * can be crated by passing in the autoConnect parameter as false.  If either node is maxed out, no connection will be made.
@@ -92,7 +101,7 @@ export declare class MazeNode {
      *
      * @returns {number[]}
      */
-    getOpenConnectionPoints(): number[];
+    getAvailableConnectionPoints(): number[];
     /**
      * Get an array of neighboring node ids.
      *

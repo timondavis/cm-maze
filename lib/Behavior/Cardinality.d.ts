@@ -6,8 +6,18 @@ import { NodeLocation } from "../MazeCoordinates/NodeLocation";
  * between them, in a logical fashion based on the cardinality of exit points for each node.
  */
 export declare abstract class Cardinality {
+    cardinalityId: string;
     abstract getNextLocation(currentLocation: NodeLocation, exitConnectionPoint: number): NodeLocation;
     abstract getConnectionPointCount(): number;
+    constructor(cardinalityId: any);
+    /**
+     * In some use cases, the most basic cardinality points are the only valid points for the operation.  Call
+     * this method to 'round' the connection point up to its closest valid connection point.
+     *
+     * @param connectionPoint: number
+     * @return number
+     */
+    abstract roundConnectionPointToPrimeCardinality(connectionPoint: number): any;
     /**
      * Ensure the indicated position is valid given this coordinates cardinality
      *

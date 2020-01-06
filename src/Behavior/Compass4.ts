@@ -22,6 +22,10 @@ export enum C4 {
  */
 export class Compass4 extends Cardinality {
 
+    public constructor() {
+        super('Compass4');
+    }
+
     /**
      * Get the # of connection points attached to this cardinality
      *
@@ -74,4 +78,8 @@ export class Compass4 extends Cardinality {
 
         return ( position ) ? new NodeLocation2D( position ) : new NodeLocation2D( [0,0] );
     }
+
+	public roundConnectionPointToPrimeCardinality(connectionPoint: number) {
+    	return connectionPoint;
+	}
 }

@@ -20,9 +20,9 @@ describe( 'MazeNode', () => {
         let b = new MazeNode( new Compass8() );
         let c = new MazeNode( new Compass8() );
 
-        m.addNode(a);
-        m.addNode(b);
-        m.addNode(c);
+        m.addNode(a, false);
+        m.addNode(b, false);
+        m.addNode(c, false);
 
         // A < -- > B connect
         a.connectTo( b, 3 );
@@ -30,8 +30,8 @@ describe( 'MazeNode', () => {
         expect( a.isNeighborsWith(b) ).to.be.true;
         expect( b.isNeighborsWith(a) ).to.be.true;
 
-        expect( a.getNeighborIdAt( 3 ) ).to.be.equal( b.ID );
-        expect( b.getNeighborIdAt( 7 ) ).to.be.equal( a.ID );
+        expect( a.getNeighborIdAt( 3 ) ).to.be.equal( b.getId() );
+        expect( b.getNeighborIdAt( 7 ) ).to.be.equal( a.getId() );
 
         // B -> C connect
         b.connectTo( c, 1, false );
@@ -61,10 +61,10 @@ describe( 'MazeNode', () => {
         let c = new MazeNode(new Compass4()).setName( "C" );
         let d = new MazeNode(new Compass4()).setName( "D" );
 
-        m.addNode(a);
-        m.addNode(b);
-        m.addNode(c);
-        m.addNode(d);
+        m.addNode(a, false);
+        m.addNode(b, false);
+        m.addNode(c, false);
+        m.addNode(d, false);
 
         let neighborsOfA: string[];
         let neighborsOfB: string[];
@@ -107,10 +107,10 @@ describe( 'MazeNode', () => {
         let c = new MazeNode(new Compass4() ).setName("C");
         let d = new MazeNode(new Compass4() ).setName("D");
 
-        m.addNode(a);
-        m.addNode(b);
-        m.addNode(c);
-        m.addNode(d);
+        m.addNode(a, false);
+        m.addNode(b, false);
+        m.addNode(c, false);
+        m.addNode(d, false);
 
         let exitsOfA: number[];
         let exitsOfC: number[];
@@ -142,7 +142,7 @@ describe( 'MazeNode', () => {
         a.connectTo( new MazeNode(new Compass8() ), C8.S );
         a.connectTo( new MazeNode(new Compass8() ), C8.W );
 
-        exitsOpenOnA = a.getOpenConnectionPoints();
+        exitsOpenOnA = a.getAvailableConnectionPoints();
         exitsOccupiedOnA = a.getOccupiedConnectionPoints();
 
         expect( exitsOpenOnA ).to.have.lengthOf( 4 );
@@ -167,10 +167,10 @@ describe( 'MazeNode', () => {
         let c = new MazeNode(new Compass4() );
         let d = new MazeNode(new Compass4() );
 
-        m.addNode(a);
-        m.addNode(b);
-        m.addNode(c);
-        m.addNode(d);
+        m.addNode(a, false);
+        m.addNode(b, false);
+        m.addNode(c, false);
+        m.addNode(d, false);
 
         a.connectTo( b, C4.NORTH );
         a.connectTo( d, C4.WEST );

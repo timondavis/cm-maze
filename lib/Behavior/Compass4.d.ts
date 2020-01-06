@@ -22,6 +22,7 @@ export declare enum C4 {
  * rose having 4 cardinal points
  */
 export declare class Compass4 extends Cardinality {
+    constructor();
     /**
      * Get the # of connection points attached to this cardinality
      *
@@ -49,4 +50,5 @@ export declare class Compass4 extends Cardinality {
      * @returns {NodeLocation}
      */
     generateNodeLocation(position?: number[]): NodeLocation;
+    roundConnectionPointToPrimeCardinality(connectionPoint: number): number;
 }

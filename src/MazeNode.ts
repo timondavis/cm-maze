@@ -9,6 +9,11 @@ import {Cardinality} from "./Behavior/Cardinality";
  */
 export class MazeNode {
 
+	/**
+	 * Index ID Incrementor
+	 */
+	private static indexIdCounter: number = 0;
+
     /**
      * Debug Mode
      * @type {boolean}
@@ -33,6 +38,11 @@ export class MazeNode {
      */
     protected name: string = "";
 
+	/**
+	 * Unique index assigned to every new node.
+	 */
+	private _indexId: number;
+
     /**
      * Unique string key for maze node
      */
@@ -51,20 +61,27 @@ export class MazeNode {
      */
     protected maxExits: number;
 
-    public constructor(cardinality: Cardinality, id: string = null, coordinates? : NodeLocation) {
+    public constructor(cardinality: Cardinality, id: string = null, coordinates? : NodeLocation, maxConnections: number = null) {
 
         this.cardinality = cardinality;
         this.neighbors = new Array<string>( cardinality.getConnectionPointCount() );
 
         this.coordinates = ( coordinates ) ? coordinates : this.cardinality.generateNodeLocation();
-        this.maxExits = -1;
+        this.maxExits = (maxConnections) ? maxConnections : this.cardinality.getConnectionPointCount();
 
         this.mazeNodeId = (id) ? id : MazeNode.generateKey();
+
+        MazeNode.indexIdCounter++;
+        this._indexId = MazeNode.indexIdCounter;
     }
 
-    public get ID() {
+    public getId(): string {
         return this.mazeNodeId;
     }
+
+    public getIndexId(): number {
+    	return this._indexId
+	}
 
     /**
      * Connects one MazeNode instance to another.  Implicitly bi-directional, but directed edges between nodes
@@ -80,7 +97,7 @@ export class MazeNode {
         if ( ! this.isConnectionPointOpen(exitPosition) )  {
 
             throw( "One-Way connection failed: " +
-                "Indicated node will not tolerate any more additional connections - maximum reached." );
+                "Indicated node reports that given exit is not available for connection.." );
         }
 
         if ( exitPosition >= this.cardinality.getConnectionPointCount() || exitPosition < 0 ) {
@@ -91,7 +108,7 @@ export class MazeNode {
             throw( "Indicated exitPosition exitPosition is already occupied.  Two exits/entries may not occupy the same exitPosition" );
         }
 
-        this.neighbors[exitPosition] = node.ID;
+        this.neighbors[exitPosition] = node.getId();
 
         if ( autoConnect ) {
 
@@ -162,7 +179,7 @@ export class MazeNode {
 
         for (let i = 0 ; i < this.cardinality.getConnectionPointCount() ; i++ ) {
 
-            if (node.ID == this.neighbors[i]) { return true; }
+            if (node.getId() == this.neighbors[i]) { return true; }
         }
 
         return false;
@@ -194,7 +211,7 @@ export class MazeNode {
      *
      * @returns {number[]}
      */
-    public getOpenConnectionPoints() : number[] {
+    public getAvailableConnectionPoints() : number[] {
 
         let positions: number[] = [];
 
@@ -241,13 +258,12 @@ export class MazeNode {
      */
     public isConnectionPointOpen( point: number ): boolean {
 
-        if ( this.maxExits >= 0 && this.maxExits <= this.getOccupiedConnectionPoints().length) {
-
+        if ( this.getMaxConnections() >= 0 && (this.getOccupiedConnectionPoints().length + 1) > this.getMaxConnections()) {
             return false;
         }
 
         this.cardinality.validateConnectionPoint( point );
-        return ( this.neighbors[point] === undefined );
+        return ( this.neighbors[point] === undefined )
     }
 
     /**
