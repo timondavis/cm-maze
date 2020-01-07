@@ -14,6 +14,7 @@
     "dice-bag": "0.1.2",
     "dts-bundle": "^0.7.3",
     "mocha": "^6.2.2",
+    "typescript": "~3.5.3",
     "uuid": "^3.3.3"
   },
   "nodemonConfig": {
@@ -23,8 +24,7 @@
     "concurrently": "3.5.1",
     "nodemon": "1.14.11",
     "ts-node": "4.1.0",
-    "tsify": "^3.0.4",
-    "typescript": "^3.7.2"
+    "tsify": "^3.0.4"
   },
   "scripts": {
     "start": "concurrently \"npm run build:live\" \"npm run build:disk\" ",
