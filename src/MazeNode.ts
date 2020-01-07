@@ -61,6 +61,12 @@ export class MazeNode {
      */
     protected maxExits: number;
 
+	/**
+	 * Contents of the maze node.  Maps within a map.
+	 * The master map ties a string id to a consuming developers custom defined Map.
+	 */
+	public contents: Map<string, Map>;
+
     public constructor(cardinality: Cardinality, id: string = null, coordinates? : NodeLocation, maxConnections: number = null) {
 
         this.cardinality = cardinality;
@@ -73,6 +79,8 @@ export class MazeNode {
 
         MazeNode.indexIdCounter++;
         this._indexId = MazeNode.indexIdCounter;
+
+        this.contents = new Map<string, Map>();
     }
 
     public getId(): string {

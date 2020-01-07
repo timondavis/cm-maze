@@ -7,6 +7,7 @@ import {MazeBuilder} from "../../MazeBuilder";
 import {NodeLocation2D} from "../../MazeCoordinates/NodeLocation2D";
 import {Cardinality} from "../../Behavior/Cardinality";
 import {Maze} from "../../Maze";
+import {Actor} from "cm-dungeon";
 
 describe( 'MazeNode', () => {
 
@@ -271,4 +272,44 @@ describe( 'MazeNode', () => {
             }
         }
     });
+
+    it ('can store and retrieve contents on each node', () => {
+
+    	let n = new MazeNode(new Compass4());
+    	let actors = new Map<string, Actor>();
+    	let numbers = new Map<number, number>();
+    	let widgets = new Map<string, string>();
+
+    	actors.set('1', new Actor());
+		actors.set('2', new Actor());
+		actors.set('3', new Actor());
+
+		actors.get('1').labels.add('name', '1');
+		actors.get('2').labels.add('name', '2');
+		actors.get('3').labels.add('name', '3');
+
+		numbers.set(1, 1);
+		numbers.set(2, 2);
+		numbers.set(3, 3);
+
+		widgets.set('1', '1');
+		widgets.set('2', '2');
+		widgets.set('3', '3');
+
+		n.contents.set('actors', actors);
+		n.contents.set('numbers', numbers);
+		n.contents.set('widgets', widgets);
+
+		expect(n.contents.get('actors').get('1').labels.get('name')).to.be.equal('1');
+		expect(n.contents.get('actors').get('2').labels.get('name')).to.be.equal('2');
+		expect(n.contents.get('actors').get('3').labels.get('name')).to.be.equal('3');
+
+		expect(n.contents.get('numbers').get(1)).to.be.equal(1);
+		expect(n.contents.get('numbers').get(2)).to.be.equal(2);
+		expect(n.contents.get('numbers').get(3)).to.be.equal(3);
+
+		expect(n.contents.get('widgets').get('1')).to.be.equal('1');
+		expect(n.contents.get('widgets').get('2')).to.be.equal('2');
+		expect(n.contents.get('widgets').get('3')).to.be.equal('3');
+	});
 });
