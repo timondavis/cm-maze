@@ -50,6 +50,11 @@ export declare class MazeNode {
      * than what is dictated by this value.
      */
     protected maxExits: number;
+    /**
+     * Contents of the maze node.  Maps within a map.
+     * The master map ties a string id to a consuming developers custom defined Map.
+     */
+    contents: Map<string, Map<any, any>>;
     constructor(cardinality: Cardinality, id?: string, coordinates?: NodeLocation, maxConnections?: number);
     getId(): string;
     getIndexId(): number;
