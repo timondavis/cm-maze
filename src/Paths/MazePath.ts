@@ -64,4 +64,6 @@ export class MazePath {
 	public getLength() {
 		return this._path.length;
 	}
+
+
 }
