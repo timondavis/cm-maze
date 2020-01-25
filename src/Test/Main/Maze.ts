@@ -258,6 +258,46 @@ describe( 'Maze', () => {
         expect (() => {JSON.stringify(maze)}).not.to.throw();
     });
 
+    it ('should return a random node from the maze on demand', async () => {
+    	let intervalTime = 10;
+    	let idsCaptured: string[] = [];
+    	let nodeTestCount = 50;
+    	let duplicatesTolerance = Math.floor(nodeTestCount * 0.10);
+
+    	let MB = new MazeBuilder();
+    	let maze = MB.buildMaze();
+
+    	let generateRandoms = async () => {
+    		return new Promise((resolve) => {
+				let timeoutsExecuted: number = 0;
+				let interval = setInterval(() => {
+					timeoutsExecuted++;
+					idsCaptured.push(maze.getRandomNode().getId());
+					if (timeoutsExecuted > nodeTestCount) {
+						clearInterval(interval);
+						resolve();
+					}
+				}, intervalTime)
+			})
+		};
+
+		await generateRandoms();
+
+    	let currentId: string;
+    	let matchesFound: number;
+    	for (let i = 0 ; i < nodeTestCount ; i++) {
+    		matchesFound = 0;
+    		currentId = idsCaptured[i];
+    		for (let j = 0 ; j < nodeTestCount ; j++) {
+    			if (i === j) { continue; }
+    			if (idsCaptured[i] === idsCaptured[j]) {
+    				matchesFound++;
+				}
+			}
+    		expect(matchesFound).to.be.lessThan(duplicatesTolerance);
+		}
+	});
+
     it ( 'provides a method to generate its node collection indexed by location key', () => {
 
         let mb = new MazeBuilder();

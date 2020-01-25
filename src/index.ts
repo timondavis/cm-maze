@@ -9,7 +9,7 @@ import {NodeLocation} from "./MazeCoordinates/NodeLocation";
 import {NodeLocation2D} from "./MazeCoordinates/NodeLocation2D";
 import {MazeRenderer} from "./Render/MazeRenderer";
 import {MazePath} from "./Paths/MazePath";
-import {PathFinder} from "./Paths/PathFinder";
+import {MazePatternFinder} from "./Paths/MazePatternFinder";
 
 export{
     Maze,
@@ -23,5 +23,5 @@ export{
     NodeLocation2D,
     MazeRenderer,
 	MazePath,
-	PathFinder
+	MazePatternFinder
 };

@@ -9,5 +9,5 @@ import { NodeLocation } from "./MazeCoordinates/NodeLocation";
 import { NodeLocation2D } from "./MazeCoordinates/NodeLocation2D";
 import { MazeRenderer } from "./Render/MazeRenderer";
 import { MazePath } from "./Paths/MazePath";
-import { PathFinder } from "./Paths/PathFinder";
-export { Maze, MazeBuilder, MazeNode, Cardinality, Compass4, C4, Compass8, NodeLocation, NodeLocation2D, MazeRenderer, MazePath, PathFinder };
+import { MazePatternFinder } from "./Paths/MazePatternFinder";
+export { Maze, MazeBuilder, MazeNode, Cardinality, Compass4, C4, Compass8, NodeLocation, NodeLocation2D, MazeRenderer, MazePath, MazePatternFinder };

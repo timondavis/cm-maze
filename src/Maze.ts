@@ -193,6 +193,15 @@ export class Maze {
        return foundNode;
     }
 
+	/**
+	 * Get a random node from the maze.
+	 */
+	public getRandomNode() {
+    	let randomIndex = Math.floor(Math.random() * (this.getNodesArray().length - 1));
+
+    	return this.getNodesArray()[randomIndex];
+	}
+
     /**
      * Assign the indicated node a 'starting point' status.
      *

@@ -114,6 +114,10 @@ export declare class Maze {
      */
     getNodeAtLocation(location: NodeLocation): MazeNode;
     /**
+     * Get a random node from the maze.
+     */
+    getRandomNode(): MazeNode;
+    /**
      * Assign the indicated node a 'starting point' status.
      *
      * @param {MazeNode} node
