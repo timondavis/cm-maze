@@ -10,6 +10,11 @@ import {NodeLocation2D} from "./MazeCoordinates/NodeLocation2D";
 import {MazeRenderer} from "./Render/MazeRenderer";
 import {MazePath} from "./Paths/MazePath";
 import {MazePatternFinder} from "./Paths/MazePatternFinder";
+import {Collectible} from "./Contents/Collectible";
+import {CollectibleList} from "./Contents/CollectibleList";
+import {MazeContentAtlas} from "./Contents/MazeContentAtlas";
+import {MazeContentCollection} from "./Contents/MazeContentCollection";
+
 
 export{
     Maze,
@@ -23,5 +28,9 @@ export{
     NodeLocation2D,
     MazeRenderer,
 	MazePath,
-	MazePatternFinder
+	MazePatternFinder,
+	Collectible,
+	CollectibleList,
+	MazeContentAtlas,
+	MazeContentCollection
 };
