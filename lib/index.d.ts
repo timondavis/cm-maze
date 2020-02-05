@@ -14,4 +14,7 @@ import { Collectible } from "./Contents/Collectible";
 import { CollectibleList } from "./Contents/CollectibleList";
 import { MazeContentAtlas } from "./Contents/MazeContentAtlas";
 import { MazeContentCollection } from "./Contents/MazeContentCollection";
-export { Maze, MazeBuilder, MazeNode, Cardinality, Compass4, C4, Compass8, NodeLocation, NodeLocation2D, MazeRenderer, MazePath, MazePatternFinder, Collectible, CollectibleList, MazeContentAtlas, MazeContentCollection };
+import { PathNode } from "./Paths/Models/PathNode";
+import { PathNodeList } from "./Paths/Models/PathNodeList";
+import { PathNodeListNode } from "./Paths/Models/PathNodeListNode";
+export { Maze, MazeBuilder, MazeNode, Cardinality, Compass4, C4, Compass8, NodeLocation, NodeLocation2D, MazeRenderer, MazePath, MazePatternFinder, Collectible, CollectibleList, MazeContentAtlas, MazeContentCollection, PathNode, PathNodeList, PathNodeListNode };

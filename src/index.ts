@@ -14,6 +14,9 @@ import {Collectible} from "./Contents/Collectible";
 import {CollectibleList} from "./Contents/CollectibleList";
 import {MazeContentAtlas} from "./Contents/MazeContentAtlas";
 import {MazeContentCollection} from "./Contents/MazeContentCollection";
+import {PathNode} from "./Paths/Models/PathNode";
+import {PathNodeList} from "./Paths/Models/PathNodeList";
+import {PathNodeListNode} from "./Paths/Models/PathNodeListNode";
 
 
 export{
@@ -32,5 +35,8 @@ export{
 	Collectible,
 	CollectibleList,
 	MazeContentAtlas,
-	MazeContentCollection
+	MazeContentCollection,
+	PathNode,
+	PathNodeList,
+	PathNodeListNode
 };
