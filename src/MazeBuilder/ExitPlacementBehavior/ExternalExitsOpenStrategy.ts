@@ -29,7 +29,7 @@ export class ExternalExitsOpenStrategy extends ExitPlacementBehavior {
 		let nextNode = this.generateExitNode(node.getCardinality());
         this.maze.addNode(nextNode, false);
 		node.connectTo(nextNode, exitPoint);
-		this.consumedNodeIds.push(node.getId());
+		this.consumedNodeIds.push(node.id);
 
         this.maze.setStartNode(node);
     }
@@ -52,7 +52,7 @@ export class ExternalExitsOpenStrategy extends ExitPlacementBehavior {
 		let nextNode = this.generateExitNode(node.getCardinality());
 		this.maze.addNode(nextNode, false);
 		node.connectTo(nextNode, exitPoint);
-		this.consumedNodeIds.push(node.getId());
+		this.consumedNodeIds.push(node.id);
 
 		this.maze.setFinishNode(node);
 	}

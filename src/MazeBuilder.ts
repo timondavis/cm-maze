@@ -401,7 +401,7 @@ export class MazeBuilder {
         Object.keys( this.maze.getNodes() ).forEach( (key) => {
 
             currentNode = this.maze.getNodeWithId(key);
-            adjustedCoordinates[currentNode.getId()] = currentNode;
+            adjustedCoordinates[currentNode.id] = currentNode;
         });
 
         return adjustedCoordinates;

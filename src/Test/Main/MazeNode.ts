@@ -31,8 +31,8 @@ describe( 'MazeNode', () => {
         expect( a.isNeighborsWith(b) ).to.be.true;
         expect( b.isNeighborsWith(a) ).to.be.true;
 
-        expect( a.getNeighborIdAt( 3 ) ).to.be.equal( b.getId() );
-        expect( b.getNeighborIdAt( 7 ) ).to.be.equal( a.getId() );
+        expect( a.getNeighborIdAt( 3 ) ).to.be.equal( b.id );
+        expect( b.getNeighborIdAt( 7 ) ).to.be.equal( a.id );
 
         // B -> C connect
         b.connectTo( c, 1, false );

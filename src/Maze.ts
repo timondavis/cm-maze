@@ -50,20 +50,20 @@ export class Maze {
      */
     protected finish: MazeNode;
 
-    private id: string;
+    private _id: string;
 
     public constructor(mazeData: any = null) {
         if (mazeData === null) { return; }
 
         this.cardinality = mazeData.cardinality;
-        this.id = Maze.generateKey();
+        this._id = Maze.generateKey();
     }
 
     /**
      * Get the unique GUID for this maze
      */
-    public getId() {
-        return this.id;
+    public get id() {
+        return this._id;
     }
 
 
@@ -83,7 +83,6 @@ export class Maze {
      * @returns {Cardinality}
      */
     public getCardinality(): Cardinality {
-
         return this.cardinality;
     }
 
@@ -152,7 +151,7 @@ export class Maze {
      */
     public addNode(mazeNode: MazeNode, demandUniqueLocations: boolean = true) {
         if (demandUniqueLocations && this.getNodeAtLocation(mazeNode.getLocation())) { throw "Duplicate location assignment on Maze nodes"; }
-        this.nodes[mazeNode.getId()] = mazeNode;
+        this.nodes[mazeNode.id] = mazeNode;
     }
 
     /**

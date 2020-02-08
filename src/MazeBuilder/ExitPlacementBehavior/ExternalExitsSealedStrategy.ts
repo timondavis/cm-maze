@@ -20,7 +20,7 @@ export class ExternalExitsSealedStrategy extends ExitPlacementBehavior {
 
         node.setName("Entrance");
 
-        this.consumedNodeIds.push(node.getId());
+        this.consumedNodeIds.push(node.id);
         this.maze.setStartNode(node);
     }
 
@@ -32,7 +32,7 @@ export class ExternalExitsSealedStrategy extends ExitPlacementBehavior {
         }
 
         node.setName("Exit");
-		this.consumedNodeIds.push(node.getId());
+		this.consumedNodeIds.push(node.id);
 		this.maze.setFinishNode(node);
     }
 }

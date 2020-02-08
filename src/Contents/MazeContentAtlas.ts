@@ -105,7 +105,7 @@ export class MazeContentAtlas {
     public getItemFromCollection<T extends Collectible>(collectionName: string, itemId: string) : T{
         let itemFound: T  = null;
         Array.from(this._collectibleResidency.get(collectionName).keys()).forEach((item: Collectible) => {
-            if (item.getId() == itemId) {
+            if (item.id == itemId) {
                 itemFound = item as T;
             }
         });
@@ -117,7 +117,7 @@ export class MazeContentAtlas {
         if (this.isItemInCollection(collectionName, itemId)) {
             let items = this.getItemsFromNode(collectionName, node);
             items.forEach((item: Collectible) => {
-                if (item.getId() === itemId) {
+                if (item.id === itemId) {
                     itemFound = true;
                 }
             });

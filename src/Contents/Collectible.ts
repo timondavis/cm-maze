@@ -1,3 +1,3 @@
 export interface Collectible {
-    getId(): string;
+	readonly id: string;
 }

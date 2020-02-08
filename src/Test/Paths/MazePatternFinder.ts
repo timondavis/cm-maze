@@ -10,7 +10,7 @@ describe( 'MazePatternFinder', () => {
 		let MB = new MazeBuilder();
 		let maze = MB.buildMaze();
 
-		let path = MazePatternFinder.findPath(maze.getStartNode().getId(), maze.getFinishNode().getId(), maze);
+		let path = MazePatternFinder.findPath(maze.getStartNode().id, maze.getFinishNode().id, maze);
 
 		let previous: MazeNode;
 		let current = maze.getNodeWithId(path.next());
@@ -22,13 +22,13 @@ describe( 'MazePatternFinder', () => {
 		while( path.next() ) {
 			isPathGuaranteedToFinishOnCorrectNode = false;
 
-			previous = maze.getNodeWithId(current.getId());
+			previous = maze.getNodeWithId(current.id);
 			current = maze.getNodeWithId(path.current());
 
 			expect(previous.isNeighborsWith(current)).to.be.true;
 			expect(current.isNeighborsWith(previous)).to.be.true;
 
-			if (current.getId() === maze.getFinishNode().getId()) {
+			if (current.id === maze.getFinishNode().id) {
 				isPathConnected = true;
 				isPathGuaranteedToFinishOnCorrectNode = true;
 			}
@@ -50,12 +50,12 @@ describe( 'MazePatternFinder', () => {
 
 			let range = Math.floor(Math.random() * (maximumRange - minimumRange)) + minimumRange;
 			let sourceNode = maze.getRandomNode();
-			let candidates = MazePatternFinder.getTilesWithinRange(sourceNode.getId(), range, maze);
+			let candidates = MazePatternFinder.getTilesWithinRange(sourceNode.id, range, maze);
 
 			expect(candidates.getLength()).to.be.greaterThan(0);
 			while (candidates.getLength() > 0) {
 				let targetNode = maze.getNodeWithId(candidates.unshift().id);
-				let path = MazePatternFinder.findPath(targetNode.getId(), sourceNode.getId(), maze);
+				let path = MazePatternFinder.findPath(targetNode.id, sourceNode.id, maze);
 				expect(path.getLength()).to.be.greaterThan(0);
 				expect(path.getLength()).to.be.lessThan(range + 1);
 			}

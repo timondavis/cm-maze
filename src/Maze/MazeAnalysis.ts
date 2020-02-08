@@ -45,7 +45,7 @@ export class MazeAnalysis {
 			for ( let y = 0 ; y < this.maze.getDimensions()[1]; y++ ) {
 				node = this.mazeLocationIndex.get(new NodeLocation2D([x, y]).toString());
 				if (node != null) {
-					this._nodeIdsAdjacentToBorderAtExitPoint.get(0).push(node.getId());
+					this._nodeIdsAdjacentToBorderAtExitPoint.get(0).push(node.id);
 					break;
 				}
 			}
@@ -53,7 +53,7 @@ export class MazeAnalysis {
 			for (let y = this.maze.getDimensions()[1] - 1 ; y >= 0 ; y--) {
 				node = this.mazeLocationIndex.get(new NodeLocation2D([x, y]).toString());
 				if (node != null) {
-					this._nodeIdsAdjacentToBorderAtExitPoint.get(this.maze.getCardinality().getConnectionPointCount() * 0.5).push(node.getId());
+					this._nodeIdsAdjacentToBorderAtExitPoint.get(this.maze.getCardinality().getConnectionPointCount() * 0.5).push(node.id);
 					break;
 				}
 			}
@@ -64,7 +64,7 @@ export class MazeAnalysis {
 			for (let x = 0 ; x < this.maze.getDimensions()[0] ; x++){
 				node = this.mazeLocationIndex.get(new NodeLocation2D([x,y]).toString());
 				if (node != null) {
-					this._nodeIdsAdjacentToBorderAtExitPoint.get(this.maze.getCardinality().getConnectionPointCount() * 0.75).push(node.getId());
+					this._nodeIdsAdjacentToBorderAtExitPoint.get(this.maze.getCardinality().getConnectionPointCount() * 0.75).push(node.id);
 					break;
 				}
 			}
@@ -72,7 +72,7 @@ export class MazeAnalysis {
 			for (let x = this.maze.getDimensions()[0] ; x >= 0 ; x-- ) {
 				node = this.mazeLocationIndex.get(new NodeLocation2D([x,y]).toString());
 				if (node != null) {
-					this._nodeIdsAdjacentToBorderAtExitPoint.get(this.maze.getCardinality().getConnectionPointCount() * 0.25).push(node.getId());
+					this._nodeIdsAdjacentToBorderAtExitPoint.get(this.maze.getCardinality().getConnectionPointCount() * 0.25).push(node.id);
 					break;
 				}
 			}

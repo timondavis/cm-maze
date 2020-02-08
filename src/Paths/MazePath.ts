@@ -12,12 +12,11 @@ export class MazePath {
 	private _path: string[] = [];
 
 	public constructor(path: MazePath = null) {
-
 		MazePath.pathIdCounter++;
 		this._pathId = MazePath.pathIdCounter;
 	}
 
-	public getPathId() {
+	public get id() {
 		return this._pathId;
 	}
 
@@ -64,6 +63,4 @@ export class MazePath {
 	public getLength() {
 		return this._path.length;
 	}
-
-
 }
