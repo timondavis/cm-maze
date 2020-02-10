@@ -59,7 +59,7 @@ export class CollectibleList<T extends Collectible> {
     }
 
     public hasItem(item: T): boolean {
-        return (this.findItemWithId(item.getId()) !== null)
+        return (this.findItemWithId(item.id) !== null)
     }
 
     public hasItemWithId(itemId: string): boolean {
@@ -67,17 +67,17 @@ export class CollectibleList<T extends Collectible> {
     }
 
     public compare = (a: T, b: T): number => {
-        if (a.getId() === b.getId()) { return 0; }
-        return (a.getId() < b.getId()) ? -1 : 1;
+        if (a.id === b.id ) { return 0; }
+        return (a.id < b.id) ? -1 : 1;
     };
 
     private findItemIndex(item: T) {
-        return this.findItemIndexWithId(item.getId());
+        return this.findItemIndexWithId(item.id);
     }
 
     private findItemIndexWithId(itemId: string): number {
         if (!this.size) { return null; }
-        if (this.size == 1 && (this._contents[0].getId() == itemId)) { return 0; }
+        if (this.size == 1 && (this._contents[0].id == itemId)) { return 0; }
 
         let leftPointer = 0;
         let rightPointer = this.size - 1;
@@ -85,8 +85,8 @@ export class CollectibleList<T extends Collectible> {
         let halfway: number;
         while (leftPointer != rightPointer) {
 
-            if (this._contents[leftPointer].getId() == itemId)  { return leftPointer; }
-            if (this._contents[rightPointer].getId() == itemId) { return rightPointer; }
+            if (this._contents[leftPointer].id == itemId)  { return leftPointer; }
+            if (this._contents[rightPointer].id == itemId) { return rightPointer; }
 
             if (rightPointer - 1 <= leftPointer) {
                 break;
@@ -94,7 +94,7 @@ export class CollectibleList<T extends Collectible> {
 
             halfway = Math.floor((rightPointer + leftPointer) / 2);
 
-            if (this._contents[halfway].getId() < itemId) {
+            if (this._contents[halfway].id < itemId) {
                 leftPointer = halfway;
             } else {
                 rightPointer = halfway;

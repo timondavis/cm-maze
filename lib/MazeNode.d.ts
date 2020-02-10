@@ -56,7 +56,7 @@ export declare class MazeNode {
      */
     contents: Map<string, Map<any, any>>;
     constructor(cardinality: Cardinality, id?: string, coordinates?: NodeLocation, maxConnections?: number);
-    getId(): string;
+    readonly id: string;
     getIndexId(): number;
     /**
      * Connects one MazeNode instance to another.  Implicitly bi-directional, but directed edges between nodes
