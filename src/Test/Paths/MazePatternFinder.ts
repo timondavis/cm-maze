@@ -50,16 +50,19 @@ describe( 'MazePatternFinder', () => {
 
 			let range = Math.floor(Math.random() * (maximumRange - minimumRange)) + minimumRange;
 			let sourceNode = maze.getRandomNode();
-			let candidates = MazePatternFinder.getTilesWithinRange(sourceNode.id, range, maze);
+			let candidates: MazeNode[] = MazePatternFinder.getTilesWithinRange(sourceNode.id, range, maze);
+			let i = 0;
 
 			expect(candidates.length).to.be.greaterThan(0);
-			while (candidates.length > 0) {
-				let targetNode = maze.getNodeWithId(candidates.unshift().id);
+
+			for ( ; i < candidates.length ; i++) {
+				let targetNode: MazeNode = candidates[0];
 				let path = MazePatternFinder.findPath(targetNode.id, sourceNode.id, maze);
 				expect(path.length).to.be.greaterThan(0);
 				expect(path.length).to.be.lessThan(range + 1);
 			}
-			expect(candidates.length).to.be.equal(0);
+
+			expect(candidates.length).to.be.equal(i);
 		}
 	});
 
