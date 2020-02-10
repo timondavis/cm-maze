@@ -1,6 +1,9 @@
 /**
  * An appendable list of ids belonging to nodes which can be traversed in the given order.
  */
+import {Maze} from "../Maze";
+import {MazeNode} from "../MazeNode";
+
 export class MazePath {
 
 	private static pathIdCounter: number = 0;
@@ -11,7 +14,7 @@ export class MazePath {
 
 	private _path: string[] = [];
 
-	public constructor(path: MazePath = null) {
+	public constructor() {
 		MazePath.pathIdCounter++;
 		this._pathId = MazePath.pathIdCounter;
 	}
@@ -60,7 +63,34 @@ export class MazePath {
 		this._path.push(nodeId);
 	}
 
-	public getLength() {
+	public get length() {
 		return this._path.length;
+	}
+
+	public toIdArray(): string[] {
+
+		if (this._path.length === 0) { return []; }
+
+		let tempPointerIndex: number = 0;
+		let idArray: string[] = [];
+		while (tempPointerIndex < this._path.length) {
+			idArray.push(this._path[tempPointerIndex]);
+			tempPointerIndex++;
+		}
+
+		return idArray;
+	}
+
+	public toMazeNodeArray(maze: Maze): MazeNode[] {
+		if (this._path.length === 0) { return []; }
+
+		let tempPointerIndex: number = 0;
+		let nodeArray: MazeNode[] = [];
+		while (tempPointerIndex < this._path.length) {
+			nodeArray.push(maze.getNodeWithId(this._path[tempPointerIndex]));
+			tempPointerIndex++;
+		}
+
+		return nodeArray;
 	}
 }

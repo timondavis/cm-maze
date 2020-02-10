@@ -31,7 +31,7 @@ export class MazePatternFinder {
 
 		considered.insert(startingNode);
 
-		while(considered.getLength() > 0) {
+		while(considered.length > 0) {
 
 			let currentPathNode = considered.unshift();
 
@@ -95,7 +95,7 @@ export class MazePatternFinder {
 		startingNode.distance = 0;
 		startingNode.previous = null;
 
-		while(candidates.getLength() > 0) {
+		while(candidates.length > 0) {
 
 			let currentPathNode = candidates.unshift();
 			let currentMazeNode = maze.getNodeWithId(currentPathNode.id);

@@ -17,7 +17,7 @@ describe( 'MazePatternFinder', () => {
 		let isPathConnected = false;
 		let isPathGuaranteedToFinishOnCorrectNode = false;
 
-		expect(path.getLength()).to.be.greaterThan(0);
+		expect(path.length).to.be.greaterThan(0);
 
 		while( path.next() ) {
 			isPathGuaranteedToFinishOnCorrectNode = false;
@@ -52,14 +52,28 @@ describe( 'MazePatternFinder', () => {
 			let sourceNode = maze.getRandomNode();
 			let candidates = MazePatternFinder.getTilesWithinRange(sourceNode.id, range, maze);
 
-			expect(candidates.getLength()).to.be.greaterThan(0);
-			while (candidates.getLength() > 0) {
+			expect(candidates.length).to.be.greaterThan(0);
+			while (candidates.length > 0) {
 				let targetNode = maze.getNodeWithId(candidates.unshift().id);
 				let path = MazePatternFinder.findPath(targetNode.id, sourceNode.id, maze);
-				expect(path.getLength()).to.be.greaterThan(0);
-				expect(path.getLength()).to.be.lessThan(range + 1);
+				expect(path.length).to.be.greaterThan(0);
+				expect(path.length).to.be.lessThan(range + 1);
 			}
-			expect(candidates.getLength()).to.be.equal(0);
+			expect(candidates.length).to.be.equal(0);
 		}
+	});
+
+	it ('converts paths to a maze node id array', () => {
+		let MB = new MazeBuilder();
+		let maze = MB.buildMaze();
+
+		let path = MazePatternFinder.findPath(maze.getStartNode().id, maze.getFinishNode().id, maze);
+		let pathIds = path.toIdArray();
+
+		expect(path.length).to.be.greaterThan(0);
+
+		pathIds.forEach((id) => {
+			expect(path.next()).to.be.equal(id);
+		})
 	});
 });
