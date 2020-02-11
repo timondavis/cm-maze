@@ -49,18 +49,18 @@ describe( 'MazeNode', () => {
         let m = new Maze();
 
         const a = new MazeNode(new Compass4);
-        a.setName( "My Name" );
-        expect( a.getName() ).to.be.equal( "My Name" );
+        a.name = "My Name";
+        expect( a.name ).to.be.equal( "My Name" );
     });
 
     it ( 'can report on who its neighboring nodes are', function () {
 
         let m = new Maze();
 
-        let a = new MazeNode(new Compass4()).setName("A");
-        let b = new MazeNode(new Compass4()).setName("B");
-        let c = new MazeNode(new Compass4()).setName( "C" );
-        let d = new MazeNode(new Compass4()).setName( "D" );
+        let a = new MazeNode(new Compass4()); a.name = "A";
+        let b = new MazeNode(new Compass4()); b.name = "B";
+        let c = new MazeNode(new Compass4()); c.name = "C";
+        let d = new MazeNode(new Compass4()); d.name = "D";
 
         m.addNode(a, false);
         m.addNode(b, false);
@@ -77,36 +77,36 @@ describe( 'MazeNode', () => {
         neighborsOfA = a.getNeighborIds();
         neighborsOfB = m.getNodeWithId(a.getNeighborIdAt( 1 )).getNeighborIds();
 
-        expect( m.getNodeWithId(neighborsOfA[0]).getName() ).to.be.equal( "C" );
-        expect( m.getNodeWithId(neighborsOfA[1]).getName() ).to.be.equal( "B" );
-        expect( m.getNodeWithId(neighborsOfA[2]).getName() ).to.be.equal( "D" );
+        expect( m.getNodeWithId(neighborsOfA[0]).name ).to.be.equal( "C" );
+        expect( m.getNodeWithId(neighborsOfA[1]).name ).to.be.equal( "B" );
+        expect( m.getNodeWithId(neighborsOfA[2]).name ).to.be.equal( "D" );
 
-        expect( m.getNodeWithId(neighborsOfB[0]).getName() ).to.be.equal( "A" );
+        expect( m.getNodeWithId(neighborsOfB[0]).name ).to.be.equal( "A" );
 
         neighborsOfA = a.getNeighborIds( true );
         neighborsOfB = m.getNodeWithId(a.getNeighborIdAt( 1 )).getNeighborIds( true );
 
         expect( neighborsOfA ).to.have.lengthOf( 4 );
-        expect( m.getNodeWithId(neighborsOfA[0]).getName() ).to.be.equal( "C" );
-        expect( m.getNodeWithId(neighborsOfA[1]).getName() ).to.be.equal( "B" );
-        expect( m.getNodeWithId(neighborsOfA[2]).getName() ).to.be.equal( "D" );
+        expect( m.getNodeWithId(neighborsOfA[0]).name ).to.be.equal( "C" );
+        expect( m.getNodeWithId(neighborsOfA[1]).name ).to.be.equal( "B" );
+        expect( m.getNodeWithId(neighborsOfA[2]).name ).to.be.equal( "D" );
         expect( neighborsOfA[3] ).to.be.undefined;
 
         expect( neighborsOfB ).to.have.lengthOf( 4 );
         expect( neighborsOfB[0] ).to.be.undefined;
         expect( neighborsOfB[1] ).to.be.undefined;
         expect( neighborsOfB[2] ).to.be.undefined;
-        expect( m.getNodeWithId(neighborsOfB[3]).getName() ).to.be.equal( "A" );
+        expect( m.getNodeWithId(neighborsOfB[3]).name ).to.be.equal( "A" );
     });
 
     it ( 'can report on what its occupied exit points are', function() {
 
         let m = new Maze();
 
-        let a = new MazeNode(new Compass4() ).setName("A");
-        let b = new MazeNode(new Compass4() ).setName("B");
-        let c = new MazeNode(new Compass4() ).setName("C");
-        let d = new MazeNode(new Compass4() ).setName("D");
+        let a = new MazeNode(new Compass4() ); a.name = "A";
+        let b = new MazeNode(new Compass4() ); b.name = "B";
+        let c = new MazeNode(new Compass4() ); c.name = "C";
+        let d = new MazeNode(new Compass4() ); d.name = "D";
 
         m.addNode(a, false);
         m.addNode(b, false);
@@ -123,11 +123,11 @@ describe( 'MazeNode', () => {
         exitsOfA = a.getOccupiedConnectionPoints();
         exitsOfC = m.getNodeWithId(a.getNeighborIdAt( 1 )).getOccupiedConnectionPoints();
 
-        expect( m.getNodeWithId(a.getNeighborIdAt( exitsOfA[0] )).getName() ).to.be.equal( "C" );
-        expect( m.getNodeWithId(a.getNeighborIdAt( exitsOfA[1] )).getName() ).to.be.equal( "D" );
-        expect( m.getNodeWithId(a.getNeighborIdAt( exitsOfA[2] )).getName() ).to.be.equal( "B" );
+        expect( m.getNodeWithId(a.getNeighborIdAt( exitsOfA[0] )).name ).to.be.equal( "C" );
+        expect( m.getNodeWithId(a.getNeighborIdAt( exitsOfA[1] )).name ).to.be.equal( "D" );
+        expect( m.getNodeWithId(a.getNeighborIdAt( exitsOfA[2] )).name ).to.be.equal( "B" );
 
-        expect( m.getNodeWithId(m.getNodeWithId(a.getNeighborIdAt( 1 )).getNeighborIdAt( exitsOfC[0] )).getName() ).to.be.equal( "A" );
+        expect( m.getNodeWithId(m.getNodeWithId(a.getNeighborIdAt( 1 )).getNeighborIdAt( exitsOfC[0] )).name ).to.be.equal( "A" );
     });
 
     it( 'can report on what its open exit points are', () => {
@@ -195,8 +195,8 @@ describe( 'MazeNode', () => {
         let a = new MazeNode( new Compass8() );
         const coords = [ MazeBuilder.rand( r ), MazeBuilder.rand( r ) ];
 
-        a.setLocation( new NodeLocation2D( coords ) );
-        expect( a.getLocation().toString() ).to.be.equal( new NodeLocation2D( coords ).toString() );
+        a.location = new NodeLocation2D( coords );
+        expect( a.location.toString() ).to.be.equal( new NodeLocation2D( coords ).toString() );
     });
 
     it( 'reports on whether a given exit point on the node is occupied or empty (two separate functions)', () => {
@@ -232,9 +232,9 @@ describe( 'MazeNode', () => {
 
         let a = new MazeNode(new Compass4() );
 
-        expect( a.getCardinality() ).to.be.instanceOf( Cardinality );
-        expect( a.getCardinality() ).to.be.instanceOf( Compass4 );
-        expect( a.getCardinality() ).not.to.be.instanceOf( Compass8 );
+        expect( a.cardinality ).to.be.instanceOf( Cardinality );
+        expect( a.cardinality ).to.be.instanceOf( Compass4 );
+        expect( a.cardinality ).not.to.be.instanceOf( Compass8 );
     });
 
     it( 'accepts and respects limits to the amount of nodes that this node can be connected to', () => {
@@ -245,8 +245,8 @@ describe( 'MazeNode', () => {
         let limitedToOne = new MazeNode(new Compass4() );
         let limitedToThree = new MazeNode(new Compass4() );
 
-        limitedToOne.setMaxConnections(1);
-        limitedToThree.setMaxConnections(3);
+        limitedToOne.maxConnections = 1;
+        limitedToThree.maxConnections = 3;
 
         for ( let i = 0 ; i < 4 ; i++ ) {
 

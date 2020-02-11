@@ -79,11 +79,11 @@ export class MazeRenderer {
 
                 if ( typeof node === 'undefined' ) { continue; }
 
-                if ( node.getLocation() === this.maze.getStartNode().getLocation() ) {
+                if ( node.location === this.maze.getStartNode().location ) {
 
                     context.fillStyle = "#00FF00";
                     context.strokeStyle = "#00FF00";
-                } else if ( this.maze.getFinishNode() && node.getLocation() === (<MazeNode> this.maze.getFinishNode()).getLocation() ) {
+                } else if ( this.maze.getFinishNode() && node.location === (<MazeNode> this.maze.getFinishNode()).location ) {
 
                     context.fillStyle = "#0000FF";
                     context.strokeStyle = "#0000FF";
@@ -104,14 +104,7 @@ export class MazeRenderer {
                 context.stroke();
                 context.closePath();
 
-/*                context.font = "15px Sans-Serif";
-                context.fillText( node.getName(), nodeCenterX - (5 * node.getName().length ), nodeCenterY - (0.25 * nodeRadiusPx) );
-
-                context.font = "11px Sans-Serif";
-                context.fillText( node.getCoordinates().toString(), nodeCenterX - ( ( node.getCoordinates().toString().length / 2 ) * 5 ) , nodeCenterY + ( 0.15 * nodeRadiusPx ) );
-                */
-
-                cardinality = node.getCardinality().getConnectionPointCount();
+                cardinality = node.cardinality.getConnectionPointCount();
 
                 for ( let i = 0 ; i < cardinality ; i++ ) {
 
@@ -127,15 +120,15 @@ export class MazeRenderer {
 
                     let neighborNodeId = node.getNeighborIdAt(i);
                     neighborNode = this.maze.getNodeWithId(neighborNodeId);
-                    let neighborCoordinates = neighborNode.getLocation().getPosition();
+                    let neighborCoordinates = neighborNode.location.position;
 
                     neighborNodeCenterX = ( gridUnitWidthPx * neighborCoordinates[X] + ( gridUnitWidthPx * 0.5 ) );
                     neighborNodeCenterY = ( gridUnitHeightPx * neighborCoordinates[Y] + ( gridUnitHeightPx * 0.5 ) );
 
                     lineDestinationX = neighborNodeCenterX +
-                        Math.cos( (Math.PI/180) * (( neighborNode.getCardinality().getOpposingConnectionPoint(i) / neighborNode.getCardinality().getConnectionPointCount() * 360 ) - 90 ) ) * nodeRadiusPx;
+                        Math.cos( (Math.PI/180) * (( neighborNode.cardinality.getOpposingConnectionPoint(i) / neighborNode.cardinality.getConnectionPointCount() * 360 ) - 90 ) ) * nodeRadiusPx;
                     lineDestinationY = neighborNodeCenterY +
-                        Math.sin( (Math.PI/180) * (( neighborNode.getCardinality().getOpposingConnectionPoint(i) / neighborNode.getCardinality().getConnectionPointCount() * 360 ) - 90 ) ) * nodeRadiusPx;
+                        Math.sin( (Math.PI/180) * (( neighborNode.cardinality.getOpposingConnectionPoint(i) / neighborNode.cardinality.getConnectionPointCount() * 360 ) - 90 ) ) * nodeRadiusPx;
 
                     context.beginPath();
                     context.moveTo( lineOriginX, lineOriginY );

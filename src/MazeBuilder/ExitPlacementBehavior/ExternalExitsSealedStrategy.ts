@@ -18,7 +18,7 @@ export class ExternalExitsSealedStrategy extends ExitPlacementBehavior {
             throw "Entrance Node could not be established."
         }
 
-        node.setName("Entrance");
+        node.name = "Entrance";
 
         this.consumedNodeIds.push(node.id);
         this.maze.setStartNode(node);
@@ -31,7 +31,7 @@ export class ExternalExitsSealedStrategy extends ExitPlacementBehavior {
             throw "Exit Node could not be established";
         }
 
-        node.setName("Exit");
+        node.name = "Exit";
 		this.consumedNodeIds.push(node.id);
 		this.maze.setFinishNode(node);
     }
