@@ -50,17 +50,17 @@ describe( 'Compass4', () => {
         let positionCoordinates = cb4.generateNodeLocation( position );
 
         expect( positionCoordinates ).to.be.an.instanceOf( NodeLocation2D );
-        expect( positionCoordinates.getDimensions() ).to.be.equal( 2 );
-        expect( positionCoordinates.getPosition() ).to.be.equal( position );
+        expect( positionCoordinates.dimensions ).to.be.equal( 2 );
+        expect( positionCoordinates.position ).to.be.equal( position );
     });
 
     it( 'can generate new neighboring coordinate objects, given a current coordinate object and a desired direction', () => {
 
         let spot = new NodeLocation2D( [0,0] );
 
-        expect( cb4.getNextLocation(spot, C4.NORTH).getPosition().toString() ).to.be.equal( [0, -1].toString() );
-        expect( cb4.getNextLocation(spot, C4.EAST).getPosition().toString() ).to.be.equal( [1, 0 ].toString() );
-        expect( cb4.getNextLocation(spot, C4.SOUTH).getPosition().toString() ).to.be.equal( [0, 1].toString() );
-        expect( cb4.getNextLocation(spot, C4.WEST).getPosition().toString() ).to.be.equal( [-1, 0].toString() );
+        expect( cb4.getNextLocation(spot, C4.NORTH).position.toString() ).to.be.equal( [0, -1].toString() );
+        expect( cb4.getNextLocation(spot, C4.EAST).position.toString() ).to.be.equal( [1, 0 ].toString() );
+        expect( cb4.getNextLocation(spot, C4.SOUTH).position.toString() ).to.be.equal( [0, 1].toString() );
+        expect( cb4.getNextLocation(spot, C4.WEST).position.toString() ).to.be.equal( [-1, 0].toString() );
     });
 });

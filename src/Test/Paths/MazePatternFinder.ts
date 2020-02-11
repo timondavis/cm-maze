@@ -10,25 +10,25 @@ describe( 'MazePatternFinder', () => {
 		let MB = new MazeBuilder();
 		let maze = MB.buildMaze();
 
-		let path = MazePatternFinder.findPath(maze.getStartNode().getId(), maze.getFinishNode().getId(), maze);
+		let path = MazePatternFinder.findPath(maze.getStartNode().id, maze.getFinishNode().id, maze);
 
 		let previous: MazeNode;
 		let current = maze.getNodeWithId(path.next());
 		let isPathConnected = false;
 		let isPathGuaranteedToFinishOnCorrectNode = false;
 
-		expect(path.getLength()).to.be.greaterThan(0);
+		expect(path.length).to.be.greaterThan(0);
 
 		while( path.next() ) {
 			isPathGuaranteedToFinishOnCorrectNode = false;
 
-			previous = maze.getNodeWithId(current.getId());
+			previous = maze.getNodeWithId(current.id);
 			current = maze.getNodeWithId(path.current());
 
 			expect(previous.isNeighborsWith(current)).to.be.true;
 			expect(current.isNeighborsWith(previous)).to.be.true;
 
-			if (current.getId() === maze.getFinishNode().getId()) {
+			if (current.id === maze.getFinishNode().id) {
 				isPathConnected = true;
 				isPathGuaranteedToFinishOnCorrectNode = true;
 			}
@@ -50,16 +50,33 @@ describe( 'MazePatternFinder', () => {
 
 			let range = Math.floor(Math.random() * (maximumRange - minimumRange)) + minimumRange;
 			let sourceNode = maze.getRandomNode();
-			let candidates = MazePatternFinder.getTilesWithinRange(sourceNode.getId(), range, maze);
+			let candidates: MazeNode[] = MazePatternFinder.getTilesWithinRange(sourceNode.id, range, maze);
+			let i = 0;
 
-			expect(candidates.getLength()).to.be.greaterThan(0);
-			while (candidates.getLength() > 0) {
-				let targetNode = maze.getNodeWithId(candidates.unshift().id);
-				let path = MazePatternFinder.findPath(targetNode.getId(), sourceNode.getId(), maze);
-				expect(path.getLength()).to.be.greaterThan(0);
-				expect(path.getLength()).to.be.lessThan(range + 1);
+			expect(candidates.length).to.be.greaterThan(0);
+
+			for ( ; i < candidates.length ; i++) {
+				let targetNode: MazeNode = candidates[0];
+				let path = MazePatternFinder.findPath(targetNode.id, sourceNode.id, maze);
+				expect(path.length).to.be.greaterThan(0);
+				expect(path.length).to.be.lessThan(range + 1);
 			}
-			expect(candidates.getLength()).to.be.equal(0);
+
+			expect(candidates.length).to.be.equal(i);
 		}
+	});
+
+	it ('converts paths to a maze node id array', () => {
+		let MB = new MazeBuilder();
+		let maze = MB.buildMaze();
+
+		let path = MazePatternFinder.findPath(maze.getStartNode().id, maze.getFinishNode().id, maze);
+		let pathIds = path.toIdArray();
+
+		expect(path.length).to.be.greaterThan(0);
+
+		pathIds.forEach((id) => {
+			expect(path.next()).to.be.equal(id);
+		})
 	});
 });

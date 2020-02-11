@@ -2,6 +2,7 @@ import {Maze} from "../Maze";
 import {MazePath} from "./MazePath";
 import {PathNodeList} from "./Models/PathNodeList";
 import {PathNode} from "./Models/PathNode";
+import {MazeNode} from "../MazeNode";
 
 /**
  * Static methods to find minimal paths between maze nodes.
@@ -31,7 +32,7 @@ export class MazePatternFinder {
 
 		considered.insert(startingNode);
 
-		while(considered.getLength() > 0) {
+		while(considered.length > 0) {
 
 			let currentPathNode = considered.unshift();
 
@@ -84,7 +85,7 @@ export class MazePatternFinder {
 		return mazePath;
 	}
 
-	public static getTilesWithinRange(fromNodeId: string, range: number, maze: Maze): PathNodeList {
+	public static getTilesWithinRange(fromNodeId: string, range: number, maze: Maze): MazeNode[] {
 
 		let candidates = new PathNodeList();
 		let visited = new Map<string, PathNode>();
@@ -95,7 +96,7 @@ export class MazePatternFinder {
 		startingNode.distance = 0;
 		startingNode.previous = null;
 
-		while(candidates.getLength() > 0) {
+		while(candidates.length > 0) {
 
 			let currentPathNode = candidates.unshift();
 			let currentMazeNode = maze.getNodeWithId(currentPathNode.id);
@@ -129,9 +130,9 @@ export class MazePatternFinder {
 			visited.set(currentPathNode.id, currentPathNode);
 		}
 
-		let viableNodes = new PathNodeList();
+		let viableNodes: MazeNode[] = [];
 		Array.from(visited.values()).forEach((pathNode: PathNode) => {
-			viableNodes.insert(pathNode);
+			viableNodes.push(maze.getNodeWithId(pathNode.id));
 		});
 
 		return viableNodes;

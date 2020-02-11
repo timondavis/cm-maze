@@ -10,7 +10,7 @@ export class PathNodeList {
 	private _length = 0;
 	public head: PathNodeListNode;
 
-	public getLength() {
+	public get length() {
 		return this._length;
 	}
 

@@ -8,12 +8,12 @@ export abstract class NodeLocation {
     /**
      * The number of dimensions recorded in these coordinates.
      */
-    protected dimensions: number;
+    private _dimensions: number;
 
     /**
      * The actual position of these coordinates on a cartesian graph.
      */
-    protected position: number[];
+    private _position: number[];
 
     /**
      * Create a new MazeCoordinate, indicating its position
@@ -22,7 +22,7 @@ export abstract class NodeLocation {
      */
     public constructor(position?: number[]) {
 
-        this.dimensions = this.getDimensionValue();
+        this._dimensions = this.getDimensionValue();
         this.validateDimensions();
 
         if (position !== undefined && position.length !== this.dimensions) {
@@ -111,19 +111,27 @@ export abstract class NodeLocation {
      * Get the position of this location.
      * @returns {number[]}
      */
-    public getPosition(): number[] {
-        return this.position;
+    public get position(): number[] {
+        return this._position;
     }
+
+    public set position(value: number[]) {
+    	this._position = value;
+	}
 
     /**
      * Get the # of dimensions or axis tracking the position of this location
      *
      * @returns {number}
      */
-    public getDimensions(): number {
+    public get dimensions(): number {
 
-        return this.dimensions;
+        return this._dimensions;
     }
+
+    public set dimensions(value: number) {
+    	this._dimensions = value;
+	}
 
     /**
      * Convert these coordinates into a string representing the values contained inside.
@@ -170,7 +178,6 @@ export abstract class NodeLocation {
                 "NodeLocation class, please be sure to set the value for dimensions before invoking the parent " +
                 "by returning the proper value in the concrete implementation of the getDimensionValue() method" );
         }
-
     }
 }
 

@@ -16,8 +16,8 @@ export abstract class ExitPlacementBehavior {
     protected generateExitNode(cardinality: Cardinality) {
 
         let node = new MazeNode(cardinality, `EXIT-${ExitPlacementBehavior.generatedExitCount}`);
-        node.setMaxConnections(2);
-        node.setName(`Exit-${ExitPlacementBehavior.generatedExitCount}`);
+        node.maxConnections = 2;
+        node.name = `Exit-${ExitPlacementBehavior.generatedExitCount}`;
         ExitPlacementBehavior.generatedExitCount++;
 
         return node;

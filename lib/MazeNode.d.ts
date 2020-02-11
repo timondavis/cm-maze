@@ -12,52 +12,58 @@ export declare class MazeNode {
      */
     private static indexIdCounter;
     /**
-     * Debug Mode
-     * @type {boolean}
-     */
-    protected static debug: boolean;
-    /**
-     * A collection of index ids for neighboring nodes
-     * @type { MazeNode[] }
-     */
-    protected neighbors: string[];
-    /**
      * Provides services and constraints allowing for the logical connection and traversal between this and other nodes
      */
-    protected cardinality: Cardinality;
+    private readonly _cardinality;
+    /**
+     * Unique index assigned to every new node.
+     */
+    private readonly _indexId;
+    /**
+     * Unique string key for maze node
+     */
+    private readonly _mazeNodeId;
     /**
      * The name of this node
      *
      * @type {string}
      */
-    protected name: string;
+    private _name;
     /**
-     * Unique index assigned to every new node.
+     * A collection of index ids for neighboring nodes
+     * @type { MazeNode[] }
      */
-    private _indexId;
+    private _neighbors;
     /**
-     * Unique string key for maze node
+     * The maximum number of exits on this node which connect to other nodes.  A node cannot have more neighbors
+     * than what is dictated by this value.
      */
-    protected mazeNodeId: string;
+    private _maxExits;
+    /**
+     * Debug Mode
+     * @type {boolean}
+     */
+    protected static debug: boolean;
     /**
      * The NodeLocation track the location of this node relative to other nodes
      *
      * @type { NodeLocation }
      */
-    protected coordinates: NodeLocation;
-    /**
-     * The maximum number of exits on this node which connect to other nodes.  A node cannot have more neighbors
-     * than what is dictated by this value.
-     */
-    protected maxExits: number;
+    private _coordinates;
     /**
      * Contents of the maze node.  Maps within a map.
      * The master map ties a string id to a consuming developers custom defined Map.
      */
     contents: Map<string, Map<any, any>>;
     constructor(cardinality: Cardinality, id?: string, coordinates?: NodeLocation, maxConnections?: number);
-    getId(): string;
-    getIndexId(): number;
+    readonly id: string;
+    private readonly indexId;
+    location: NodeLocation;
+    readonly locationId: string;
+    readonly neighbors: string[];
+    name: string;
+    maxConnections: number;
+    readonly cardinality: Cardinality;
     /**
      * Connects one MazeNode instance to another.  Implicitly bi-directional, but directed edges between nodes
      * can be crated by passing in the autoConnect parameter as false.  If either node is maxed out, no connection will be made.
@@ -75,19 +81,6 @@ export declare class MazeNode {
      * @returns {string} Maze node ID
      */
     getNeighborIdAt(exitPosition: number): string;
-    /**
-     * Give this node a name, if you like
-     *
-     * @param {string} name
-     * @returns {MazeNode}
-     */
-    setName(name: string): MazeNode;
-    /**
-     * Get the name of this node
-     *
-     * @param {string} name
-     */
-    getName(): string;
     /**
      * Find out if the indicated node indicated to this node directly, as a neighbor
      *
@@ -128,47 +121,11 @@ export declare class MazeNode {
      */
     isConnectionPointOccupied(point: number): boolean;
     /**
-     * @use Location
-     * Set the coordinates for this node
-     * @param {NodeLocation} coordinates
-     * @returns {this}
-     */
-    setLocation(coordinates: NodeLocation): this;
-    /**
-     * @use Location
-     * Get the coordinates for this node
-     * @returns {NodeLocation}
-     */
-    getLocation(): NodeLocation;
-    /**
-     * Get a string ID for this location
-     * @return {string}
-     */
-    getLocationId(): string;
-    /**
-     * Get the cardinality behavior object associated with this node.
-     * @returns {Cardinality}
-     */
-    getCardinality(): Cardinality;
-    /**
      * Stringify the output for human console consumption
      *
      * @returns {string}
      */
     toString(): string;
-    /**
-     * Set the maximum amount of nodes that this node can connect to.
-     *
-     * @param {number} maxConnections
-     * @returns {MazeNode}
-     */
-    setMaxConnections(maxConnections: number): MazeNode;
-    /**
-     * Get the maximum amount of nodes that this node can connect to.
-     *
-     * @returns {number}
-     */
-    getMaxConnections(): number;
     /**
      * Toggle debugging messages
      *

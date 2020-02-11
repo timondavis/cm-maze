@@ -22,14 +22,14 @@ export class ExternalExitsOpenStrategy extends ExitPlacementBehavior {
 
         // We know we're flush with at least one empty side, so if we've already maxed out the node's connection points,
 		// raise the ceiling to one extra point.
-        if (node.getOccupiedConnectionPoints().length == node.getMaxConnections()) {
-			node.setMaxConnections(node.getMaxConnections() + 1);
+        if (node.getOccupiedConnectionPoints().length == node.maxConnections) {
+			node.maxConnections += 1;
         }
 
-		let nextNode = this.generateExitNode(node.getCardinality());
+		let nextNode = this.generateExitNode(node.cardinality);
         this.maze.addNode(nextNode, false);
 		node.connectTo(nextNode, exitPoint);
-		this.consumedNodeIds.push(node.getId());
+		this.consumedNodeIds.push(node.id);
 
         this.maze.setStartNode(node);
     }
@@ -45,14 +45,14 @@ export class ExternalExitsOpenStrategy extends ExitPlacementBehavior {
 
 		// We know we're flush with at least one empty side, so if we've already maxed out the node's connection points,
 		// raise the ceiling to one extra point.
-		if (node.getOccupiedConnectionPoints().length == node.getMaxConnections()) {
-			node.setMaxConnections(node.getMaxConnections() + 1);
+		if (node.getOccupiedConnectionPoints().length == node.maxConnections) {
+			node.maxConnections += 1;
 		}
 
-		let nextNode = this.generateExitNode(node.getCardinality());
+		let nextNode = this.generateExitNode(node.cardinality);
 		this.maze.addNode(nextNode, false);
 		node.connectTo(nextNode, exitPoint);
-		this.consumedNodeIds.push(node.getId());
+		this.consumedNodeIds.push(node.id);
 
 		this.maze.setFinishNode(node);
 	}

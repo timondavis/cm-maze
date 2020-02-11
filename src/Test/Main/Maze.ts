@@ -32,20 +32,20 @@ describe( 'Maze', () => {
         let nodeCollection: { [key:string] : MazeNode } = {};
         let capturedNodeCollection: { [key:string] : MazeNode };
 
-        nodeCollection[ a.getId() ] = a;
-        nodeCollection[ b.getId() ] = b;
-        nodeCollection[ c.getId() ] = c;
-        nodeCollection[ d.getId() ] = d;
-        nodeCollection[ e.getId() ] = e;
+        nodeCollection[ a.id ] = a;
+        nodeCollection[ b.id ] = b;
+        nodeCollection[ c.id ] = c;
+        nodeCollection[ d.id ] = d;
+        nodeCollection[ e.id ] = e;
 
         m.setNodes( nodeCollection );
         capturedNodeCollection = m.getNodes();
 
-        expect( capturedNodeCollection[a.getId()] ).to.be.equal( a );
-        expect( capturedNodeCollection[b.getId()] ).to.be.equal( b );
-        expect( capturedNodeCollection[c.getId()] ).to.be.equal( c );
-        expect( capturedNodeCollection[d.getId()] ).to.be.equal( d );
-        expect( capturedNodeCollection[e.getId()] ).to.be.equal( e );
+        expect( capturedNodeCollection[a.id] ).to.be.equal( a );
+        expect( capturedNodeCollection[b.id] ).to.be.equal( b );
+        expect( capturedNodeCollection[c.id] ).to.be.equal( c );
+        expect( capturedNodeCollection[d.id] ).to.be.equal( d );
+        expect( capturedNodeCollection[e.id] ).to.be.equal( e );
     });
 
     it( 'can return nodes residing at the indicated coordinates', () => {
@@ -57,15 +57,15 @@ describe( 'Maze', () => {
 
         let nodeCollection: { [key:string] : MazeNode } = {};
 
-        a.setLocation( new NodeLocation2D( [1, 1] ));
-        b.setLocation( new NodeLocation2D( [1, 2] ));
+        a.location = new NodeLocation2D( [1, 1] );
+        b.location = new NodeLocation2D( [1, 2] );
 
-        nodeCollection[ a.getId() ] = a;
-        nodeCollection[ b.getId() ] = b;
+        nodeCollection[ a.id ] = a;
+        nodeCollection[ b.id ] = b;
 
         m.setNodes( nodeCollection );
 
-        expect( m.getNodeAtLocation( new NodeLocation2D( [1,2] )).getId() ).to.be.equal( b.getId() );
+        expect( m.getNodeAtLocation( new NodeLocation2D( [1,2] )).id ).to.be.equal( b.id );
     });
 
     it( 'facilitates definition of "starting" and "ending" nodes', () =>  {
@@ -77,16 +77,16 @@ describe( 'Maze', () => {
 
         let nodeCollection: { [key:string] : MazeNode } = {};
 
-        a.setLocation( new NodeLocation2D( [1, 1] ));
-        b.setLocation( new NodeLocation2D( [1, 2] ));
-        c.setLocation( new NodeLocation2D( [2, 1] ));
+        a.location = new NodeLocation2D( [1, 1] );
+        b.location = new NodeLocation2D( [1, 2] );
+        c.location = new NodeLocation2D( [2, 1] );
 
         m.setStartNode( a );
         m.setFinishNode( c );
 
-        nodeCollection[ a.getLocation().toString() ] = a;
-        nodeCollection[ b.getLocation().toString() ] = b;
-        nodeCollection[ c.getLocation().toString() ] = c;
+        nodeCollection[ a.location.toString() ] = a;
+        nodeCollection[ b.location.toString() ] = b;
+        nodeCollection[ c.location.toString() ] = c;
 
         m.setNodes( nodeCollection );
 
@@ -124,15 +124,15 @@ describe( 'Maze', () => {
         let b = new MazeNode( new Compass4() );
         let c = new MazeNode( new Compass4() );
 
-        a.setLocation( new NodeLocation2D( [1, 1] ));
-        b.setLocation( new NodeLocation2D( [1, 2] ));
-        c.setLocation( new NodeLocation2D( [2, 1] ));
+        a.location = new NodeLocation2D( [1, 1] );
+        b.location = new NodeLocation2D( [1, 2] );
+        c.location = new NodeLocation2D( [2, 1] );
 
         let nodeCollection: { [key:string] : MazeNode } = {};
 
-        nodeCollection[ a.getLocation().toString() ] = a;
-        nodeCollection[ b.getLocation().toString() ] = b;
-        nodeCollection[ c.getLocation().toString() ] = c;
+        nodeCollection[ a.location.toString() ] = a;
+        nodeCollection[ b.location.toString() ] = b;
+        nodeCollection[ c.location.toString() ] = c;
 
         m.setNodes( nodeCollection );
         m.setCurrentNode( b );
@@ -152,22 +152,22 @@ describe( 'Maze', () => {
 
         let nodeCollection: { [key:string] : MazeNode } = {};
 
-        a.setLocation( new NodeLocation2D( [1, 1] )).setName( "A" );
-        b.setLocation( new NodeLocation2D( [1, 2] )).setName( "B" );
-        c.setLocation( new NodeLocation2D( [2, 1] )).setName( "C" );
-        d.setLocation( new NodeLocation2D( [2, 0] )).setName( "D" );
-        e.setLocation( new NodeLocation2D( [0, 1] )).setName( "E" );
+        a.location = new NodeLocation2D( [1, 1] ); a.name = "A";
+        b.location = new NodeLocation2D( [1, 2] ); b.name = "B";
+        c.location = new NodeLocation2D( [2, 1] ); c.name = "C";
+        d.location = new NodeLocation2D( [2, 0] ); d.name = "D";
+        e.location = new NodeLocation2D( [0, 1] ); e.name = "E";
 
         a.connectTo( e, C4.N );
         a.connectTo( c, C4.E );
         a.connectTo( b, C4.S );
         b.connectTo( d, C4.W );
 
-        nodeCollection[ a.getId() ] = a;
-        nodeCollection[ b.getId() ] = b;
-        nodeCollection[ c.getId() ] = c;
-        nodeCollection[ d.getId() ] = d;
-        nodeCollection[ e.getId() ] = e;
+        nodeCollection[ a.id ] = a;
+        nodeCollection[ b.id ] = b;
+        nodeCollection[ c.id ] = c;
+        nodeCollection[ d.id ] = d;
+        nodeCollection[ e.id ] = e;
 
         m.setNodes( nodeCollection );
         m.setCurrentNode( a );
@@ -189,12 +189,12 @@ describe( 'Maze', () => {
 
         let nodeCollection: { [key:string] : MazeNode } = {};
 
-        a.setLocation( new NodeLocation2D( [1, 1] ));
-        b.setLocation( new NodeLocation2D( [1, 2] ));
-        c.setLocation( new NodeLocation2D( [1, 3] ));
+        a.location = new NodeLocation2D( [1, 1] );
+        b.location = new NodeLocation2D( [1, 2] );
+        c.location = new NodeLocation2D( [1, 3] );
 
-        nodeCollection[ a.getLocation().toString() ] = a;
-        nodeCollection[ b.getLocation().toString() ] = b;
+        nodeCollection[ a.location.toString() ] = a;
+        nodeCollection[ b.location.toString() ] = b;
 
         m.setNodes( nodeCollection );
 
@@ -215,15 +215,12 @@ describe( 'Maze', () => {
 
         let nodeCollection: { [key:string] : MazeNode } = {};
 
-        a.setLocation( new NodeLocation2D( [1, 1] ));
-        a.setName( a.getLocation().toString() );
-        b.setLocation( new NodeLocation2D( [1, 2] ));
-        b.setName( b.getLocation().toString() );
-        c.setLocation( new NodeLocation2D( [1, 3] ));
-        c.setName( c.getLocation().toString() );
+        a.location = new NodeLocation2D( [1, 1] ); a.name = a.location.toString();
+        b.location = new NodeLocation2D( [1, 2] ); b.name = b.location.toString();
+        c.location = new NodeLocation2D( [1, 3] ); c.name = c.location.toString();
 
-        nodeCollection[ a.getLocation().toString() ] = a;
-        nodeCollection[ b.getLocation().toString() ] = b;
+        nodeCollection[ a.location.toString() ] = a;
+        nodeCollection[ b.location.toString() ] = b;
 
         m.setNodes( nodeCollection );
 
@@ -234,9 +231,9 @@ describe( 'Maze', () => {
         m.forEachNode((node, key, nodes) => {
             nodesArray.push(node);
             nodesNames.push(key);
-            expect(nodes).to.have.property(a.getLocation().toString());
-            expect(nodes).to.have.property(b.getLocation().toString());
-            expect(nodes).not.to.have.property(c.getLocation().toString());
+            expect(nodes).to.have.property(a.location.toString());
+            expect(nodes).to.have.property(b.location.toString());
+            expect(nodes).not.to.have.property(c.location.toString());
         });
 
         expect( nodesArray ).to.have.lengthOf( 2 );
@@ -245,9 +242,9 @@ describe( 'Maze', () => {
         expect( nodesArray.indexOf( b ) ).not.to.be.equal( -1 );
         expect( nodesArray.indexOf( c ) ).to.be.equal( -1 );
 
-        expect( nodesNames.indexOf( a.getName() )).not.to.be.equal( -1 );
-        expect( nodesNames.indexOf( b.getName() )).not.to.be.equal( -1 );
-        expect( nodesNames.indexOf( c.getName() )).to.be.equal( -1 );
+        expect( nodesNames.indexOf( a.name )).not.to.be.equal( -1 );
+        expect( nodesNames.indexOf( b.name )).not.to.be.equal( -1 );
+        expect( nodesNames.indexOf( c.name )).to.be.equal( -1 );
     });
 
     it ('can be translated into a valid JSON string', () => {
@@ -272,7 +269,7 @@ describe( 'Maze', () => {
 				let timeoutsExecuted: number = 0;
 				let interval = setInterval(() => {
 					timeoutsExecuted++;
-					idsCaptured.push(maze.getRandomNode().getId());
+					idsCaptured.push(maze.getRandomNode().id);
 					if (timeoutsExecuted > nodeTestCount) {
 						clearInterval(interval);
 						resolve();
@@ -324,16 +321,16 @@ describe( 'Maze', () => {
 
                 node = indexedNodes.get(new NodeLocation2D([x, y]).toString());
                 if (node === undefined) { continue; }
-                location = node.getLocation();
+                location = node.location;
                 if ( location === null ) { continue; }
                 correspondingNode = maze.getNodeAtLocation(location);
 
-                if (correspondingNode.getId().indexOf('EXIT-') === 0) { continue; }
+                if (correspondingNode.id.indexOf('EXIT-') === 0) { continue; }
 
-                nodeId = node.getId();
+                nodeId = node.id;
 
-                expect(location.getPosition()[0]).to.be.equal(x);
-                expect(location.getPosition()[1]).to.be.equal(y);
+                expect(location.position[0]).to.be.equal(x);
+                expect(location.position[1]).to.be.equal(y);
                 expect(correspondingNode).to.be.equal(node);
                 expect(maze.getNodeWithId(nodeId)).to.be.equal(node);
 
@@ -346,7 +343,7 @@ describe( 'Maze', () => {
         // Go through the nodes list and make sure all entries were deleted from the list.
         Object.keys(maze.getNodes()).forEach((key) => {
         	let node = maze.getNodeWithId(key);
-        	if (node && node.getId().indexOf('EXIT-') === 0) { return; }
+        	if (node && node.id.indexOf('EXIT-') === 0) { return; }
             expect(node).to.be.null;
         })
     })

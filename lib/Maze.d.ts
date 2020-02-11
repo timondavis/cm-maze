@@ -44,12 +44,12 @@ export declare class Maze {
      * @type {MazeNode}
      */
     protected finish: MazeNode;
-    private id;
+    private _id;
     constructor(mazeData?: any);
     /**
      * Get the unique GUID for this maze
      */
-    getId(): string;
+    readonly id: string;
     /**
      * Set the cardinality behavior for nodes on this maze.
      *

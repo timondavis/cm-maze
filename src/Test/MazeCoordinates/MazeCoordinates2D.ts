@@ -14,10 +14,10 @@ describe( 'NodeLocation2D', () => {
        const y = MazeBuilder.rand( r );
 
        mc = new NodeLocation2D();
-       expect( mc.getPosition().toString() ).to.be.equal( [0,0].toString() );
+       expect( mc.position.toString() ).to.be.equal( [0,0].toString() );
 
        mc = new NodeLocation2D( [x,y] );
-       expect( mc.getPosition().toString() ).to.be.equal( [x,y].toString() );
+       expect( mc.position.toString() ).to.be.equal( [x,y].toString() );
    });
 
    it( 'facilitates updates to the coordinate\'s entire position', () => {
@@ -28,7 +28,7 @@ describe( 'NodeLocation2D', () => {
        mc = new NodeLocation2D( old );
        mc.updatePosition( next );
 
-       expect( mc.getPosition().toString() ).to.be.equal( next.toString() );
+       expect( mc.position.toString() ).to.be.equal( next.toString() );
    });
 
    it( 'facilitates updates to a single dimension by providing a new value (ie. update X or Y)', () => {
@@ -37,9 +37,9 @@ describe( 'NodeLocation2D', () => {
        const next = [ MazeBuilder.rand( r ), MazeBuilder.rand( r ) ];
 
        mc = new NodeLocation2D( old );
-       mc.updateAxisPoint(1, next[1])
+       mc.updateAxisPoint(1, next[1]);
 
-       expect( mc.getPosition().toString() ).to.be.equal( [ old[0], next[1] ].toString() );
+       expect( mc.position.toString() ).to.be.equal( [ old[0], next[1] ].toString() );
    });
 
    it( 'facilitates updates to a single dimension by providing a delta value (ie. update X or Y', () => {
@@ -50,7 +50,7 @@ describe( 'NodeLocation2D', () => {
        mc = new NodeLocation2D( old );
        mc.adjustAxisPoint(0, delta);
 
-       expect( mc.getPosition().toString() ).to.be.equal( [ old[0] + delta, old[1]].toString() );
+       expect( mc.position.toString() ).to.be.equal( [ old[0] + delta, old[1]].toString() );
    });
 
    it( 'provides reports on position by dimension, among other means (provided by other tests)', () => {
@@ -69,7 +69,7 @@ describe( 'NodeLocation2D', () => {
 
         mc = new NodeLocation2D( old );
 
-        expect( mc.getPosition().toString() ).to.be.equal( old.toString() );
+        expect( mc.position.toString() ).to.be.equal( old.toString() );
    });
 
    it( 'converts arrays into strings as a static service, which facilitates hashmapping and comparisons', () => {
@@ -84,13 +84,13 @@ describe( 'NodeLocation2D', () => {
    it( 'should report, as a number, how many dimensions this coordinate facilitates', () => {
 
        mc = new NodeLocation2D();
-       expect( mc.getDimensions() ).to.be.equal( 2 );
+       expect( mc.dimensions ).to.be.equal( 2 );
    });
 
    it ( 'facilitates capturing location with a getter', () => {
        const nodeLocation = [ MazeBuilder.rand( r ), MazeBuilder.rand( r ) ];
        mc = new NodeLocation2D(nodeLocation);
-       expect(mc.getPosition()).to.be.equal(nodeLocation);
+       expect(mc.position).to.be.equal(nodeLocation);
    });
 
    it ( 'provides X and Y coordinates with specific named functions (specialized for 2D version', () => {

@@ -8,13 +8,13 @@ import {NodeLocation} from "../MazeCoordinates/NodeLocation";
  */
 export abstract class Cardinality {
 
-    public cardinalityId: string;
+    public readonly id: string;
 
     abstract getNextLocation(currentLocation: NodeLocation, exitConnectionPoint: number): NodeLocation;
     abstract getConnectionPointCount() : number;
 
-    public constructor(cardinalityId) {
-        this.cardinalityId = cardinalityId;
+    protected constructor(cardinalityId) {
+        this.id = cardinalityId;
     }
 
 	/**
