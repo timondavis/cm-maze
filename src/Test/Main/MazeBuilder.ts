@@ -28,11 +28,11 @@ describe( 'MazeBuilder', () => {
     it( 'can enforce cardinality behaviors to all MazeNodes by applying an instance of CardinalityBehavior', () => {
         MB = new MazeBuilder( { cardinality: new Compass8() } );
         let a: Maze = MB.buildMaze();
-        expect( a.getStartNode().getCardinality() ).to.be.an.instanceOf( Compass8 );
+        expect( a.getStartNode().cardinality ).to.be.an.instanceOf( Compass8 );
 
         MB = new MazeBuilder();
         let b: Maze = MB.buildMaze();
-        expect( b.getStartNode().getCardinality() ).to.be.an.instanceOf( Compass4 );
+        expect( b.getStartNode().cardinality ).to.be.an.instanceOf( Compass4 );
     });
 
     it( 'facilitates integer randomization as a static convenience service', () => { //@TODO Known Bug - fix!

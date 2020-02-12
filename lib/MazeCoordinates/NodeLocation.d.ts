@@ -7,11 +7,11 @@ export declare abstract class NodeLocation {
     /**
      * The number of dimensions recorded in these coordinates.
      */
-    protected dimensions: number;
+    private _dimensions;
     /**
      * The actual position of these coordinates on a cartesian graph.
      */
-    protected position: number[];
+    private _position;
     /**
      * Create a new MazeCoordinate, indicating its position
      *
@@ -52,13 +52,13 @@ export declare abstract class NodeLocation {
      * Get the position of this location.
      * @returns {number[]}
      */
-    getPosition(): number[];
+    position: number[];
     /**
      * Get the # of dimensions or axis tracking the position of this location
      *
      * @returns {number}
      */
-    getDimensions(): number;
+    dimensions: number;
     /**
      * Convert these coordinates into a string representing the values contained inside.
      * @returns {string}

@@ -50,20 +50,20 @@ export class Maze {
      */
     protected finish: MazeNode;
 
-    private id: string;
+    private _id: string;
 
     public constructor(mazeData: any = null) {
         if (mazeData === null) { return; }
 
         this.cardinality = mazeData.cardinality;
-        this.id = Maze.generateKey();
+        this._id = Maze.generateKey();
     }
 
     /**
      * Get the unique GUID for this maze
      */
-    public getId() {
-        return this.id;
+    public get id() {
+        return this._id;
     }
 
 
@@ -83,7 +83,6 @@ export class Maze {
      * @returns {Cardinality}
      */
     public getCardinality(): Cardinality {
-
         return this.cardinality;
     }
 
@@ -151,8 +150,8 @@ export class Maze {
      * @param mazeNode
      */
     public addNode(mazeNode: MazeNode, demandUniqueLocations: boolean = true) {
-        if (demandUniqueLocations && this.getNodeAtLocation(mazeNode.getLocation())) { throw "Duplicate location assignment on Maze nodes"; }
-        this.nodes[mazeNode.getId()] = mazeNode;
+        if (demandUniqueLocations && this.getNodeAtLocation(mazeNode.location)) { throw "Duplicate location assignment on Maze nodes"; }
+        this.nodes[mazeNode.id] = mazeNode;
     }
 
     /**
@@ -184,7 +183,7 @@ export class Maze {
            key = keys[keyIndex];
            tryNode = this.getNodeWithId(key);
 
-           if (tryNode && tryNode.getLocation().toString() === location.toString()) {
+           if (tryNode && tryNode.location.toString() === location.toString()) {
                foundNode = this.nodes[key];
                break;
            }
@@ -192,6 +191,15 @@ export class Maze {
 
        return foundNode;
     }
+
+	/**
+	 * Get a random node from the maze.
+	 */
+	public getRandomNode() {
+    	let randomIndex = Math.floor(Math.random() * (this.getNodesArray().length - 1));
+
+    	return this.getNodesArray()[randomIndex];
+	}
 
     /**
      * Assign the indicated node a 'starting point' status.
@@ -288,8 +296,8 @@ export class Maze {
 
         Object.keys(this.getNodes()).forEach((key) => {
             node = <MazeNode> this.getNodeWithId(key);
-            location = node.getLocation();
-            mazeArray[location.getPosition()[0]][location.getPosition()[1]] = node;
+            location = node.location;
+            mazeArray[location.position[0]][location.position[1]] = node;
         });
 
         return this.generate2DMazeIndex(mazeArray);
@@ -331,7 +339,7 @@ export class Maze {
         for ( let x = 0 ; x < this.dimensions[0] ; x++ ) {
             for ( let y = 0 ; y < this.dimensions[1] ; y++ ) {
                 if (mazeArray[x][y] !== null) {
-                    index.set(mazeArray[x][y].getLocation().toString(),  mazeArray[x][y]);
+                    index.set(mazeArray[x][y].location.toString(),  mazeArray[x][y]);
                 }
             }
         }

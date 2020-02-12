@@ -69,21 +69,21 @@ describe( 'Compass8', () => {
         let positionCoordinates = cb8.generateNodeLocation( position );
 
         expect( positionCoordinates ).to.be.an.instanceOf( NodeLocation2D );
-        expect( positionCoordinates.getDimensions() ).to.be.equal( 2 );
-        expect( positionCoordinates.getPosition() ).to.be.equal( position );
+        expect( positionCoordinates.dimensions ).to.be.equal( 2 );
+        expect( positionCoordinates.position ).to.be.equal( position );
     });
 
     it( 'can generate new neighboring coordinate objects, given a current coordinate object and a desired direction', () => {
 
         let spot = new NodeLocation2D( [0,0] );
 
-        expect( cb8.getNextLocation(spot, C8.NORTH).getPosition().toString() ).to.be.equal( [0, -1].toString() );
-        expect( cb8.getNextLocation(spot, C8.NE).getPosition().toString() ).to.be.equal( [1, -1].toString() );
-        expect( cb8.getNextLocation(spot, C8.EAST).getPosition().toString() ).to.be.equal( [1, 0 ].toString() );
-        expect( cb8.getNextLocation(spot, C8.SE).getPosition().toString() ).to.be.equal( [1, 1].toString() );
-        expect( cb8.getNextLocation(spot, C8.SOUTH).getPosition().toString() ).to.be.equal( [0, 1].toString() );
-        expect( cb8.getNextLocation(spot, C8.SW).getPosition().toString() ).to.be.equal( [-1, 1].toString() );
-        expect( cb8.getNextLocation(spot, C8.WEST).getPosition().toString() ).to.be.equal( [-1, 0].toString() );
-        expect( cb8.getNextLocation(spot, C8.NW).getPosition().toString() ).to.be.equal( [-1, -1].toString() );
+        expect( cb8.getNextLocation(spot, C8.NORTH).position.toString() ).to.be.equal( [0, -1].toString() );
+        expect( cb8.getNextLocation(spot, C8.NE).position.toString() ).to.be.equal( [1, -1].toString() );
+        expect( cb8.getNextLocation(spot, C8.EAST).position.toString() ).to.be.equal( [1, 0 ].toString() );
+        expect( cb8.getNextLocation(spot, C8.SE).position.toString() ).to.be.equal( [1, 1].toString() );
+        expect( cb8.getNextLocation(spot, C8.SOUTH).position.toString() ).to.be.equal( [0, 1].toString() );
+        expect( cb8.getNextLocation(spot, C8.SW).position.toString() ).to.be.equal( [-1, 1].toString() );
+        expect( cb8.getNextLocation(spot, C8.WEST).position.toString() ).to.be.equal( [-1, 0].toString() );
+        expect( cb8.getNextLocation(spot, C8.NW).position.toString() ).to.be.equal( [-1, -1].toString() );
     });
 });

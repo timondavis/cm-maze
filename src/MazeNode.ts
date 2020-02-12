@@ -14,77 +14,122 @@ export class MazeNode {
 	 */
 	private static indexIdCounter: number = 0;
 
-    /**
-     * Debug Mode
-     * @type {boolean}
-     */
-    protected static debug: boolean = false;
-
-    /**
-     * A collection of index ids for neighboring nodes
-     * @type { MazeNode[] }
-     */
-    protected neighbors : string[];
-
-    /**
-     * Provides services and constraints allowing for the logical connection and traversal between this and other nodes
-     */
-    protected cardinality : Cardinality;
-
-    /**
-     * The name of this node
-     *
-     * @type {string}
-     */
-    protected name: string = "";
+	/**
+	 * Provides services and constraints allowing for the logical connection and traversal between this and other nodes
+	 */
+	private readonly _cardinality : Cardinality;
 
 	/**
 	 * Unique index assigned to every new node.
 	 */
-	private _indexId: number;
+	private readonly _indexId: number;
 
-    /**
-     * Unique string key for maze node
+	/**
+	 * Unique string key for maze node
+	 */
+	private readonly _mazeNodeId: string = "";
+
+	/**
+	 * The name of this node
+	 *
+	 * @type {string}
+	 */
+	private _name: string = "";
+
+	/**
+	 * A collection of index ids for neighboring nodes
+	 * @type { MazeNode[] }
+	 */
+	private _neighbors : string[];
+
+	/**
+	 * The maximum number of exits on this node which connect to other nodes.  A node cannot have more neighbors
+	 * than what is dictated by this value.
+	 */
+	private _maxExits: number;
+
+	/**
+	 * Debug Mode
+     * @type {boolean}
      */
-    protected mazeNodeId: string = "";
+    protected static debug: boolean = false;
 
     /**
      * The NodeLocation track the location of this node relative to other nodes
      *
      * @type { NodeLocation }
      */
-    protected coordinates : NodeLocation;
+    private _coordinates : NodeLocation;
 
-    /**
-     * The maximum number of exits on this node which connect to other nodes.  A node cannot have more neighbors
-     * than what is dictated by this value.
-     */
-    protected maxExits: number;
+
+
+	/**
+	 * Contents of the maze node.  Maps within a map.
+	 * The master map ties a string id to a consuming developers custom defined Map.
+	 */
+	public contents: Map<string, Map<any, any>>;
 
     public constructor(cardinality: Cardinality, id: string = null, coordinates? : NodeLocation, maxConnections: number = null) {
 
-        this.cardinality = cardinality;
-        this.neighbors = new Array<string>( cardinality.getConnectionPointCount() );
+        this._cardinality = cardinality;
+        this._neighbors = new Array<string>( cardinality.getConnectionPointCount() );
+		this._mazeNodeId = (id) ? id : MazeNode.generateKey();
+		this._maxExits = (maxConnections) ? maxConnections : this.cardinality.getConnectionPointCount();
 
-        this.coordinates = ( coordinates ) ? coordinates : this.cardinality.generateNodeLocation();
-        this.maxExits = (maxConnections) ? maxConnections : this.cardinality.getConnectionPointCount();
-
-        this.mazeNodeId = (id) ? id : MazeNode.generateKey();
+		this._coordinates = ( coordinates ) ? coordinates : this.cardinality.generateNodeLocation();
 
         MazeNode.indexIdCounter++;
         this._indexId = MazeNode.indexIdCounter;
+
+        this.contents = new Map<string, Map<any, any>>();
     }
 
-    public getId(): string {
-        return this.mazeNodeId;
+    public get id(): string {
+        return this._mazeNodeId;
     }
 
-    public getIndexId(): number {
+    private get indexId(): number {
     	return this._indexId
 	}
 
-    /**
-     * Connects one MazeNode instance to another.  Implicitly bi-directional, but directed edges between nodes
+	public set location(value: NodeLocation) {
+    	this._coordinates = value;
+	}
+
+	public get location() : NodeLocation {
+		return this._coordinates;
+	}
+
+	public get locationId() : string {
+		return this.location.toString();
+	}
+
+	public get neighbors() : string[]{
+		return this._neighbors;
+	}
+
+	public set name( name: string ) {
+		this._name = name;
+	}
+
+	public get name(): string {
+		return this._name;
+	}
+
+	public set maxConnections(maxConnections: number) {
+		this._maxExits = maxConnections;
+	}
+
+	public get maxConnections() : number {
+		return this._maxExits;
+	}
+
+	public get cardinality() : Cardinality {
+		return this._cardinality;
+	}
+
+	/**
+	 * Connects one MazeNode instance to another.  Implicitly bi-directional, but directed edges between nodes
      * can be crated by passing in the autoConnect parameter as false.  If either node is maxed out, no connection will be made.
      *
      * @param {string} mazeNodeId           The node Id to connect to this node
@@ -108,11 +153,11 @@ export class MazeNode {
             throw( "Indicated exitPosition exitPosition is already occupied.  Two exits/entries may not occupy the same exitPosition" );
         }
 
-        this.neighbors[exitPosition] = node.getId();
+        this.neighbors[exitPosition] = node.id;
 
         if ( autoConnect ) {
 
-            if ( ! node.isConnectionPointOpen(node.getCardinality().getOpposingConnectionPoint(exitPosition)) ) {
+            if ( ! node.isConnectionPointOpen(node.cardinality.getOpposingConnectionPoint(exitPosition)) ) {
 
                 throw( "Two-Way conneciton failed.  Indicated node will not tolerate any more additonal connections, " +
                     "maximum reached.")
@@ -125,7 +170,7 @@ export class MazeNode {
             if ( MazeNode.debug ) {
 
                 console.log( "CONNECTING NODES\n" );
-                console.log( this.getName() + " (" + exitPosition + ")  <=> (" + entryPosition + ") " + node.getName() );
+                console.log( this.name + " (" + exitPosition + ")  <=> (" + entryPosition + ") " + node.name );
             }
         }
 
@@ -148,28 +193,6 @@ export class MazeNode {
     }
 
     /**
-     * Give this node a name, if you like
-     *
-     * @param {string} name
-     * @returns {MazeNode}
-     */
-    public setName( name: string ): MazeNode {
-
-        this.name = name;
-        return this;
-    }
-
-    /**
-     * Get the name of this node
-     *
-     * @param {string} name
-     */
-    public getName(): string {
-
-        return this.name;
-    }
-
-    /**
      * Find out if the indicated node indicated to this node directly, as a neighbor
      *
      * @param {MazeNode} node
@@ -179,7 +202,7 @@ export class MazeNode {
 
         for (let i = 0 ; i < this.cardinality.getConnectionPointCount() ; i++ ) {
 
-            if (node.getId() == this.neighbors[i]) { return true; }
+            if (node.id == this.neighbors[i]) { return true; }
         }
 
         return false;
@@ -258,7 +281,7 @@ export class MazeNode {
      */
     public isConnectionPointOpen( point: number ): boolean {
 
-        if ( this.getMaxConnections() >= 0 && (this.getOccupiedConnectionPoints().length + 1) > this.getMaxConnections()) {
+        if ( this.maxConnections >= 0 && (this.getOccupiedConnectionPoints().length + 1) > this.maxConnections) {
             return false;
         }
 
@@ -278,44 +301,6 @@ export class MazeNode {
     }
 
     /**
-     * @use Location
-     * Set the coordinates for this node
-     * @param {NodeLocation} coordinates
-     * @returns {this}
-     */
-    public setLocation(coordinates: NodeLocation) {
-
-        this.coordinates = coordinates;
-        return this;
-    }
-
-    /**
-     * @use Location
-     * Get the coordinates for this node
-     * @returns {NodeLocation}
-     */
-    public getLocation() : NodeLocation {
-
-        return this.coordinates;
-    }
-
-    /**
-     * Get a string ID for this location
-     * @return {string}
-     */
-    public getLocationId() : string {
-        return this.getLocation().toString();
-    }
-
-    /**
-     * Get the cardinality behavior object associated with this node.
-     * @returns {Cardinality}
-     */
-    public getCardinality() : Cardinality {
-        return this.cardinality;
-    }
-
-    /**
      * Stringify the output for human console consumption
      *
      * @returns {string}
@@ -325,8 +310,8 @@ export class MazeNode {
         let output: string = "";
         let occupiedExitPoints = this.getOccupiedConnectionPoints();
 
-        output += this.getName() + ": \n";
-        output += "Coordinates: " + this.getLocation().toString() + "\n";
+        output += this.name + ": \n";
+        output += "Coordinates: " + this.location.toString() + "\n";
         output += "Exits:";
         for( let i = 0 ; i < occupiedExitPoints.length ; i++ ) {
 
@@ -334,32 +319,10 @@ export class MazeNode {
         }
 
         output += "\n";
-        output += "Max Exits: " + this.getMaxConnections();
+        output += "Max Exits: " + this.maxConnections;
         output += "\n\n";
 
         return output;
-    }
-
-    /**
-     * Set the maximum amount of nodes that this node can connect to.
-     *
-     * @param {number} maxConnections
-     * @returns {MazeNode}
-     */
-    public setMaxConnections(maxConnections: number) : MazeNode {
-
-        this.maxExits = maxConnections;
-        return this;
-    }
-
-    /**
-     * Get the maximum amount of nodes that this node can connect to.
-     *
-     * @returns {number}
-     */
-    public getMaxConnections() : number {
-
-        return this.maxExits;
     }
 
     /**
