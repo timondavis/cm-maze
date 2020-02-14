@@ -3,7 +3,8 @@
  *
  * Stores and facilitates mutation of the coordinates of a given point on a cartesian graph (2+ dimensions)
  */
-export declare abstract class NodeLocation {
+import { ConcreteSerializable } from "../ConcreteSerializable";
+export declare abstract class NodeLocation extends ConcreteSerializable {
     /**
      * The number of dimensions recorded in these coordinates.
      */

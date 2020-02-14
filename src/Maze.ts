@@ -1,13 +1,14 @@
 import {Cardinality} from "./Behavior/Cardinality";
 import {MazeNode} from "./MazeNode";
 import {NodeLocation} from "./MazeCoordinates/NodeLocation";
+import {AbstractSerializable} from "./AbstractSerializable";
 
 /**
  * @class Maze
  *
  * A traverse-able maze, which manifests as a graph of interconnected nodes.
  */
-export class Maze {
+export class Maze extends AbstractSerializable {
 
     /**
      * The Cardinality concrete instance which describes how nodes connect and traverse.
@@ -53,8 +54,9 @@ export class Maze {
     private _id: string;
 
     public constructor(mazeData: any = null) {
-        if (mazeData === null) { return; }
+    	super();
 
+        if (mazeData === null) { return; }
         this.cardinality = mazeData.cardinality;
         this._id = Maze.generateKey();
     }

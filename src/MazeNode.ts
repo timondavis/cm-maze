@@ -1,5 +1,10 @@
 import {NodeLocation} from "./MazeCoordinates/NodeLocation";
 import {Cardinality} from "./Behavior/Cardinality";
+import {AbstractSerializable} from "./AbstractSerializable";
+import {Serializable} from "./Serializable.interface";
+import {Compass4} from "./Behavior/Compass4";
+import {Compass8} from "./Behavior/Compass8";
+import {NodeLocation2D} from "./MazeCoordinates/NodeLocation2D";
 
 /**
  * @class MazeNode
@@ -7,7 +12,14 @@ import {Cardinality} from "./Behavior/Cardinality";
  * The MazeNode represents a node or 'room' in a maze.  It is designed to facilitate connection and traversal
  * to other MazeNode instances.
  */
-export class MazeNode {
+export class MazeNode extends AbstractSerializable {
+    public fromJSON(json: string): Serializable {
+    	let jsonModel : any = JSON.parse(json);
+    	let cardinality: Cardinality = (jsonModel.cardinality.id === 'Compass4') ? new Compass4() : new Compass8();
+    	let coordinates : NodeLocation = new NodeLocation2D([jsonModel.])
+    	let newModel = new MazeNode(jsonModel.cardinality, jsonModel.id, jsonModel.coordinates, jsonModel.maxConnections);
+    	newModel.cardinality.
+    }
 
 	/**
 	 * Index ID Incrementor
@@ -70,6 +82,7 @@ export class MazeNode {
 	public contents: Map<string, Map<any, any>>;
 
     public constructor(cardinality: Cardinality, id: string = null, coordinates? : NodeLocation, maxConnections: number = null) {
+		super();
 
         this._cardinality = cardinality;
         this._neighbors = new Array<string>( cardinality.getConnectionPointCount() );

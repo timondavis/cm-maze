@@ -4,8 +4,9 @@
  */
 import {PathNode} from "./PathNode";
 import {PathNodeListNode} from "./PathNodeListNode";
+import {AbstractSerializable} from "../../AbstractSerializable";
 
-export class PathNodeList {
+export class PathNodeList extends AbstractSerializable {
 
 	private _length = 0;
 	public head: PathNodeListNode;

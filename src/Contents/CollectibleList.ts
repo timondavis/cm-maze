@@ -1,10 +1,12 @@
 import {Collectible} from "./Collectible";
+import {Serializable} from "../Serializable.interface";
+import {AbstractSerializable} from "../AbstractSerializable";
 
 /**
  * Collectible list hides an array under the hood, inserting at O(n) and finding by O(logn), insertions are stored
  * sorted by Collectible.getId() value.
  */
-export class CollectibleList<T extends Collectible> {
+export class CollectibleList<T extends Collectible> extends AbstractSerializable {
 
     private _contents: T[] = [];
 

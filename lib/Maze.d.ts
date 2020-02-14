@@ -1,12 +1,13 @@
 import { Cardinality } from "./Behavior/Cardinality";
 import { MazeNode } from "./MazeNode";
 import { NodeLocation } from "./MazeCoordinates/NodeLocation";
+import { ConcreteSerializable } from "./ConcreteSerializable";
 /**
  * @class Maze
  *
  * A traverse-able maze, which manifests as a graph of interconnected nodes.
  */
-export declare class Maze {
+export declare class Maze extends ConcreteSerializable {
     /**
      * The Cardinality concrete instance which describes how nodes connect and traverse.
      *

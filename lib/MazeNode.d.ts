@@ -1,12 +1,13 @@
 import { NodeLocation } from "./MazeCoordinates/NodeLocation";
 import { Cardinality } from "./Behavior/Cardinality";
+import { ConcreteSerializable } from "./ConcreteSerializable";
 /**
  * @class MazeNode
  *
  * The MazeNode represents a node or 'room' in a maze.  It is designed to facilitate connection and traversal
  * to other MazeNode instances.
  */
-export declare class MazeNode {
+export declare class MazeNode extends ConcreteSerializable {
     /**
      * Index ID Incrementor
      */

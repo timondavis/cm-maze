@@ -1,10 +1,13 @@
 import {MazeContentAtlas} from "./MazeContentAtlas";
 import {MazeNode} from "cm-maze";
 import {Collectible} from "./Collectible";
+import {AbstractSerializable} from "../AbstractSerializable";
 
-export class MazeContentCollection<T extends Collectible> {
+export class MazeContentCollection<T extends Collectible> extends AbstractSerializable {
 
-    constructor(protected _collectionName: string, protected _mazeContentAtlas: MazeContentAtlas) {}
+    constructor(protected _collectionName: string, protected _mazeContentAtlas: MazeContentAtlas) {
+    	super();
+	}
 
     public get collectionName() {
         return this._collectionName;

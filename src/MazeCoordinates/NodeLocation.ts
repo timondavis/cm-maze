@@ -3,7 +3,9 @@
  *
  * Stores and facilitates mutation of the coordinates of a given point on a cartesian graph (2+ dimensions)
  */
-export abstract class NodeLocation {
+import {AbstractSerializable} from "../AbstractSerializable";
+
+export abstract class NodeLocation extends AbstractSerializable {
 
     /**
      * The number of dimensions recorded in these coordinates.
@@ -21,7 +23,7 @@ export abstract class NodeLocation {
      * @param {number[]} position
      */
     public constructor(position?: number[]) {
-
+		super();
         this._dimensions = this.getDimensionValue();
         this.validateDimensions();
 

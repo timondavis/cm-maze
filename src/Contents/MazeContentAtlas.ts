@@ -2,14 +2,16 @@ import {Maze, MazeNode} from "cm-maze";
 import {MazeContentCollection} from "./MazeContentCollection";
 import {CollectibleList} from "./CollectibleList";
 import {Collectible} from "./Collectible";
+import {AbstractSerializable} from "../AbstractSerializable";
 
-export class MazeContentAtlas {
+export class MazeContentAtlas extends AbstractSerializable {
 
     private _nodeContent: Map<string, Map<MazeNode, CollectibleList<Collectible>>>; // collectionName => maze node => collection
     private _collectibleResidency: Map<string, Map<Collectible, MazeNode>>; // collectionName => collectible => maze node
     private _contentCollections: Map<string, MazeContentCollection<Collectible>>;
 
     constructor(private _maze: Maze) {
+    	super();
         this._nodeContent = new Map<string, Map<MazeNode, CollectibleList<Collectible>>>();
         this._collectibleResidency = new Map<string, Map<Collectible, MazeNode>>();
         this._contentCollections = new Map<string, MazeContentCollection<Collectible>>();

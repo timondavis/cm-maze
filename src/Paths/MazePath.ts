@@ -3,8 +3,9 @@
  */
 import {Maze} from "../Maze";
 import {MazeNode} from "../MazeNode";
+import {AbstractSerializable} from "../AbstractSerializable";
 
-export class MazePath {
+export class MazePath extends AbstractSerializable {
 
 	private static pathIdCounter: number = 0;
 	private _pathId: number;
@@ -15,6 +16,7 @@ export class MazePath {
 	private _path: string[] = [];
 
 	public constructor() {
+		super();
 		MazePath.pathIdCounter++;
 		this._pathId = MazePath.pathIdCounter;
 	}
