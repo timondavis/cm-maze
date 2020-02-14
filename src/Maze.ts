@@ -1,6 +1,7 @@
 import {Cardinality} from "./Behavior/Cardinality";
 import {MazeNode} from "./MazeNode";
 import {NodeLocation} from "./MazeCoordinates/NodeLocation";
+import {MazeInterface} from "./Maze.interface";
 
 /**
  * @class Maze
@@ -9,61 +10,29 @@ import {NodeLocation} from "./MazeCoordinates/NodeLocation";
  */
 export class Maze {
 
-    /**
-     * The Cardinality concrete instance which describes how nodes connect and traverse.
-     *
-     * @type {CardinalityBehavior}
-     */
-    protected cardinality : Cardinality;
-
-    /**
-     * A "Dictionary" of nodes in the maze, indexed by string ( @see MazeNode.getLocation().toString() )
-     *
-     * @type {{ [key:string] : MazeNode }}
-     */
-    protected nodes : { [key:string] : MazeNode } = {};
-
-    /**
-     *  The pointer to the 'current' node, consistent with standard graph traversal.
-     *
-     *  @type {MazeNode}
-     */
-    protected currentNode : MazeNode;
-
-    /**
-     * Contains the size of the range for each dimension of the maze.
-     * @type {any[]}
-     */
-    protected dimensions: number[] = [];
-
-    /**
-     * Pointer to the 'starting' node of this maze.  Not required to have a valid value.
-     *
-     * @type {MazeNode}
-     */
-    protected start: MazeNode;
-
-    /**
-     * Pointer to the 'finishing' node of this maze.  Not requried to have a valid value.
-     *
-     * @type {MazeNode}
-     */
-    protected finish: MazeNode;
-
-    private _id: string;
+	protected data: MazeInterface;
 
     public constructor(mazeData: any = null) {
-        if (mazeData === null) { return; }
-
-        this.cardinality = mazeData.cardinality;
-        this._id = Maze.generateKey();
+        if (mazeData === null) {
+        	this.data = {
+				cardinality: undefined,
+				currentNode: undefined,
+				dimensions: [],
+				finish: undefined,
+				id: Maze.generateKey(),
+				nodes: {},
+				start: undefined
+			};
+        } else {
+        	this.data = mazeData;
+		}
     }
 
     /**
      * Get the unique GUID for this maze
      */
     public get id() {
-        return this._id;
+        return this.data.id;
     }
 
 
@@ -73,7 +42,7 @@ export class Maze {
      * @param {CardinalityBehavior} cardinality
      */
     public setCardinality(cardinality : Cardinality) {
-        this.cardinality = cardinality;
+        this.data.cardinality = cardinality;
     }
 
 
@@ -83,7 +52,7 @@ export class Maze {
      * @returns {Cardinality}
      */
     public getCardinality(): Cardinality {
-        return this.cardinality;
+        return this.data.cardinality;
     }
 
     /**
@@ -92,8 +61,7 @@ export class Maze {
      * @param {{[p: string]: MazeNode}} nodes
      */
     public setNodes(nodes: { [key:string] : MazeNode }) {
-
-        this.nodes = nodes;
+        this.data.nodes = nodes;
     }
 
     /**
@@ -101,7 +69,7 @@ export class Maze {
      * @returns {{[p: string]: MazeNode}}
      */
     public getNodes() : { [key:string] : MazeNode } {
-        return this.nodes;
+        return this.data.nodes;
     }
 
     /**
@@ -110,7 +78,7 @@ export class Maze {
      */
     public getNodeWithId(mazeNodeId: string) : MazeNode {
         if (this.containsNodeWithId(mazeNodeId)) {
-            return this.nodes[mazeNodeId];
+            return this.data.nodes[mazeNodeId];
         }
         return null;
     }
@@ -121,7 +89,7 @@ export class Maze {
      */
     public containsNodeWithId(mazeNodeId: string) : boolean {
         let nodeIdFound = false;
-        Object.keys(this.nodes).forEach((key) => {
+        Object.keys(this.data.nodes).forEach((key) => {
             if (key === mazeNodeId) {
                 nodeIdFound = true;
             }
@@ -138,7 +106,7 @@ export class Maze {
         nodesArray = [];
 
         Object.keys(this.getNodes()).forEach(key => {
-            nodesArray.push(this.nodes[key]);
+            nodesArray.push(this.data.nodes[key]);
         });
 
         return nodesArray;
@@ -151,7 +119,7 @@ export class Maze {
      */
     public addNode(mazeNode: MazeNode, demandUniqueLocations: boolean = true) {
         if (demandUniqueLocations && this.getNodeAtLocation(mazeNode.location)) { throw "Duplicate location assignment on Maze nodes"; }
-        this.nodes[mazeNode.id] = mazeNode;
+        this.data.nodes[mazeNode.id] = mazeNode;
     }
 
     /**
@@ -174,7 +142,7 @@ export class Maze {
      */
     public getNodeAtLocation( location : NodeLocation ) : MazeNode {
 
-       const keys = Object.keys(this.nodes);
+       const keys = Object.keys(this.data.nodes);
        let tryNode: MazeNode = null;
        let foundNode: MazeNode = null;
        let key: string = "";
@@ -184,7 +152,7 @@ export class Maze {
            tryNode = this.getNodeWithId(key);
 
            if (tryNode && tryNode.location.toString() === location.toString()) {
-               foundNode = this.nodes[key];
+               foundNode = this.data.nodes[key];
                break;
            }
        }
@@ -207,8 +175,7 @@ export class Maze {
      * @param {MazeNode} node
      */
     public setStartNode( node: MazeNode ) {
-
-        this.start = node;
+        this.data.start = node;
     }
 
     /**
@@ -217,8 +184,7 @@ export class Maze {
      * @returns {MazeNode}
      */
     public getStartNode() : MazeNode {
-
-        return this.start;
+        return this.data.start;
     }
 
     /**
@@ -227,8 +193,7 @@ export class Maze {
      * @param {MazeNode} node
      */
     public setFinishNode( node: MazeNode ) : void {
-
-        this.finish = node;
+        this.data.finish = node;
     }
 
     /**
@@ -237,8 +202,7 @@ export class Maze {
      * @returns {MazeNode}
      */
     public getFinishNode() : MazeNode {
-
-        return this.finish;
+        return this.data.finish;
     }
 
     /**
@@ -248,7 +212,7 @@ export class Maze {
      * @returns {number[]}
      */
     public getDimensions() {
-        return this.dimensions;
+        return this.data.dimensions;
     }
 
     /**
@@ -258,7 +222,7 @@ export class Maze {
      * @returns {number[]}
      */
     public setDimensions( dimensions: number[] ) {
-        this.dimensions = dimensions;
+        this.data.dimensions = dimensions;
     }
 
     /**
@@ -266,7 +230,7 @@ export class Maze {
      * @returns {number}
      */
     public getSize() : number {
-		return Object.keys(this.nodes).length;
+		return Object.keys(this.data.nodes).length;
 	}
 
     /**
@@ -275,8 +239,7 @@ export class Maze {
      * @param {MazeNode} node
      */
     public setCurrentNode( node: MazeNode ) {
-
-        this.currentNode = node;
+        this.data.currentNode = node;
     }
 
     /**
@@ -284,8 +247,7 @@ export class Maze {
      * @returns {MazeNode}
      */
     public getCurrentNode(): MazeNode {
-
-        return this.currentNode;
+        return this.data.currentNode;
     }
 
     public getLocationKeyIndex(): Map<string, MazeNode> {
@@ -312,9 +274,9 @@ export class Maze {
      */
     public move( direction : number ) : MazeNode | boolean {
 
-        if ( this.currentNode.isConnectionPointOccupied(direction) ) {
-            this.currentNode = this.getNodeWithId(this.currentNode.getNeighborIdAt( direction ));
-            return this.currentNode;
+        if ( this.data.currentNode.isConnectionPointOccupied(direction) ) {
+            this.data.currentNode = this.getNodeWithId(this.data.currentNode.getNeighborIdAt( direction ));
+            return this.data.currentNode;
         }
 
         return false;
@@ -323,9 +285,9 @@ export class Maze {
     private prepareMazeIndexArray(): MazeNode[][] {
         let mazeArray : MazeNode[][] = [];
 
-        for (let x = 0 ; x < this.dimensions[0] ; x++ ) {
+        for (let x = 0 ; x < this.data.dimensions[0] ; x++ ) {
             mazeArray[x] = [];
-            for (let y = 0 ; y < this.dimensions[1] ; y++ ) {
+            for (let y = 0 ; y < this.data.dimensions[1] ; y++ ) {
                 mazeArray[x][y] = null;
             }
         }
@@ -336,8 +298,8 @@ export class Maze {
     private generate2DMazeIndex(mazeArray: MazeNode[][]) : Map<string, MazeNode> {
         let index : Map<string, MazeNode> = new Map<string, MazeNode>();
 
-        for ( let x = 0 ; x < this.dimensions[0] ; x++ ) {
-            for ( let y = 0 ; y < this.dimensions[1] ; y++ ) {
+        for ( let x = 0 ; x < this.data.dimensions[0] ; x++ ) {
+            for ( let y = 0 ; y < this.data.dimensions[1] ; y++ ) {
                 if (mazeArray[x][y] !== null) {
                     index.set(mazeArray[x][y].location.toString(),  mazeArray[x][y]);
                 }

@@ -8,7 +8,7 @@ export class MazeRenderer {
     public maze : Maze;
     public canvasDimensions: number[] = [];
 
-    public constructor( canvasElementId : string, maze : Maze, dimensions: number = 2 ) {
+    public constructor(canvasElementId : string, maze : Maze, dimensions: number = 2 ) {
 
         this.canvas = <HTMLCanvasElement>document.getElementById( canvasElementId );
 
