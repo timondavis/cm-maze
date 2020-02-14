@@ -2,17 +2,19 @@ import {Cardinality} from "./Behavior/Cardinality";
 import {MazeNode} from "./MazeNode";
 import {NodeLocation} from "./MazeCoordinates/NodeLocation";
 import {MazeInterface} from "./Maze.interface";
+import {Serializable} from "./Serializable.abstract";
 
 /**
  * @class Maze
  *
  * A traverse-able maze, which manifests as a graph of interconnected nodes.
  */
-export class Maze {
+export class Maze extends Serializable{
 
 	protected data: MazeInterface;
 
     public constructor(mazeData: any = null) {
+    	super();
         if (mazeData === null) {
         	this.data = {
 				cardinality: undefined,
