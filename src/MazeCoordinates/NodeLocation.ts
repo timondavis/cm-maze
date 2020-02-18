@@ -1,3 +1,9 @@
+export interface INodeLocation {
+
+	dimensions: number;
+	position: number[];
+}
+
 /**
  * @class NodeLocation
  *
@@ -5,15 +11,7 @@
  */
 export abstract class NodeLocation {
 
-    /**
-     * The number of dimensions recorded in these coordinates.
-     */
-    private _dimensions: number;
-
-    /**
-     * The actual position of these coordinates on a cartesian graph.
-     */
-    private _position: number[];
+	protected state: INodeLocation;
 
     /**
      * Create a new MazeCoordinate, indicating its position
@@ -22,7 +20,11 @@ export abstract class NodeLocation {
      */
     public constructor(position?: number[]) {
 
-        this._dimensions = this.getDimensionValue();
+    	this.state = {
+			dimensions: this.getDimensionValue(),
+			position: []
+		};
+
         this.validateDimensions();
 
         if (position !== undefined && position.length !== this.dimensions) {
@@ -112,11 +114,11 @@ export abstract class NodeLocation {
      * @returns {number[]}
      */
     public get position(): number[] {
-        return this._position;
+        return this.state.position;
     }
 
     public set position(value: number[]) {
-    	this._position = value;
+    	this.state.position = value;
 	}
 
     /**
@@ -126,11 +128,11 @@ export abstract class NodeLocation {
      */
     public get dimensions(): number {
 
-        return this._dimensions;
+        return this.state.dimensions;
     }
 
     public set dimensions(value: number) {
-    	this._dimensions = value;
+    	this.state.dimensions = value;
 	}
 
     /**

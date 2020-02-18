@@ -2,13 +2,16 @@ import {MazeNode} from "../MazeNode";
 import {Maze} from "../Maze";
 import {NodeLocation2D} from "../MazeCoordinates/NodeLocation2D";
 
+export interface IMazeAnalysis {
+	nodeIdsAdjacentToBorderAtExitPoint: Map<number, string[]>;
+	maze: Maze;
+	mazeLocationIndex:  Map<string, MazeNode>;
+	mazeCardinalityPoints: number;
+}
+
 export class MazeAnalysis {
 
-    private _nodeIdsAdjacentToBorderAtExitPoint: Map<number, string[]> = new Map<number, string[]>();
-
-    private maze: Maze;
-    private mazeLocationIndex:  Map<string, MazeNode>;
-    private mazeCardinalityPoints: number;
+	protected state: IMazeAnalysis;
 
     public get nodeIdsAdjacentToBorderAtExitPoint() : Map<number, string[]> {
         return this._nodeIdsAdjacentToBorderAtExitPoint;
@@ -18,13 +21,17 @@ export class MazeAnalysis {
      * @param maze {Maze}
      */
     constructor(maze: Maze) {
-        this.maze = maze;
-        this.mazeLocationIndex = this.maze.getLocationKeyIndex();
-        this.mazeCardinalityPoints = this.maze.getCardinality().getConnectionPointCount();
+
+    	this.state = {
+			maze: maze,
+			mazeCardinalityPoints: maze.getCardinality().getConnectionPointCount(),
+			mazeLocationIndex: maze.getLocationKeyIndex(),
+			nodeIdsAdjacentToBorderAtExitPoint:  new Map<number, string[]>(),
+		};
 
         // Initialize arrays for directional neighbor vacancies
-        for (let c = 0 ; c < this.mazeCardinalityPoints ; c++ ) {
-            this._nodeIdsAdjacentToBorderAtExitPoint.set(c, []);
+        for (let c = 0 ; c < this.state.mazeCardinalityPoints ; c++ ) {
+            this.state.nodeIdsAdjacentToBorderAtExitPoint.set(c, []);
         }
 
         this.analyzeMaze();

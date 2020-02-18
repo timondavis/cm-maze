@@ -1,51 +1,25 @@
 import { Cardinality } from "./Behavior/Cardinality";
 import { MazeNode } from "./MazeNode";
 import { NodeLocation } from "./MazeCoordinates/NodeLocation";
+export interface IMaze {
+    cardinality: Cardinality;
+    nodes: {
+        [key: string]: MazeNode;
+    };
+    currentNode: MazeNode;
+    dimensions: number[];
+    start: MazeNode;
+    finish: MazeNode;
+    id: string;
+}
 /**
  * @class Maze
  *
  * A traverse-able maze, which manifests as a graph of interconnected nodes.
  */
 export declare class Maze {
-    /**
-     * The Cardinality concrete instance which describes how nodes connect and traverse.
-     *
-     * @type {CardinalityBehavior}
-     */
-    protected cardinality: Cardinality;
-    /**
-     * A "Dictionary" of nodes in the maze, indexed by string ( @see MazeNode.getLocation().toString() )
-     *
-     * @type {{ [key:string] : MazeNode }}
-     */
-    protected nodes: {
-        [key: string]: MazeNode;
-    };
-    /**
-     *  The pointer to the 'current' node, consistent with standard graph traversal.
-     *
-     *  @type {MazeNode}
-     */
-    protected currentNode: MazeNode;
-    /**
-     * Contains the size of the range for each dimension of the maze.
-     * @type {any[]}
-     */
-    protected dimensions: number[];
-    /**
-     * Pointer to the 'starting' node of this maze.  Not required to have a valid value.
-     *
-     * @type {MazeNode}
-     */
-    protected start: MazeNode;
-    /**
-     * Pointer to the 'finishing' node of this maze.  Not requried to have a valid value.
-     *
-     * @type {MazeNode}
-     */
-    protected finish: MazeNode;
-    private _id;
-    constructor(mazeData?: any);
+    protected state: IMaze;
+    constructor(mazeData?: IMaze);
     /**
      * Get the unique GUID for this maze
      */
