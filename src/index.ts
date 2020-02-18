@@ -17,6 +17,7 @@ import {MazeContentCollection} from "./Contents/MazeContentCollection";
 import {PathNode} from "./Paths/Models/PathNode";
 import {PathNodeList} from "./Paths/Models/PathNodeList";
 import {PathNodeListNode} from "./Paths/Models/PathNodeListNode";
+import {MazeAnalysis, IMazeAnalysis} from "./Maze/MazeAnalysis";
 
 
 export{
@@ -39,6 +40,10 @@ export{
 	PathNode,
 	PathNodeList,
 	PathNodeListNode,
+	MazeAnalysis,
 	IMaze,
-	IMazeNode
+	IMazeNode,
+	IMazeAnalysis,
+	INodeLocation,
+	IMazePath
 };

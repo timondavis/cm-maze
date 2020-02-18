@@ -14,7 +14,7 @@ export class MazeAnalysis {
 	protected state: IMazeAnalysis;
 
     public get nodeIdsAdjacentToBorderAtExitPoint() : Map<number, string[]> {
-        return this._nodeIdsAdjacentToBorderAtExitPoint;
+        return this.state.nodeIdsAdjacentToBorderAtExitPoint;
     }
 
     /**
@@ -47,39 +47,39 @@ export class MazeAnalysis {
     private scanNodesWithVacantNeighbors() {
 		let node: MazeNode;
 
-		for ( let x = 0 ; x < this.maze.getDimensions()[0] ; x++ ) {
+		for ( let x = 0 ; x < this.state.maze.getDimensions()[0] ; x++ ) {
 
-			for ( let y = 0 ; y < this.maze.getDimensions()[1]; y++ ) {
-				node = this.mazeLocationIndex.get(new NodeLocation2D([x, y]).toString());
+			for ( let y = 0 ; y < this.state.maze.getDimensions()[1]; y++ ) {
+				node = this.state.mazeLocationIndex.get(new NodeLocation2D([x, y]).toString());
 				if (node != null) {
-					this._nodeIdsAdjacentToBorderAtExitPoint.get(0).push(node.id);
+					this.state.nodeIdsAdjacentToBorderAtExitPoint.get(0).push(node.id);
 					break;
 				}
 			}
 
-			for (let y = this.maze.getDimensions()[1] - 1 ; y >= 0 ; y--) {
-				node = this.mazeLocationIndex.get(new NodeLocation2D([x, y]).toString());
+			for (let y = this.state.maze.getDimensions()[1] - 1 ; y >= 0 ; y--) {
+				node = this.state.mazeLocationIndex.get(new NodeLocation2D([x, y]).toString());
 				if (node != null) {
-					this._nodeIdsAdjacentToBorderAtExitPoint.get(this.maze.getCardinality().getConnectionPointCount() * 0.5).push(node.id);
+					this.state.nodeIdsAdjacentToBorderAtExitPoint.get(this.state.maze.getCardinality().getConnectionPointCount() * 0.5).push(node.id);
 					break;
 				}
 			}
 		}
 
-		for (let y = 0 ; y < this.maze.getDimensions()[1] ; y++) {
+		for (let y = 0 ; y < this.state.maze.getDimensions()[1] ; y++) {
 
-			for (let x = 0 ; x < this.maze.getDimensions()[0] ; x++){
-				node = this.mazeLocationIndex.get(new NodeLocation2D([x,y]).toString());
+			for (let x = 0 ; x < this.state.maze.getDimensions()[0] ; x++){
+				node = this.state.mazeLocationIndex.get(new NodeLocation2D([x,y]).toString());
 				if (node != null) {
-					this._nodeIdsAdjacentToBorderAtExitPoint.get(this.maze.getCardinality().getConnectionPointCount() * 0.75).push(node.id);
+					this.state.nodeIdsAdjacentToBorderAtExitPoint.get(this.state.maze.getCardinality().getConnectionPointCount() * 0.75).push(node.id);
 					break;
 				}
 			}
 
-			for (let x = this.maze.getDimensions()[0] ; x >= 0 ; x-- ) {
-				node = this.mazeLocationIndex.get(new NodeLocation2D([x,y]).toString());
+			for (let x = this.state.maze.getDimensions()[0] ; x >= 0 ; x-- ) {
+				node = this.state.mazeLocationIndex.get(new NodeLocation2D([x,y]).toString());
 				if (node != null) {
-					this._nodeIdsAdjacentToBorderAtExitPoint.get(this.maze.getCardinality().getConnectionPointCount() * 0.25).push(node.id);
+					this.state.nodeIdsAdjacentToBorderAtExitPoint.get(this.state.maze.getCardinality().getConnectionPointCount() * 0.25).push(node.id);
 					break;
 				}
 			}
