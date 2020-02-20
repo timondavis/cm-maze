@@ -15,7 +15,8 @@
     "dts-bundle": "^0.7.3",
     "mocha": "^6.2.2",
     "typescript": "~3.5.3",
-    "uuid": "^3.3.3"
+    "uuid": "^3.3.3",
+    "cm-domain-utilities": "file:../cm-domain-utilities"
   },
   "nodemonConfig": {
     "ignore": []

@@ -1,7 +1,8 @@
-import {NodeLocation} from "./MazeCoordinates/NodeLocation";
-import {Cardinality} from "./Behavior/Cardinality";
+import {NodeLocation} from "../MazeCoordinates/NodeLocation";
+import {Cardinality} from "../Behavior/Cardinality";
+import {ISerializableModel, SerializableModel} from "cm-domain-utilities";
 
-export interface IMazeNode {
+export interface IMazeNode extends ISerializableModel {
 	cardinality : Cardinality;
 	indexId: number;
 	mazeNodeId: string;
@@ -18,14 +19,14 @@ export interface IMazeNode {
  * The MazeNode represents a node or 'room' in a maze.  It is designed to facilitate connection and traversal
  * to other MazeNode instances.
  */
-export class MazeNode {
+export class MazeNode extends SerializableModel {
 
 	public static debug: boolean = false;
 	protected state: IMazeNode;
 	private static indexIdCounter: number = 0;
 
     public constructor(cardinality: Cardinality, id: string = null, coordinates? : NodeLocation, maxConnections: number = null) {
-
+		super();
     	this.state = {
 			cardinality: cardinality,
 			contents: new Map<string, Map<any, any>>(),

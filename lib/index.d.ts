@@ -1,6 +1,6 @@
-import { IMaze, Maze } from './Maze';
-import { MazeBuilder } from './MazeBuilder';
-import { IMazeNode, MazeNode } from './MazeNode';
+import { IMaze, Maze } from './Maze/Maze';
+import { MazeBuilder } from './Maze/MazeBuilder';
+import { IMazeNode, MazeNode } from './Maze/MazeNode';
 import { Cardinality } from "./Behavior/Cardinality";
 import { Compass4 } from "./Behavior/Compass4";
 import { C4 } from "./Behavior/Compass4";

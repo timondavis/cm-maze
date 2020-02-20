@@ -1,8 +1,8 @@
 /**
  * An appendable list of ids belonging to nodes which can be traversed in the given order.
  */
-import {Maze} from "../Maze";
-import {MazeNode} from "../MazeNode";
+import {Maze} from "../Maze/Maze";
+import {MazeNode} from "../Maze/MazeNode";
 
 export interface IMazePath {
 	pathId: number;

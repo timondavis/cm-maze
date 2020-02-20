@@ -1,8 +1,9 @@
-import {Cardinality} from "./Behavior/Cardinality";
+import {Cardinality} from "../Behavior/Cardinality";
 import {MazeNode} from "./MazeNode";
-import {NodeLocation} from "./MazeCoordinates/NodeLocation";
+import {NodeLocation} from "../MazeCoordinates/NodeLocation";
+import { ISerializableModel, SerializableModel} from "cm-domain-utilities"
 
-export interface IMaze {
+export interface IMaze extends ISerializableModel {
 
 	cardinality : Cardinality;
 	nodes : { [key:string] : MazeNode };
@@ -18,12 +19,12 @@ export interface IMaze {
  *
  * A traverse-able maze, which manifests as a graph of interconnected nodes.
  */
-export class Maze {
+export class Maze extends SerializableModel {
 
 	protected state: IMaze;
 
     public constructor(mazeData: IMaze = null) {
-
+		super();
     	if (mazeData) {
     		this.state = mazeData;
 		} else {
@@ -337,3 +338,5 @@ export class Maze {
         return uuid();
     }
 }
+
+

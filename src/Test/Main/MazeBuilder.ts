@@ -1,10 +1,10 @@
 import 'mocha';
 import { expect } from "chai";
-import {MazeBuilder} from "../../MazeBuilder";
-import {Maze} from "../../Maze";
+import {MazeBuilder} from "../../Maze/MazeBuilder";
+import {Maze} from "../../Maze/Maze";
 import {Compass8} from "../../Behavior/Compass8";
 import {Compass4} from "../../Behavior/Compass4";
-import {MazeNode} from "../../MazeNode";
+import {MazeNode} from "../../Maze/MazeNode";
 
 describe( 'MazeBuilder', () => {
 

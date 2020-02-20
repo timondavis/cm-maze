@@ -1,15 +1,16 @@
-import {MazeNode} from "../MazeNode";
-import {Maze} from "../Maze";
+import {MazeNode} from "./MazeNode";
+import {Maze} from "./Maze";
 import {NodeLocation2D} from "../MazeCoordinates/NodeLocation2D";
+import {ISerializableModel, SerializableModel} from "cm-domain-utilities";
 
-export interface IMazeAnalysis {
+export interface IMazeAnalysis extends ISerializableModel {
 	nodeIdsAdjacentToBorderAtExitPoint: Map<number, string[]>;
 	maze: Maze;
 	mazeLocationIndex:  Map<string, MazeNode>;
 	mazeCardinalityPoints: number;
 }
 
-export class MazeAnalysis {
+export class MazeAnalysis extends SerializableModel{
 
 	protected state: IMazeAnalysis;
 
@@ -21,7 +22,7 @@ export class MazeAnalysis {
      * @param maze {Maze}
      */
     constructor(maze: Maze) {
-
+		super();
     	this.state = {
 			maze: maze,
 			mazeCardinalityPoints: maze.getCardinality().getConnectionPointCount(),

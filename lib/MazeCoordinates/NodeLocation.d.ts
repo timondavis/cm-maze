@@ -1,4 +1,5 @@
-export interface INodeLocation {
+import { ISerializableModel, SerializableModel } from "cm-domain-utilities";
+export interface INodeLocation extends ISerializableModel {
     dimensions: number;
     position: number[];
 }
@@ -7,7 +8,7 @@ export interface INodeLocation {
  *
  * Stores and facilitates mutation of the coordinates of a given point on a cartesian graph (2+ dimensions)
  */
-export declare abstract class NodeLocation {
+export declare abstract class NodeLocation extends SerializableModel {
     protected state: INodeLocation;
     /**
      * Create a new MazeCoordinate, indicating its position
