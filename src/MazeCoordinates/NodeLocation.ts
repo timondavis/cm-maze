@@ -1,19 +1,18 @@
+import {ISerializableModel,  SerializableModel} from "cm-domain-utilities";
+
+export interface INodeLocation extends ISerializableModel {
+	dimensions: number;
+	position: number[];
+}
+
 /**
  * @class NodeLocation
  *
  * Stores and facilitates mutation of the coordinates of a given point on a cartesian graph (2+ dimensions)
  */
-export abstract class NodeLocation {
+export abstract class NodeLocation extends SerializableModel {
 
-    /**
-     * The number of dimensions recorded in these coordinates.
-     */
-    private _dimensions: number;
-
-    /**
-     * The actual position of these coordinates on a cartesian graph.
-     */
-    private _position: number[];
+	protected state: INodeLocation;
 
     /**
      * Create a new MazeCoordinate, indicating its position
@@ -21,8 +20,12 @@ export abstract class NodeLocation {
      * @param {number[]} position
      */
     public constructor(position?: number[]) {
+		super();
+    	this.state = {
+			dimensions: this.getDimensionValue(),
+			position: []
+		};
 
-        this._dimensions = this.getDimensionValue();
         this.validateDimensions();
 
         if (position !== undefined && position.length !== this.dimensions) {
@@ -112,11 +115,11 @@ export abstract class NodeLocation {
      * @returns {number[]}
      */
     public get position(): number[] {
-        return this._position;
+        return this.state.position;
     }
 
     public set position(value: number[]) {
-    	this._position = value;
+    	this.state.position = value;
 	}
 
     /**
@@ -126,11 +129,11 @@ export abstract class NodeLocation {
      */
     public get dimensions(): number {
 
-        return this._dimensions;
+        return this.state.dimensions;
     }
 
     public set dimensions(value: number) {
-    	this._dimensions = value;
+    	this.state.dimensions = value;
 	}
 
     /**

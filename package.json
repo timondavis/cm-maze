@@ -1,7 +1,7 @@
 {
   "name": "cm-maze",
   "version": "0.2.2",
-  "description": "System for processing die-based checks in role playing games.  Observable hooks allow outside systems to affect the check in some fashion.",
+  "description": "Domain utilities facilitate smoother, more consistent transitions into and out of JSON",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "author": "Creative Mutagens <timon.davis@gmail.com>",
@@ -11,6 +11,7 @@
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.12.14",
     "chai": "^4.2.0",
+    "cm-domain-utilities": "file:../cm-domain-utilities",
     "dice-bag": "0.1.2",
     "dts-bundle": "^0.7.3",
     "mocha": "^6.2.2",

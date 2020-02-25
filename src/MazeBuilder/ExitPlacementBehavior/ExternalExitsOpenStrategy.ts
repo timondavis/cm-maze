@@ -1,7 +1,7 @@
 import {ExitPlacementBehavior} from "./ExitPlacementBehavior";
-import {Maze} from "../../Maze";
+import {Maze} from "../../Maze/Maze";
 import {MazeAnalysis} from "../../Maze/MazeAnalysis";
-import {MazeNode} from "../../MazeNode";
+import {MazeNode} from "../../Maze/MazeNode";
 
 export class ExternalExitsOpenStrategy extends ExitPlacementBehavior {
 

@@ -1,8 +1,8 @@
-import {Maze} from "../../Maze";
+import {Maze} from "../../Maze/Maze";
 import {MazeAnalysis} from "../../Maze/MazeAnalysis";
-import {MazeNode} from "../../MazeNode";
+import {MazeNode} from "../../Maze/MazeNode";
 import {Cardinality} from "../../Behavior/Cardinality";
-import {MazeBuilder} from "../../MazeBuilder";
+import {MazeBuilder} from "../../Maze/MazeBuilder";
 
 export abstract class ExitPlacementBehavior {
 

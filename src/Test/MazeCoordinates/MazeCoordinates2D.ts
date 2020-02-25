@@ -1,7 +1,7 @@
 import { NodeLocation2D } from "../../MazeCoordinates/NodeLocation2D";
 import { expect } from 'chai';
 import 'mocha';
-import {MazeBuilder} from "../../MazeBuilder";
+import {MazeBuilder} from "../../Maze/MazeBuilder";
 
 describe( 'NodeLocation2D', () => {
 

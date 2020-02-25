@@ -1,9 +1,9 @@
 import {expect} from 'chai';
 import 'mocha';
 import {Compass4} from "../../Behavior/Compass4";
-import {MazeBuilder} from "../../MazeBuilder";
+import {MazeBuilder} from "../../Maze/MazeBuilder";
 import {MazeAnalysis} from "../../Maze/MazeAnalysis";
-import {MazeNode} from "../../MazeNode";
+import {MazeNode} from "../../Maze/MazeNode";
 
 describe ('MazeAnalysis', () => {
 

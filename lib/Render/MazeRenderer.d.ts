@@ -1,4 +1,4 @@
-import { Maze } from "../Maze";
+import { Maze } from "../Maze/Maze";
 export declare class MazeRenderer {
     canvas: HTMLCanvasElement;
     context: CanvasRenderingContext2D;

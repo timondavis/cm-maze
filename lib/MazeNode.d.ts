@@ -1,5 +1,15 @@
 import { NodeLocation } from "./MazeCoordinates/NodeLocation";
 import { Cardinality } from "./Behavior/Cardinality";
+export interface IMazeNode {
+    cardinality: Cardinality;
+    indexId: number;
+    mazeNodeId: string;
+    name: string;
+    neighbors: string[];
+    maxExits: number;
+    coordinates: NodeLocation;
+    contents: Map<string, Map<any, any>>;
+}
 /**
  * @class MazeNode
  *
@@ -7,54 +17,9 @@ import { Cardinality } from "./Behavior/Cardinality";
  * to other MazeNode instances.
  */
 export declare class MazeNode {
-    /**
-     * Index ID Incrementor
-     */
+    static debug: boolean;
+    protected state: IMazeNode;
     private static indexIdCounter;
-    /**
-     * Provides services and constraints allowing for the logical connection and traversal between this and other nodes
-     */
-    private readonly _cardinality;
-    /**
-     * Unique index assigned to every new node.
-     */
-    private readonly _indexId;
-    /**
-     * Unique string key for maze node
-     */
-    private readonly _mazeNodeId;
-    /**
-     * The name of this node
-     *
-     * @type {string}
-     */
-    private _name;
-    /**
-     * A collection of index ids for neighboring nodes
-     * @type { MazeNode[] }
-     */
-    private _neighbors;
-    /**
-     * The maximum number of exits on this node which connect to other nodes.  A node cannot have more neighbors
-     * than what is dictated by this value.
-     */
-    private _maxExits;
-    /**
-     * Debug Mode
-     * @type {boolean}
-     */
-    protected static debug: boolean;
-    /**
-     * The NodeLocation track the location of this node relative to other nodes
-     *
-     * @type { NodeLocation }
-     */
-    private _coordinates;
-    /**
-     * Contents of the maze node.  Maps within a map.
-     * The master map ties a string id to a consuming developers custom defined Map.
-     */
-    contents: Map<string, Map<any, any>>;
     constructor(cardinality: Cardinality, id?: string, coordinates?: NodeLocation, maxConnections?: number);
     readonly id: string;
     private readonly indexId;
@@ -64,6 +29,7 @@ export declare class MazeNode {
     name: string;
     maxConnections: number;
     readonly cardinality: Cardinality;
+    contents: Map<string, Map<any, any>>;
     /**
      * Connects one MazeNode instance to another.  Implicitly bi-directional, but directed edges between nodes
      * can be crated by passing in the autoConnect parameter as false.  If either node is maxed out, no connection will be made.
