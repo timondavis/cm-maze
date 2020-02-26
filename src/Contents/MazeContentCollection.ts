@@ -1,4 +1,3 @@
-import {MazeContentAtlas} from "./MazeContentAtlas";
 import {Maze, MazeNode} from "cm-maze";
 import {Collectible} from "./Collectible";
 import {CollectibleList} from "./CollectibleList";
