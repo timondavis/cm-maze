@@ -1,66 +1,120 @@
-import {MazeContentAtlas} from "./MazeContentAtlas";
-import {MazeNode} from "cm-maze";
+import {Maze, MazeNode} from "cm-maze";
 import {Collectible} from "./Collectible";
+import {CollectibleList} from "./CollectibleList";
+import {ISerializableModel, SerializableModel} from "cm-domain-utilities";
 
-export class MazeContentCollection<T extends Collectible> {
+export interface IMazeContentCollection extends ISerializableModel {
+	nodeContent: Map<MazeNode, CollectibleList<Collectible>>;
+	collectibleResidency: Map<Collectible, MazeNode>;
+	collectionName: string;
+}
 
-    constructor(protected _collectionName: string, protected _mazeContentAtlas: MazeContentAtlas) {}
+export class MazeContentCollection<T extends Collectible> extends SerializableModel {
+
+	protected state: IMazeContentCollection;
+
+    constructor(collectionName: string, maze: Maze) {
+    	super();
+    	this.state = {
+			collectibleResidency: new Map<T, MazeNode>(),
+			collectionName: collectionName,
+			nodeContent: new Map<MazeNode, CollectibleList<T>>()
+		};
+
+		maze.forEachNode((node: MazeNode) => {
+			this.state.nodeContent.set(node, new CollectibleList());
+		});
+	}
 
     public get collectionName() {
-        return this._collectionName;
+        return this.state.collectionName;
     }
 
     public get size(): number {
-        let count = 0 ;
-        this._mazeContentAtlas.forEachItemInCollection(this.collectionName, (item) => { count++; });
-        return count;
+    	return this.state.collectibleResidency.size;
     }
 
     public get items() : T[]{
-       return this._mazeContentAtlas.getItemsFromCollection<T>(this.collectionName);
+		return Array.from(this.state.collectibleResidency.keys()) as T[];
     }
 
     public getItemFromNode(itemId: string, mazeNode: MazeNode) {
-        return this._mazeContentAtlas.getItemsFromNode(this.collectionName, mazeNode).findItemWithId(itemId);
+		return this.state.nodeContent.get(mazeNode) as CollectibleList<T>;
     }
 
     public addItemToNode(item: T, mazeNode: MazeNode) {
-        return this._mazeContentAtlas.addItemToNode(this.collectionName, item, mazeNode);
+		let nodeCollection = this.state.nodeContent.get(mazeNode);
+		nodeCollection.insert(item);
+
+		this.state.collectibleResidency.set(item, mazeNode);
     }
 
     public moveItemToNode(item: T, mazeNode: MazeNode) {
-        return this._mazeContentAtlas.moveItemToNode(this.collectionName, item, mazeNode);
+		this.removeItemFromNode(item, this.getItemNode(item));
+		this.addItemToNode(item, mazeNode);
     }
 
-    public forEachAtNode(mazeNode: MazeNode, callback: (item: T, index: number, array: Collectible[]) => void) {
-        return this._mazeContentAtlas.getItemsFromNode(this.collectionName, mazeNode).forEach(callback);
+	public getItemsFromNode(node: MazeNode): CollectibleList<T> {
+		let collection = this.state.nodeContent;
+		return collection.get(node) as CollectibleList<T>;
+	}
+
+	public forEachAtNode(mazeNode: MazeNode, callback: (item: T, index: number, array: Collectible[]) => void) {
+        return this.getItemsFromNode(mazeNode).forEach(callback);
     }
 
     public forEachInCollection(callback: (value: T, index: number, array: T[]) => void) {
-        this._mazeContentAtlas.forEachItemInCollection<T>(this.collectionName, callback);
+		let map = this.state.collectibleResidency;
+		Array.from(map.keys()).forEach(callback);
     }
 
     public removeItemFromNode(item: T, mazeNode: MazeNode) {
-        return this._mazeContentAtlas.removeItemFromNode(this.collectionName, item, mazeNode);
+		let collection = this.state.nodeContent;
+		let nodeCollection = collection.get(mazeNode);
+		nodeCollection.delete(item);
     }
 
     public removeItemFromCollection(item: T) {
-        return this._mazeContentAtlas.removeItemFromCollection(this.collectionName, item);
+		let node = this.state.collectibleResidency.get(item);
+
+		if (node) {
+			let collection = this.state.nodeContent;
+			let nodeCollection = collection.get(node);
+			nodeCollection.delete(item);
+		}
+
+		this.state.collectibleResidency.delete(item);
     }
 
     public getItemNode(item: T) : MazeNode {
-        return this._mazeContentAtlas.getItemNode(this.collectionName, item);
+		return this.state.collectibleResidency.get(item);
     }
 
     public isItemInCollection(itemId: string) : boolean {
-        return this._mazeContentAtlas.isItemInCollection(this.collectionName, itemId);
+		return !this.getItemFromCollection(itemId) === null;
     }
 
     public getItemFromCollection(itemId: string) : T {
-        return this._mazeContentAtlas.getItemFromCollection<T>(this.collectionName, itemId);
+		let itemFound: T  = null;
+		Array.from(this.state.collectibleResidency.keys()).forEach((item: Collectible) => {
+			if (item.id == itemId) {
+				itemFound = item as T;
+			}
+		});
+		return itemFound;
     }
 
     public isItemAtNode(itemId: string, node: MazeNode) : boolean {
-        return this._mazeContentAtlas.isItemAtNode(this.collectionName, itemId, node);
+		let itemFound = false;
+		if (this.isItemInCollection(itemId)) {
+			let items = this.getItemsFromNode(node);
+			items.forEach((item: Collectible) => {
+				if (item.id === itemId) {
+					itemFound = true;
+				}
+			});
+		}
+
+		return itemFound;
     }
 }
