@@ -1,7 +1,7 @@
 import {Maze, MazeNode} from "cm-maze";
 import {Collectible} from "./Collectible";
 import {CollectibleList} from "./CollectibleList";
-import {DomainConverter, ISerializableModel, SerializableModel} from "cm-domain-utilities";
+import {ISerializableModel, SerializableModel} from "cm-domain-utilities";
 
 export interface IMazeContentCollection extends ISerializableModel {
 	nodeContent: Map<MazeNode, CollectibleList<Collectible>>;
