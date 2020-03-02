@@ -47,7 +47,7 @@ describe('CollectibleList', () => {
 		}
    });
 
-   it ( 'allows contents to be inserted and deleted', () => {
+   it ( 'allows contents to be inserted and deleted reliably', () => {
 		let item1 = new ConcreteCollectible('1');
 		let item2 = new ConcreteCollectible('2');
 		let item3 = new ConcreteCollectible('3');
@@ -94,9 +94,25 @@ describe('CollectibleList', () => {
 		}
    });
 
-   it ( 'can find Collection items and retrieve them when given an ID', () => {});
+   it ( 'can find Collection items and retrieve them when given an ID', () => {
+   		let testPasses = 5;
+   		let testRangeMax = 100;
 
-   it ('can add and remove items from the collection reliably', () => {});
+   		for (let testPass = 0 ; testPass < testPasses ; testPass++) {
+   			let items: ConcreteCollectible[] = [];
+   			let list: CollectibleList<ConcreteCollectible> = new CollectibleList<ConcreteCollectible>();
+
+   			for (let i = 0 ; i < testRangeMax ; i++) {
+   				items[i] = new ConcreteCollectible(IdentificationGenerator.UUID());
+				list.insert(items[i]);
+			}
+
+   			let randomItem = items[Math.round(Math.random() * testRangeMax)];
+   			let foundItemFromList = list.findItemWithId(randomItem.id);
+
+   			expect(randomItem).to.be.equal(foundItemFromList);
+		}
+   });
 });
 
 class ConcreteCollectible implements Collectible{
