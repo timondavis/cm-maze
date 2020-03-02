@@ -1,4 +1,4 @@
-import {Maze, MazeNode} from "../..";
+import {Maze, MazeNode} from "..";
 import {Collectible} from "./Collectible";
 import {CollectibleList} from "./CollectibleList";
 import {ISerializableModel, SerializableModel} from "cm-domain-utilities";

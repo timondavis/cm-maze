@@ -1,4 +1,4 @@
-import {MazeNode, Collectible, CollectibleList, MazeBuilder, Maze} from "../..";
+import {Maze, MazeNode, Collectible, CollectibleList, MazeBuilder} from "../../"
 import {MazeContentAtlas} from "../../Contents/MazeContentAtlas";
 import {expect} from 'chai';
 import 'mocha';
@@ -55,6 +55,7 @@ describe('MazeContentAtlas', () => {
 			expect(recalledCollection).to.exist;
 			expect(items.length).to.be.equal(testRange);
 			recalledCollection.forEachInCollection((item: ConcreteCollectible) => {
+				expect(recalledCollection.isItemInCollection(item.id)).to.be.true;
 				items.splice(items.indexOf(item), 1);
 			});
 
