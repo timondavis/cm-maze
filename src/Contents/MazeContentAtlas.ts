@@ -1,4 +1,4 @@
-import {Maze} from "cm-maze";
+import {Maze} from "../..";
 import {MazeContentCollection} from "./MazeContentCollection";
 import {Collectible} from "./Collectible";
 
