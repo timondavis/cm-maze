@@ -25,7 +25,7 @@ export class MazeContentCollection<T extends Collectible> extends SerializableMo
 			entitySubCollectionIndex: new Map<string, string>(),
 		};
 
-		maze.forEachNode((node: MazeNode) => {
+    	maze.getNodesArray().forEach((node: MazeNode) => {
 			this.state.nodeContent.set(node, new CollectibleList());
 		});
 	}
@@ -46,17 +46,30 @@ export class MazeContentCollection<T extends Collectible> extends SerializableMo
     	return Array.from(this.state.subCollectionEntities.keys()) as string[];
 	}
 
-	public getSubCollectionSize(subCollectionName: string) {
-    	return this.getItemsFromCollection(subCollectionName).length;
+	public getSubCollectionSize(subCollectionName: string, isolateSubCollection: boolean = false) {
+    	return this.getItemsFromCollection(subCollectionName, isolateSubCollection).length;
 	}
 
-	public getItemsFromCollection(subCollectionName: string = null): T[] {
-    	if (subCollectionName === null) { return this.items;}
+	public getItemsFromCollection(subCollectionName: string = null, isolateSubCollection: boolean = false): T[] {
+    	if (subCollectionName === null) { subCollectionName = this.collectionName; }
 
-    	let subCollection = this.state.subCollectionEntities.get(subCollectionName);
-    	if (!subCollection) { return null; }
+		subCollectionName = (subCollectionName.indexOf(this.state.collectionName) === -1) ?
+			`${this.collectionName}:${subCollectionName}` : subCollectionName;
 
-    	return subCollection.toArray() as T[];
+
+		let items: T[] = [];
+
+		if (isolateSubCollection) {
+			items = items.concat(this.state.subCollectionEntities.get(subCollectionName).toArray() as T[]);
+		} else {
+			this.state.subCollectionEntities.forEach((list: CollectibleList<T>, key: string) => {
+				if (key.indexOf(subCollectionName) !== -1) {
+					items = items.concat(list.toArray());
+				}
+			});
+		}
+
+		return (items.length > 0) ? items : null;
 	}
 
     public getItemFromNode(itemId: string, mazeNode: MazeNode, subCollectionName: string = null) {
@@ -69,9 +82,15 @@ export class MazeContentCollection<T extends Collectible> extends SerializableMo
 
     public addItemToNode(item: T, mazeNode: MazeNode, subCollectionName: string = null) {
 
-    	subCollectionName = (subCollectionName) ? this.collectionName : subCollectionName;
+    	if (subCollectionName) {
+    		if (subCollectionName.indexOf(this.collectionName) === -1) {
+    			subCollectionName = `${this.collectionName}:${subCollectionName}`;
+			}
+		} else {
+    		subCollectionName = this.collectionName;
+		}
+
     	if (!this.isItemInCollection(item.id, subCollectionName)) {
-    		debugger;
 			this.addItemToCollection(item, subCollectionName);
 		}
 
@@ -155,9 +174,9 @@ export class MazeContentCollection<T extends Collectible> extends SerializableMo
     public isItemInCollection(itemId: string, subCollectionName: string = null) : boolean {
     	let item = this.getItemFromCollection(itemId);
 
-    	if (subCollectionName === null) {
-    		return true;
-		}
+    	if (!item) { return false; }
+
+    	if (subCollectionName === null) { return true; }
 
     	return this.getItemSubCollectionName(item).indexOf(subCollectionName) !== -1;
     }
@@ -191,9 +210,6 @@ export class MazeContentCollection<T extends Collectible> extends SerializableMo
 			throw `Cannot add item with id ${item.id} to collection - item already exists in collection`;
 		}
 
-		subCollectionName = (subCollectionName === null) ?
-			this.state.collectionName : `${this.state.collectionName}:${subCollectionName}`;
-
 		if (!this.state.subCollectionEntities.has(subCollectionName)) {
 			this.state.subCollectionEntities.set(subCollectionName, new CollectibleList<T>());
 		}
@@ -204,6 +220,9 @@ export class MazeContentCollection<T extends Collectible> extends SerializableMo
 
 	private removeItemFromCollection(item: T) {
 		let node = this.state.collectibleResidency.get(item);
+		let subCollectionName = this.state.entitySubCollectionIndex.get(item.id);
+		this.state.entitySubCollectionIndex.delete(item.id);
+		this.state.subCollectionEntities.get(subCollectionName).delete(item);
 
 		if (node) {
 			let collection = this.state.nodeContent;
