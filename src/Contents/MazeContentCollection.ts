@@ -133,8 +133,16 @@ export class MazeContentCollection<T extends Collectible> extends SerializableMo
 
 		foundList.forEach((item: T) => {
 			let itemSubCollectionName = this.getItemSubCollectionName(item);
-			if (itemSubCollectionName.indexOf(subCollectionName) !== -1) {
-				returnList.insert(item);
+
+			if (isolateSubCollection) {
+				if (itemSubCollectionName === subCollectionName) {
+					returnList.insert(item);
+				}
+			}
+			else {
+				if (itemSubCollectionName.indexOf(subCollectionName) !== -1) {
+					returnList.insert(item);
+				}
 			}
 		});
 
