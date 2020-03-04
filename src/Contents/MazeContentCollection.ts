@@ -72,7 +72,7 @@ export class MazeContentCollection<T extends Collectible> extends SerializableMo
 		return (items.length > 0) ? items : null;
 	}
 
-    public getItemFromNode(itemId: string, mazeNode: MazeNode, subCollectionName: string = null) {
+    public getItemFromNode(itemId: string, mazeNode: MazeNode) {
 		return this.state.nodeContent.get(mazeNode) as CollectibleList<T>;
     }
 
@@ -120,23 +120,25 @@ export class MazeContentCollection<T extends Collectible> extends SerializableMo
     	this.state.subCollectionEntities.get(newSubCollectionName).insert(item);
 	}
 
-	public getItemsFromNode(node: MazeNode, subCollectionName: string = null): CollectibleList<T> {
-		let collection = this.state.nodeContent;
+	public getItemsFromNode(node: MazeNode, subCollectionName: string = null, isolateSubCollection: boolean = false): T[] {
+		if (subCollectionName === null) { subCollectionName = this.collectionName; }
 
-    	// Attempting to deep clone here to avoid affecting original model.
-		let foundList = collection.get(node) as CollectibleList<T>;
-		if (subCollectionName === null) { return foundList; }
+		subCollectionName = (subCollectionName.indexOf(this.state.collectionName) === -1) ?
+			`${this.collectionName}:${subCollectionName}` : subCollectionName;
+
+		let foundList = this.state.nodeContent.get(node) as CollectibleList<T>;
+		if (subCollectionName === null) { return foundList.toArray(); }
 
 		let returnList = new CollectibleList<T>();
 
-		foundList.forEach((item: T, index: number) => {
+		foundList.forEach((item: T) => {
 			let itemSubCollectionName = this.getItemSubCollectionName(item);
 			if (itemSubCollectionName.indexOf(subCollectionName) !== -1) {
 				returnList.insert(item);
 			}
 		});
 
-		return returnList;
+		return returnList.toArray();
 	}
 
 	public forEachAtNode(mazeNode: MazeNode, callback: (item: T, index: number, array: Collectible[]) => void,
