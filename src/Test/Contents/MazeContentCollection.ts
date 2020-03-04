@@ -142,12 +142,112 @@ describe('MazeContentCollection', () => {
 	});
 
 	it ('will return an array of the contents stored in the collection', () => {
-		for( let testPass = 0 ; testPass < testPasses ; testPass++) {
+		for (let testPass = 0 ; testPass < testPasses ; testPass++) {
+			let atlas = new MazeContentAtlas(maze);
+			let collection = atlas.createCollection(IdentificationGenerator.UUID());
+			let testRun = Math.round(Math.random() * testRunMax) + 1;
 
+			let itemIds: string[] = [];
+
+			for (let i = 0 ; i < testRun ; i++ ) {
+				itemIds[i] = IdentificationGenerator.UUID();
+				collection.addItemToNode(new ConcreteCollectible(itemIds[i]), maze.getRandomNode());
+			}
+
+			expect(collection.size).to.be.equal(testRun);
+			expect(itemIds.length).to.be.equal(collection.size);
+			let collectionItems = collection.getItemsFromCollection();
+			collectionItems.forEach((item: ConcreteCollectible) => {
+				itemIds.splice(itemIds.indexOf(item.id), 1);
+			});
+			expect(itemIds.length).to.be.equal(0);
 		}
 	});
 
-	it ('will return an array of the contents stored in a sub-collection');
+	it ('will return an array of the contents stored in a sub-collection', () => {
+		let atlas = new MazeContentAtlas(maze);
+		for(let testPass = 0 ; testPass < testPasses ; testPass++) {
+			let testRunTop = Math.round(Math.random() * testRunMax) + 1;
+			let testRunMiddle = Math.round( Math.random() * testRunMax) + 1;
+			let testRunBottom = Math.round( Math.random() * testRunMax) + 1;
+
+			let collectionName = IdentificationGenerator.UUID();
+			let collectionNameMiddle = IdentificationGenerator.UUID();
+			let collectionNameBottom = `${collectionNameMiddle}:${IdentificationGenerator.UUID()}`;
+			let collection = atlas.createCollection<ConcreteCollectible>(collectionName);
+
+			let topCollectionIds: string[] = [];
+			let middleCollectionIds: string[] = [];
+			let bottomCollectionIds: string[] = [];
+
+			for (let i = 0 ; i < testRunTop ; i++) {
+				topCollectionIds[i] = IdentificationGenerator.UUID();
+				collection.addItemToNode(new ConcreteCollectible(topCollectionIds[i]), maze.getRandomNode());
+			}
+
+			for (let i = 0 ; i < testRunMiddle ; i++) {
+				middleCollectionIds[i] = IdentificationGenerator.UUID();
+				collection.addItemToNode(new ConcreteCollectible(middleCollectionIds[i]), maze.getRandomNode(), collectionNameMiddle);
+			}
+
+			for (let i = 0 ; i < testRunBottom ; i++) {
+				bottomCollectionIds[i] = IdentificationGenerator.UUID();
+				collection.addItemToNode(new ConcreteCollectible(bottomCollectionIds[i]), maze.getRandomNode(), collectionNameBottom);
+			}
+
+			let bottomItemsCollectionArray = collection.getItemsFromCollection(collectionNameBottom);
+			let middleAndBottomItemsCollectionArray = collection.getItemsFromCollection(collectionNameMiddle);
+			let middleItemsCollectionArray = collection.getItemsFromCollection(collectionNameMiddle, true);
+			let topMiddleAndBottomItemsCollectionArray = collection.getItemsFromCollection();
+			let topItemsCollectionArray = collection.getItemsFromCollection(null, true);
+			let idsFound : string[] = [];
+
+			bottomItemsCollectionArray.forEach((item: ConcreteCollectible) => {
+				expect(bottomCollectionIds.indexOf(item.id)).to.not.be.equal(-1);
+				expect(idsFound.indexOf(item.id)).to.be.equal(-1);
+				idsFound.push(item.id);
+			});
+			expect(idsFound.length).to.be.equal(testRunBottom);
+
+			idsFound = [];
+			middleAndBottomItemsCollectionArray.forEach((item:ConcreteCollectible) => {
+				expect((bottomCollectionIds.indexOf(item.id) !== -1 ||
+					middleCollectionIds.indexOf(item.id) !== -1)).to.be.true;
+				expect(idsFound.indexOf(item.id)).to.be.equal(-1);
+				idsFound.push(item.id);
+			});
+			expect(idsFound.length).to.be.equal(testRunBottom + testRunMiddle);
+
+			idsFound = [];
+			topMiddleAndBottomItemsCollectionArray.forEach((item: ConcreteCollectible) => {
+				expect((
+					bottomCollectionIds.indexOf(item.id) !== -1 ||
+					middleCollectionIds.indexOf(item.id) !== -1 ||
+					topCollectionIds.indexOf(item.id) !== -1
+				)).to.be.true;
+				expect(idsFound.indexOf(item.id)).to.be.equal(-1);
+				idsFound.push(item.id);
+			});
+			expect(idsFound.length).to.be.equal(testRunTop + testRunMiddle + testRunBottom);
+
+			idsFound = [];
+			middleItemsCollectionArray.forEach((item: ConcreteCollectible) => {
+				expect(middleCollectionIds.indexOf(item.id)).to.not.be.equal(-1);
+				expect(idsFound.indexOf(item.id)).to.be.equal(-1);
+				idsFound.push(item.id);
+			});
+			expect(idsFound.length).to.be.equal(testRunMiddle);
+
+			idsFound = [];
+			topItemsCollectionArray.forEach((item: ConcreteCollectible) => {
+				expect(topCollectionIds.indexOf(item.id)).to.not.be.equal(-1);
+				expect(idsFound.indexOf(item.id)).to.be.equal(-1);
+				idsFound.push(item.id);
+			});
+			expect(idsFound.length).to.be.equal(testRunTop);
+		}
+	});
+
 	it ('returns a collection of items stored on a specific maze node');
 	it ('returns a collection of items stored on a specific maze node, filtered by sub-collection');
 	it ('returns a specific stored on a specific maze node');
