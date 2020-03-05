@@ -53,6 +53,7 @@ describe('MazeContentAtlas', () => {
 
 			let recalledCollection = atlas.getCollection<ConcreteCollectible>(name);
 			expect(recalledCollection).to.exist;
+			expect(recalledCollection.size).to.be.equal(testRange);
 			expect(items.length).to.be.equal(testRange);
 			recalledCollection.forEachInCollection((item: ConcreteCollectible) => {
 				expect(recalledCollection.isItemInCollection(item.id)).to.be.true;

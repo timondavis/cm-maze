@@ -21,7 +21,6 @@ describe('MazeContentCollection', () => {
 		maze = mb.buildMaze();
 	});
 
-
 	it( 'stores and can report on its own name', () => {
 		let atlas = new MazeContentAtlas(maze);
 		for (let testPass = 0 ; testPass < testPasses ; testPass++) {
@@ -280,7 +279,7 @@ describe('MazeContentCollection', () => {
 
 	it ('returns a collection of items stored on a specific maze node, filtered by sub-collection', () => {
 		let atlas = new MazeContentAtlas(maze);
-		for(let testPass = 0 ; testPass < testPasses ; testPass++) {
+		for(let testPass = 0 ; testPass < 2 ; testPass++) {
 			let topCollectionName = IdentificationGenerator.UUID();
 			let middleCollectionName = IdentificationGenerator.UUID();
 			let bottomCollectionName = `${middleCollectionName}:${IdentificationGenerator.UUID()}`;
@@ -360,19 +359,131 @@ describe('MazeContentCollection', () => {
 		}
 	});
 
-	it ('returns a specific stored on a specific maze node');
-	it ('facilitates additions to the item collection by adding the item to a maze node');
-	it ('facilitates transfer of items from one maze node to another');
-	it ('facilitates transfer of items from one sub-collection to another');
-	it ('facilitates forEach callback traversal of every item in the collection');
-	it ('facilitates forEach callback traversal of every item in a sub-collection');
-	it ('facilitates forEach callback traversal of every item stored in a given maze node');
-	it ('facilitates forEach callback traversal of every item stored in a given maze node, filtered by sub-collection');
+	it ('returns a specific item stored on a specific maze node', () => {
+		let atlas = new MazeContentAtlas(maze);
+		for(let testPass = 0 ; testPass < testPasses ; testPass++) {
+			let testRun = Math.round(Math.random() * testRunMax) + 1;
+			let itemsAtNodes = new Map<ConcreteCollectible, MazeNode>();
+			let collection = atlas.createCollection<ConcreteCollectible>(IdentificationGenerator.UUID());
+			for (let i = 0 ; i < testRun ; i++) {
+				let item = new ConcreteCollectible(IdentificationGenerator.UUID());
+				let node = maze.getRandomNode();
+				collection.addItemToNode(item, node);
+				itemsAtNodes.set(item, node);
+			}
+
+			let foundIds: string[] = [];
+			itemsAtNodes.forEach((testNode: MazeNode, testItem: ConcreteCollectible) => {
+				let foundItem = collection.getItemFromNode(testItem.id, testNode);
+				expect(foundItem).to.exist;
+				expect(foundIds.indexOf(foundItem.id)).to.be.equal(-1);
+				expect(foundItem.id).to.be.equal(testItem.id);
+				foundIds.push(foundItem.id);
+			});
+
+			expect(collection.getItemFromNode(IdentificationGenerator.UUID(), maze.getRandomNode())).to.be.null;
+		}
+	});
+
+	it ('facilitates transfer of items from one maze node to another', () => {
+		let atlas = new MazeContentAtlas(maze);
+		for (let testPass = 0 ; testPass < testPasses ; testPass++) {
+			let collection = atlas.createCollection<ConcreteCollectible>(IdentificationGenerator.UUID());
+			let testItemMap = new Map<ConcreteCollectible, MazeNode>();
+			let testRun = Math.round(Math.random() * testRunMax) + 1;
+			let startingNode = maze.getRandomNode();
+			for(let i = 0 ; i < testRun ; i++) {
+				let item = new ConcreteCollectible(IdentificationGenerator.UUID());
+				collection.addItemToNode(item, startingNode);
+			}
+			collection.forEachInCollection((item: ConcreteCollectible) => {
+				let moveToNode = maze.getRandomNode();
+
+				while(moveToNode.id === startingNode.id) { moveToNode = maze.getRandomNode(); }
+
+				testItemMap.set(item, moveToNode);
+				collection.moveItemToNode(item, moveToNode);
+			});
+
+			collection.forEachInCollection((item: ConcreteCollectible) => {
+				let residentNode = collection.getItemNode(item);
+				expect(residentNode.id).to.be.equal(testItemMap.get(item).id);
+				expect(residentNode.id).to.not.be.equal(startingNode.id);
+				expect(collection.getItemFromNode(item.id, residentNode)).to.exist;
+			});
+		}
+	});
+
+	it ('facilitates transfer of items from one sub-collection to another', () => {
+		let atlas = new MazeContentAtlas(maze);
+		for (let testPass = 0 ; testPass < testPasses ; testPass++) {
+			let collection = atlas.createCollection<ConcreteCollectible>(IdentificationGenerator.UUID());
+			let subCollectionNameA = IdentificationGenerator.UUID();
+			let subCollectionNameB = IdentificationGenerator.UUID();
+			let subCollectionNameB2 = `${subCollectionNameB}:${IdentificationGenerator.UUID()}`;
+			let testRun = Math.round(Math.random() * testRunMax) + 1;
+
+			// Divvy up items between master collection ownership and sub collection A
+			for (let i = 0 ; i < testRun ; i++) {
+				if (i % 2 === 0) {
+					collection.addItemToNode(new ConcreteCollectible(IdentificationGenerator.UUID()), maze.getRandomNode());
+				} else {
+					collection.addItemToNode(new ConcreteCollectible(IdentificationGenerator.UUID()), maze.getRandomNode(), subCollectionNameA);
+				}
+			}
+			expect(collection.size).to.be.equal(testRun);
+			expect(collection.getSubCollectionSize(subCollectionNameA)).to.be.equal(Math.floor(testRun / 2));
+
+			// Move master collection items to subcollectionNameB, move SubcollectionA members to subCollectionB2
+			let itemsFromMasterCollection = collection.getItemsFromCollection(null, true);
+			let itemsFromSubCollection = collection.getItemsFromCollection(subCollectionNameA);
+
+			for(let i = 0 ; i < itemsFromMasterCollection.length ; i++) {
+				collection.moveItemToSubCollection(itemsFromMasterCollection[i], subCollectionNameB);
+			}
+
+			for (let i = 0 ; i < itemsFromSubCollection.length ; i++) {
+				collection.moveItemToSubCollection(itemsFromSubCollection[i], subCollectionNameB2);
+			}
+
+			let itemIds: string[] = [];
+			collection.forEachInCollection((item: ConcreteCollectible) => {
+				expect(itemIds.indexOf(item.id)).to.be.equal(-1);
+				expect((
+					itemsFromMasterCollection.indexOf(item) !== -1 ||
+					itemsFromSubCollection.indexOf(item) !== -1
+				)).to.be.true;
+				itemIds.push(item.id);
+			}, subCollectionNameB);
+			expect(itemIds.length).to.be.equal(itemsFromMasterCollection.length + itemsFromSubCollection.length);
+			expect(itemIds.length).to.be.equal(testRun);
+
+			itemIds = [];
+			collection.forEachInCollection((item: ConcreteCollectible) => {
+				expect(itemIds.indexOf(item.id)).to.be.equal(-1);
+				expect(itemsFromMasterCollection.indexOf(item)).to.not.be.equal(-1);
+				itemIds.push(item.id);
+			}, subCollectionNameB, true);
+			expect(itemIds.length).to.be.equal(itemsFromMasterCollection.length);
+
+			itemIds = [];
+			collection.forEachInCollection((item: ConcreteCollectible) => {
+				expect(itemIds.indexOf(item.id)).to.be.equal(-1);
+				expect(itemsFromSubCollection.indexOf(item)).to.not.be.equal(-1);
+				itemIds.push(item.id);
+			}, subCollectionNameB2);
+			expect(itemIds.length).to.be.equal(itemsFromSubCollection.length);
+		}
+	});
+
+	it ('facilitates forEach callback traversal of every item in the collection or sub-collection');
+	it ('facilitates forEach callback traversal of every item stored in a given maze node, filterable by sub-collection');
 	it ('facilitates removal of an item from the collection by way of removing the item from its node');
-	it ('facilitates the capture of a given item belonging to a given sub-collection');
 	it ('reports on whether a given item resides on a given maze node');
+	it ('reports on the current node that a given item is occupying');
 	it ('can handle hierarchical ancestors of the defined collection class within sub-collections');
-	it ('will handle subcollections queries that include or omit the base collection name in the request')
+	it ('will handle subcollections queries that include or omit the base collection name in the request');
+	it ('will remove items from the collection while removing the item registration from its current node simultaneously');
 });
 
 class ConcreteCollectible implements Collectible {
