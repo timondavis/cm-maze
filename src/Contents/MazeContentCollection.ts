@@ -149,8 +149,8 @@ export class MazeContentCollection<T extends Collectible> extends SerializableMo
 	}
 
 	public forEachAtNode(mazeNode: MazeNode, callback: (item: T, index: number, array: Collectible[]) => void,
-						 subCollectionName: string = null) {
-        return this.getItemsFromNode(mazeNode, subCollectionName).forEach(callback);
+						 subCollectionName: string = null, isolateSubCollection: boolean = false) {
+        return this.getItemsFromNode(mazeNode, subCollectionName, isolateSubCollection).forEach(callback);
     }
 
     public forEachInCollection(callback: (value: T, index: number, array: T[]) => void,
@@ -177,15 +177,18 @@ export class MazeContentCollection<T extends Collectible> extends SerializableMo
 		return this.state.collectibleResidency.get(item);
     }
 
-    public isItemInCollection(itemId: string, subCollectionName: string = null) : boolean {
+    public isItemInCollection(itemId: string, subCollectionName: string = null, isolateSubCollection: boolean = false) : boolean {
+    	subCollectionName = this.formatSubCollectionName(subCollectionName);
     	let item = this.getItemFromCollection(itemId);
 
     	if (!item) { return false; }
 
-    	if (subCollectionName === null) { return true; }
-
-    	return this.getItemSubCollectionName(item).indexOf(subCollectionName) !== -1;
-    }
+    	if (isolateSubCollection) {
+			return (this.getItemSubCollectionName(item) === subCollectionName);
+		} else {
+			return (this.getItemSubCollectionName(item).indexOf(subCollectionName) !== -1);
+		}
+	}
 
     public getItemFromCollection(itemId: string) : T {
 		let itemFound: T  = null;
