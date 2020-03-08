@@ -1,4 +1,4 @@
-import {Maze, MazeNode} from "cm-maze";
+import {Maze, MazeNode} from "..";
 import {Collectible} from "./Collectible";
 import {CollectibleList} from "./CollectibleList";
 import {ISerializableModel, SerializableModel} from "cm-domain-utilities";
@@ -6,6 +6,8 @@ import {ISerializableModel, SerializableModel} from "cm-domain-utilities";
 export interface IMazeContentCollection extends ISerializableModel {
 	nodeContent: Map<MazeNode, CollectibleList<Collectible>>;
 	collectibleResidency: Map<Collectible, MazeNode>;
+	subCollectionEntities: Map<string, CollectibleList<Collectible>>;
+	entitySubCollectionIndex: Map<string, string>;
 	collectionName: string;
 }
 
@@ -18,10 +20,12 @@ export class MazeContentCollection<T extends Collectible> extends SerializableMo
     	this.state = {
 			collectibleResidency: new Map<T, MazeNode>(),
 			collectionName: collectionName,
-			nodeContent: new Map<MazeNode, CollectibleList<T>>()
+			nodeContent: new Map<MazeNode, CollectibleList<T>>(),
+			subCollectionEntities : new Map<string, CollectibleList<T>>(),
+			entitySubCollectionIndex: new Map<string, string>(),
 		};
 
-		maze.forEachNode((node: MazeNode) => {
+    	maze.getNodesArray().forEach((node: MazeNode) => {
 			this.state.nodeContent.set(node, new CollectibleList());
 		});
 	}
@@ -38,61 +42,153 @@ export class MazeContentCollection<T extends Collectible> extends SerializableMo
 		return Array.from(this.state.collectibleResidency.keys()) as T[];
     }
 
-    public getItemFromNode(itemId: string, mazeNode: MazeNode) {
-		return this.state.nodeContent.get(mazeNode) as CollectibleList<T>;
+    public get subCollectionNames(): string[] {
+    	return Array.from(this.state.subCollectionEntities.keys()) as string[];
+	}
+
+	public getSubCollectionSize(subCollectionName: string, isolateSubCollection: boolean = false) {
+    	return this.getItemsFromCollection(subCollectionName, isolateSubCollection).length;
+	}
+
+	public getItemsFromCollection(subCollectionName: string = null, isolateSubCollection: boolean = false): T[] {
+    	subCollectionName = this.formatSubCollectionName(subCollectionName);
+
+		let items: T[] = [];
+
+		if (isolateSubCollection) {
+			// Use concat so that we get a clone.  Passing the natural array back will break encapsulation.
+			items = items.concat(this.state.subCollectionEntities.get(subCollectionName).toArray() as T[]);
+		} else {
+			this.state.subCollectionEntities.forEach((list: CollectibleList<T>, key: string) => {
+				if (key.indexOf(subCollectionName) !== -1) {
+					items = items.concat(list.toArray());
+				}
+			});
+		}
+
+		return (items.length > 0) ? items : null;
+	}
+
+    public getItemFromNode(itemId: string, mazeNode: MazeNode) : T {
+		let contentList = this.state.nodeContent.get(mazeNode) as CollectibleList<T>;
+		if (!contentList.hasItemWithId(itemId)) { return null; }
+		return contentList.findItemWithId(itemId);
     }
 
-    public addItemToNode(item: T, mazeNode: MazeNode) {
+    public getItemSubCollectionName(item: T) : string {
+    	return this.state.entitySubCollectionIndex.get(item.id);
+	}
+
+    public addItemToNode(item: T, mazeNode: MazeNode, subCollectionName: string = null) {
+
+    	if (subCollectionName) {
+    		if (subCollectionName.indexOf(this.collectionName) === -1) {
+    			subCollectionName = `${this.collectionName}:${subCollectionName}`;
+			}
+		} else {
+    		subCollectionName = this.collectionName;
+		}
+
+    	if (!this.isItemInCollection(item.id, subCollectionName)) {
+			this.addItemToCollection(item, subCollectionName);
+		}
+
 		let nodeCollection = this.state.nodeContent.get(mazeNode);
 		nodeCollection.insert(item);
 
 		this.state.collectibleResidency.set(item, mazeNode);
-    }
+	}
 
     public moveItemToNode(item: T, mazeNode: MazeNode) {
 		this.removeItemFromNode(item, this.getItemNode(item));
 		this.addItemToNode(item, mazeNode);
     }
 
-	public getItemsFromNode(node: MazeNode): CollectibleList<T> {
-		let collection = this.state.nodeContent;
-		return collection.get(node) as CollectibleList<T>;
+    public moveItemToSubCollection(item: T, newSubCollectionName: string, demandCollectionAlreadyExists: boolean = false) {
+    	newSubCollectionName = this.formatSubCollectionName(newSubCollectionName);
+    	if (!this.state.entitySubCollectionIndex.has(item.id)) {
+    		throw `Cannot transfer item to new subcollection ${newSubCollectionName} - The item is not registered in the master collection group.`
+		}
+    	if (!this.state.subCollectionEntities.has(newSubCollectionName)) {
+    		if (demandCollectionAlreadyExists) {
+				throw `Cannot transfer item to new subcollection ${newSubCollectionName} - The sub collection name does not exist.`
+			} else {
+    			this.state.subCollectionEntities.set(newSubCollectionName, new CollectibleList<T>());
+			}
+		}
+
+    	let oldSubCollectionName = this.getItemSubCollectionName(item);
+
+    	this.state.entitySubCollectionIndex.set(item.id, newSubCollectionName);
+    	this.state.subCollectionEntities.get(oldSubCollectionName).delete(item);
+    	this.state.subCollectionEntities.get(newSubCollectionName).insert(item);
 	}
 
-	public forEachAtNode(mazeNode: MazeNode, callback: (item: T, index: number, array: Collectible[]) => void) {
-        return this.getItemsFromNode(mazeNode).forEach(callback);
+	public getItemsFromNode(node: MazeNode, subCollectionName: string = null, isolateSubCollection: boolean = false): T[] {
+    	subCollectionName = this.formatSubCollectionName(subCollectionName);
+
+		let foundList = this.state.nodeContent.get(node) as CollectibleList<T>;
+		let returnList = new CollectibleList<T>();
+
+		foundList.forEach((item: T) => {
+			let itemSubCollectionName = this.getItemSubCollectionName(item);
+
+			if (isolateSubCollection) {
+				if (itemSubCollectionName === subCollectionName) {
+					returnList.insert(item);
+				}
+			}
+			else {
+				if (itemSubCollectionName.indexOf(subCollectionName) !== -1) {
+					returnList.insert(item);
+				}
+			}
+		});
+
+		return returnList.toArray();
+	}
+
+	public forEachAtNode(mazeNode: MazeNode, callback: (item: T, index: number, array: Collectible[]) => void,
+						 subCollectionName: string = null, isolateSubCollection: boolean = false) {
+        return this.getItemsFromNode(mazeNode, subCollectionName, isolateSubCollection).forEach(callback);
     }
 
-    public forEachInCollection(callback: (value: T, index: number, array: T[]) => void) {
-		let map = this.state.collectibleResidency;
-		Array.from(map.keys()).forEach(callback);
+    public forEachInCollection(callback: (value: T, index: number, array: T[]) => void,
+							   subCollectionName: string = null, isolateSubCollection: boolean = false) {
+    	subCollectionName = this.formatSubCollectionName(subCollectionName);
+		let map = this.getItemsFromCollection(subCollectionName, isolateSubCollection);
+		map.forEach((value: T, index: number, array: T[]) => {
+			let itemSubCollectionName = this.getItemSubCollectionName(value);
+			if (itemSubCollectionName.indexOf(subCollectionName) !== -1) {
+				callback(value, index, array);
+			}
+		});
     }
 
     public removeItemFromNode(item: T, mazeNode: MazeNode) {
 		let collection = this.state.nodeContent;
 		let nodeCollection = collection.get(mazeNode);
 		nodeCollection.delete(item);
-    }
 
-    public removeItemFromCollection(item: T) {
-		let node = this.state.collectibleResidency.get(item);
-
-		if (node) {
-			let collection = this.state.nodeContent;
-			let nodeCollection = collection.get(node);
-			nodeCollection.delete(item);
-		}
-
-		this.state.collectibleResidency.delete(item);
+		this.removeItemFromCollection(item);
     }
 
     public getItemNode(item: T) : MazeNode {
 		return this.state.collectibleResidency.get(item);
     }
 
-    public isItemInCollection(itemId: string) : boolean {
-		return !this.getItemFromCollection(itemId) === null;
-    }
+    public isItemInCollection(itemId: string, subCollectionName: string = null, isolateSubCollection: boolean = false) : boolean {
+    	subCollectionName = this.formatSubCollectionName(subCollectionName);
+    	let item = this.getItemFromCollection(itemId);
+
+    	if (!item) { return false; }
+
+    	if (isolateSubCollection) {
+			return (this.getItemSubCollectionName(item) === subCollectionName);
+		} else {
+			return (this.getItemSubCollectionName(item).indexOf(subCollectionName) !== -1);
+		}
+	}
 
     public getItemFromCollection(itemId: string) : T {
 		let itemFound: T  = null;
@@ -117,4 +213,44 @@ export class MazeContentCollection<T extends Collectible> extends SerializableMo
 
 		return itemFound;
     }
+
+	private addItemToCollection(item, subCollectionName: string = null) {
+		if (this.state.entitySubCollectionIndex.has(item.id)) {
+			throw `Cannot add item with id ${item.id} to collection - item already exists in collection`;
+		}
+
+		if (!this.state.subCollectionEntities.has(subCollectionName)) {
+			this.state.subCollectionEntities.set(subCollectionName, new CollectibleList<T>());
+		}
+
+		this.state.subCollectionEntities.get(subCollectionName).insert(item);
+		this.state.entitySubCollectionIndex.set(item.id, subCollectionName);
+	}
+
+	private removeItemFromCollection(item: T) {
+		let node = this.state.collectibleResidency.get(item);
+		let subCollectionName = this.state.entitySubCollectionIndex.get(item.id);
+		this.state.entitySubCollectionIndex.delete(item.id);
+		this.state.subCollectionEntities.get(subCollectionName).delete(item);
+
+		if (node) {
+			let collection = this.state.nodeContent;
+			let nodeCollection = collection.get(node);
+			nodeCollection.delete(item);
+		}
+
+		this.state.collectibleResidency.delete(item);
+	}
+
+	private formatSubCollectionName(proposedSubCollectionName): string {
+    	let subCollectionName: string = "";
+		if (proposedSubCollectionName === null) {
+			subCollectionName = this.collectionName;
+		}
+		else {
+			subCollectionName = (proposedSubCollectionName.indexOf(this.state.collectionName) === -1) ?
+				`${this.collectionName}:${proposedSubCollectionName}` : proposedSubCollectionName;
+		}
+		return subCollectionName;
+	}
 }
