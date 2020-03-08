@@ -1,13 +1,13 @@
 import {MazeNode} from "./MazeNode";
-import {Cardinality} from "./Behavior/Cardinality"
-import {NodeLocation} from "./MazeCoordinates/NodeLocation";
-import {Compass4} from "./Behavior/Compass4";
+import {Cardinality} from "../Behavior/Cardinality"
+import {NodeLocation} from "../MazeCoordinates/NodeLocation";
+import {Compass4} from "../Behavior/Compass4";
 import {Maze} from "./Maze";
-import {MazeBuilderExitPlacement} from "./MazeBuilder/MazeBuilderExitPlacement";
-import {ExitPlacementBehavior} from "./MazeBuilder/ExitPlacementBehavior/ExitPlacementBehavior";
-import {InternalExitsStrategy} from "./MazeBuilder/ExitPlacementBehavior/InternalExitsStrategy";
-import {ExternalExitsOpenStrategy} from "./MazeBuilder/ExitPlacementBehavior/ExternalExitsOpenStrategy";
-import {ExternalExitsSealedStrategy} from "./MazeBuilder/ExitPlacementBehavior/ExternalExitsSealedStrategy";
+import {MazeBuilderExitPlacement} from "../MazeBuilder/MazeBuilderExitPlacement";
+import {ExitPlacementBehavior} from "../MazeBuilder/ExitPlacementBehavior/ExitPlacementBehavior";
+import {InternalExitsStrategy} from "../MazeBuilder/ExitPlacementBehavior/InternalExitsStrategy";
+import {ExternalExitsOpenStrategy} from "../MazeBuilder/ExitPlacementBehavior/ExternalExitsOpenStrategy";
+import {ExternalExitsSealedStrategy} from "../MazeBuilder/ExitPlacementBehavior/ExternalExitsSealedStrategy";
 
 /**
  * @class MazeBuilder

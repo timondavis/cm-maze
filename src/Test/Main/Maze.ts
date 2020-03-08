@@ -1,9 +1,9 @@
-import {MazeBuilder} from "../../MazeBuilder";
-import {Maze} from "../../Maze";
+import {MazeBuilder} from "../../Maze/MazeBuilder";
+import {Maze} from "../../Maze/Maze";
 import {Compass4, C4} from "../../Behavior/Compass4";
 import {expect} from 'chai';
 import 'mocha';
-import {MazeNode} from "../../MazeNode";
+import {MazeNode} from "../../Maze/MazeNode";
 import {NodeLocation2D} from "../../MazeCoordinates/NodeLocation2D";
 import {NodeLocation} from "../..";
 

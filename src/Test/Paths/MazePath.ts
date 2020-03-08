@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import 'mocha';
-import {MazeBuilder} from "../../MazeBuilder";
-import {MazeNode} from "../../MazeNode";
+import {MazeBuilder} from "../../Maze/MazeBuilder";
+import {MazeNode} from "../../Maze/MazeNode";
 import {MazePatternFinder} from "../..";
 
 describe( 'MazePath', () => {

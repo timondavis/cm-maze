@@ -1,5 +1,17 @@
-import {NodeLocation} from "./MazeCoordinates/NodeLocation";
-import {Cardinality} from "./Behavior/Cardinality";
+import {NodeLocation} from "../MazeCoordinates/NodeLocation";
+import {Cardinality} from "../Behavior/Cardinality";
+import {ISerializableModel, SerializableModel} from "cm-domain-utilities";
+
+export interface IMazeNode extends ISerializableModel {
+	cardinality : Cardinality;
+	indexId: number;
+	mazeNodeId: string;
+	name: string;
+	neighbors : string[];
+	maxExits: number;
+	coordinates : NodeLocation;
+	contents: Map<string, Map<any, any>>;
+}
 
 /**
  * @class MazeNode
@@ -7,97 +19,40 @@ import {Cardinality} from "./Behavior/Cardinality";
  * The MazeNode represents a node or 'room' in a maze.  It is designed to facilitate connection and traversal
  * to other MazeNode instances.
  */
-export class MazeNode {
+export class MazeNode extends SerializableModel {
 
-	/**
-	 * Index ID Incrementor
-	 */
+	public static debug: boolean = false;
+	protected state: IMazeNode;
 	private static indexIdCounter: number = 0;
 
-	/**
-	 * Provides services and constraints allowing for the logical connection and traversal between this and other nodes
-	 */
-	private readonly _cardinality : Cardinality;
-
-	/**
-	 * Unique index assigned to every new node.
-	 */
-	private readonly _indexId: number;
-
-	/**
-	 * Unique string key for maze node
-	 */
-	private readonly _mazeNodeId: string = "";
-
-	/**
-	 * The name of this node
-	 *
-	 * @type {string}
-	 */
-	private _name: string = "";
-
-	/**
-	 * A collection of index ids for neighboring nodes
-	 * @type { MazeNode[] }
-	 */
-	private _neighbors : string[];
-
-	/**
-	 * The maximum number of exits on this node which connect to other nodes.  A node cannot have more neighbors
-	 * than what is dictated by this value.
-	 */
-	private _maxExits: number;
-
-	/**
-	 * Debug Mode
-     * @type {boolean}
-     */
-    protected static debug: boolean = false;
-
-    /**
-     * The NodeLocation track the location of this node relative to other nodes
-     *
-     * @type { NodeLocation }
-     */
-    private _coordinates : NodeLocation;
-
-
-
-	/**
-	 * Contents of the maze node.  Maps within a map.
-	 * The master map ties a string id to a consuming developers custom defined Map.
-	 */
-	public contents: Map<string, Map<any, any>>;
-
     public constructor(cardinality: Cardinality, id: string = null, coordinates? : NodeLocation, maxConnections: number = null) {
-
-        this._cardinality = cardinality;
-        this._neighbors = new Array<string>( cardinality.getConnectionPointCount() );
-		this._mazeNodeId = (id) ? id : MazeNode.generateKey();
-		this._maxExits = (maxConnections) ? maxConnections : this.cardinality.getConnectionPointCount();
-
-		this._coordinates = ( coordinates ) ? coordinates : this.cardinality.generateNodeLocation();
-
-        MazeNode.indexIdCounter++;
-        this._indexId = MazeNode.indexIdCounter;
-
-        this.contents = new Map<string, Map<any, any>>();
+		super();
+    	this.state = {
+			cardinality: cardinality,
+			contents: new Map<string, Map<any, any>>(),
+			coordinates: ( coordinates ) ? coordinates : cardinality.generateNodeLocation(),
+			indexId: MazeNode.indexIdCounter,
+			maxExits: (maxConnections) ? maxConnections :cardinality.getConnectionPointCount(),
+			mazeNodeId:  (id) ? id : MazeNode.generateKey(),
+			name: "",
+			neighbors: new Array<string>(cardinality.getConnectionPointCount())
+		};
     }
 
     public get id(): string {
-        return this._mazeNodeId;
+        return this.state.mazeNodeId;
     }
 
     private get indexId(): number {
-    	return this._indexId
+    	return this.state.indexId
 	}
 
 	public set location(value: NodeLocation) {
-    	this._coordinates = value;
+    	this.state.coordinates = value;
 	}
 
 	public get location() : NodeLocation {
-		return this._coordinates;
+		return this.state.coordinates;
 	}
 
 	public get locationId() : string {
@@ -105,27 +60,35 @@ export class MazeNode {
 	}
 
 	public get neighbors() : string[]{
-		return this._neighbors;
+		return this.state.neighbors;
 	}
 
 	public set name( name: string ) {
-		this._name = name;
+		this.state.name = name;
 	}
 
 	public get name(): string {
-		return this._name;
+		return this.state.name;
 	}
 
 	public set maxConnections(maxConnections: number) {
-		this._maxExits = maxConnections;
+		this.state.maxExits = maxConnections;
 	}
 
 	public get maxConnections() : number {
-		return this._maxExits;
+		return this.state.maxExits;
 	}
 
 	public get cardinality() : Cardinality {
-		return this._cardinality;
+		return this.state.cardinality;
+	}
+
+	public get contents() : Map<string, Map<any, any>>  {
+    	return this.state.contents;
+	}
+
+	public set contents(contents: Map<string, Map<any, any>>) {
+    	this.state.contents = contents;
 	}
 
 	/**

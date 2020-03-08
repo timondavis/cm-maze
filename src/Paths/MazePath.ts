@@ -1,80 +1,90 @@
 /**
  * An appendable list of ids belonging to nodes which can be traversed in the given order.
  */
-import {Maze} from "../Maze";
-import {MazeNode} from "../MazeNode";
+import {Maze} from "../Maze/Maze";
+import {MazeNode} from "../Maze/MazeNode";
+
+export interface IMazePath {
+	pathId: number;
+	firstNodeId: string;
+	lastNodeId: string;
+	pointerIndex: number;
+	path: string[];
+}
 
 export class MazePath {
 
+	protected state: IMazePath;
 	private static pathIdCounter: number = 0;
-	private _pathId: number;
-	private _firstNodeId: string;
-	private _lastNodeId: string;
-	private _pointerIndex: number = -1;
-
-	private _path: string[] = [];
 
 	public constructor() {
 		MazePath.pathIdCounter++;
-		this._pathId = MazePath.pathIdCounter;
+
+		this.state = {
+			firstNodeId: "",
+			lastNodeId: "",
+			path: [],
+			pathId: MazePath.pathIdCounter,
+			pointerIndex: -1
+		};
 	}
 
 	public get id() {
-		return this._pathId;
+		return this.state.pathId;
 	}
 
 	public first() {
-		return this._firstNodeId;
+		return this.state.firstNodeId;
 	}
 
 	public last() {
-		return this._lastNodeId;
+		return this.state.lastNodeId;
 	}
 
 	public reset() {
-		this._pointerIndex = 0;
+		this.state.pointerIndex = 0;
 	}
 
 	public next() : string {
-		if (this._pointerIndex + 1 < this._path.length) {
-			this._pointerIndex++;
+		if (this.state.pointerIndex + 1 < this.state.path.length) {
+			this.state.pointerIndex++;
 		} else {
 			return null;
 		}
 
-		return this._path[this._pointerIndex];
+		return this.state.path[this.state.pointerIndex];
 	}
 
 	public current() {
 
-		if (this._pointerIndex < this._path.length) {
-			return this._path[this._pointerIndex];
+		if (this.state.pointerIndex < this.state.path.length) {
+			return this.state.path[this.state.pointerIndex];
 		}
 	}
 
 	public append(nodeId: string): void {
 
-		if (this._path.length === 0) {
-			this._firstNodeId = this._lastNodeId = nodeId;
+		if (this.state.path.length === 0) {
+			this.state.firstNodeId = this.state.lastNodeId = nodeId;
 		} else {
-			this._lastNodeId = nodeId;
+			this.state.lastNodeId = nodeId;
 		}
 
-		this._path.push(nodeId);
+		this.state.path.push(nodeId);
 	}
 
 	public get length() {
-		return this._path.length;
+		return this.state.path.length;
 	}
 
 	public toIdArray(): string[] {
 
-		if (this._path.length === 0) { return []; }
+		if (this.state.path.length === 0) { return []; }
 
 		let tempPointerIndex: number = 0;
 		let idArray: string[] = [];
-		while (tempPointerIndex < this._path.length) {
-			idArray.push(this._path[tempPointerIndex]);
+		while (tempPointerIndex < this.state.path.length) {
+			idArray.push(this.state.path[tempPointerIndex]);
 			tempPointerIndex++;
 		}
 
@@ -82,12 +92,12 @@ export class MazePath {
 	}
 
 	public toMazeNodeArray(maze: Maze): MazeNode[] {
-		if (this._path.length === 0) { return []; }
+		if (this.state.path.length === 0) { return []; }
 
 		let tempPointerIndex: number = 0;
 		let nodeArray: MazeNode[] = [];
-		while (tempPointerIndex < this._path.length) {
-			nodeArray.push(maze.getNodeWithId(this._path[tempPointerIndex]));
+		while (tempPointerIndex < this.state.path.length) {
+			nodeArray.push(maze.getNodeWithId(this.state.path[tempPointerIndex]));
 			tempPointerIndex++;
 		}
 

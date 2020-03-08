@@ -1,8 +1,8 @@
-import {Maze} from "../Maze";
+import {Maze} from "../Maze/Maze";
 import {MazePath} from "./MazePath";
 import {PathNodeList} from "./Models/PathNodeList";
 import {PathNode} from "./Models/PathNode";
-import {MazeNode} from "../MazeNode";
+import {MazeNode} from "../Maze/MazeNode";
 
 /**
  * Static methods to find minimal paths between maze nodes.

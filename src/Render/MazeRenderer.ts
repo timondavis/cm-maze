@@ -1,6 +1,6 @@
-import {Maze} from "../Maze";
+import {Maze} from "../Maze/Maze";
 import {NodeLocation2D} from "../MazeCoordinates/NodeLocation2D";
-import {MazeNode} from "../MazeNode";
+import {MazeNode} from "../Maze/MazeNode";
 export class MazeRenderer {
 
     public canvas: HTMLCanvasElement;

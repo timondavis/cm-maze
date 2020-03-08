@@ -1,4 +1,10 @@
 import {NodeLocation} from "../MazeCoordinates/NodeLocation";
+import {ISerializableModel, SerializableModel} from "cm-domain-utilities";
+
+
+export interface ICardinality extends ISerializableModel {
+	id : string;
+}
 
 /**
  * @abstract Cardinality
@@ -6,15 +12,18 @@ import {NodeLocation} from "../MazeCoordinates/NodeLocation";
  * Provides constraints and services which allow MazeNodes to connect to one another, and to facilitate traversal
  * between them, in a logical fashion based on the cardinality of exit points for each node.
  */
-export abstract class Cardinality {
+export abstract class Cardinality extends SerializableModel {
 
-    public readonly id: string;
+	protected state: ICardinality;
 
     abstract getNextLocation(currentLocation: NodeLocation, exitConnectionPoint: number): NodeLocation;
     abstract getConnectionPointCount() : number;
 
     protected constructor(cardinalityId) {
-        this.id = cardinalityId;
+    	super();
+    	this.state = {
+			id: cardinalityId
+		};
     }
 
 	/**
