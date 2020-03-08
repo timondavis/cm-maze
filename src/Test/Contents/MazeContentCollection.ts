@@ -687,17 +687,82 @@ describe('MazeContentCollection', () => {
 		}
 	});
 
-	it ('reports on whether a given item resides on a given maze node');
-	it ('reports on the current node that a given item is occupying');
-	it ('can handle hierarchical ancestors of the defined collection class within sub-collections');
-	it ('will handle subcollections queries that include or omit the base collection name in the request');
-	it ('will remove items from the collection while removing the item registration from its current node simultaneously');
+	it ('reports on whether a given item resides on a given maze node', () =>  {
+		for(let testPass = 0 ; testPass < testPasses ; testPass++) {
+			let collection = atlas.createCollection(IdentificationGenerator.UUID());
+			let targetNode = maze.getRandomNode();
+			let itemId = IdentificationGenerator.UUID();
+			let item = new ConcreteCollectible(itemId);
+			let collectionSize = Math.ceil(Math.random() * testRunMax) + 2;
+
+			for (let i = 0; i < Math.floor(collectionSize / 2); i++) {
+				collection.addItemToNode(new ConcreteCollectible(IdentificationGenerator.UUID()), targetNode);
+			}
+
+			collection.addItemToNode(item, targetNode);
+
+			for (let i = Math.ceil(collectionSize / 2); i < collectionSize; i++) {
+				collection.addItemToNode(new ConcreteCollectible(IdentificationGenerator.UUID()), targetNode);
+			}
+
+			expect(collection.isItemAtNode(item.id, targetNode)).to.be.true;
+			expect(collection.getItemFromNode(item.id, targetNode)).to.be.equal(item);
+			collection.removeItemFromNode(item, targetNode);
+			expect(collection.getItemFromNode(item.id, targetNode)).to.be.null;
+			expect(collection.isItemAtNode(item.id, targetNode)).to.be.false;
+		}
+	});
+
+	it ('reports on the current node that a given item is occupying', () => {
+		for(let testPass = 0 ; testPass < testPasses ; testPass++) {
+			let collection = atlas.createCollection(IdentificationGenerator.UUID());
+			let targetNode = maze.getRandomNode();
+			let itemId = IdentificationGenerator.UUID();
+			let item = new ConcreteCollectible(itemId);
+			let collectionSize = Math.ceil(Math.random() * testRunMax) + 2;
+
+			for (let i = 0; i < Math.floor(collectionSize / 2); i++) {
+				collection.addItemToNode(new ConcreteCollectible(IdentificationGenerator.UUID()), targetNode);
+			}
+
+			collection.addItemToNode(item, targetNode);
+
+			for (let i = Math.ceil(collectionSize / 2); i < collectionSize; i++) {
+				collection.addItemToNode(new ConcreteCollectible(IdentificationGenerator.UUID()), targetNode);
+			}
+
+			expect(collection.isItemAtNode(item.id, targetNode)).to.be.true;
+			let foundItem = collection.getItemFromNode(item.id, targetNode);
+			expect(collection.getItemNode(foundItem)).to.be.equal(targetNode);
+
+			for (let tries = 0 ; tries < testPasses ; tries++) {
+				let nextNode = maze.getRandomNode();
+				collection.moveItemToNode(foundItem, nextNode);
+				expect(collection.getItemNode(foundItem)).to.be.equal(nextNode);
+			}
+		}
+	});
+
+	it ('can handle hierarchical ancestors of the defined collection class within sub-collections', () => {
+		let collectionName = IdentificationGenerator.UUID();
+		let subCollectionName = IdentificationGenerator.UUID();
+		let collection = atlas.createCollection<ConcreteCollectible>(collectionName);
+
+		let topItem: ConcreteCollectible = new ConcreteCollectible(IdentificationGenerator.UUID());
+		let subItem: OtherCollectible = new OtherCollectible(IdentificationGenerator.UUID());
+
+		collection.addItemToNode(topItem, maze.getRandomNode());
+		collection.addItemToNode(subItem, maze.getRandomNode(), subCollectionName);
+
+		expect(collection.getItemFromCollection(topItem.id)).to.be.equal(topItem);
+		expect(collection.getItemFromCollection(subItem.id)).to.be.equal(subItem);
+	});
 });
 
 class ConcreteCollectible implements Collectible {
     constructor(public id: string) {}
 }
 
-class OtherCollectible implements Collectible {
-    constructor(public id: string) {}
+class OtherCollectible extends ConcreteCollectible {
+    constructor(public id: string) { super(id); }
 }
