@@ -7,14 +7,14 @@
   "author": "Creative Mutagens <timon.davis@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "@types/chai": "^4.2.6",
-    "@types/mocha": "^5.2.7",
+    "@types/chai": "^4.2.11",
+    "@types/mocha": "^7.0.2",
     "@types/node": "^12.12.14",
     "chai": "^4.2.0",
     "cm-domain-utilities": "file:../cm-domain-utilities",
     "dice-bag": "0.1.2",
     "dts-bundle": "^0.7.3",
-    "mocha": "^6.2.2",
+    "mocha": "^7.1.0",
     "typescript": "~3.5.3",
     "uuid": "^3.3.3"
   },
