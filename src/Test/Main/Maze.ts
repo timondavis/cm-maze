@@ -272,7 +272,7 @@ describe( 'Maze', () => {
 					idsCaptured.push(maze.getRandomNode().id);
 					if (timeoutsExecuted > nodeTestCount) {
 						clearInterval(interval);
-						resolve();
+						resolve(true);  //adjusted to appease compiler after revival 1 year later.  value is now TRUE, don't know why.
 					}
 				}, intervalTime)
 			})
