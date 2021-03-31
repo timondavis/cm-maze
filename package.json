@@ -11,7 +11,7 @@
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.12.14",
     "chai": "^4.2.0",
-    "cm-domain-utilities": "file:../cm-domain-utilities",
+    "cm-domain-utilities": "timondavis/cm-domain-utilities#master",
     "dice-bag": "0.1.2",
     "dts-bundle": "^0.7.3",
     "mocha": "^6.2.2",
