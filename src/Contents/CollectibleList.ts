@@ -13,12 +13,10 @@ export class CollectibleList<T extends Collectible> extends SerializableModel {
 
 	protected state: ICollectibleList<T>;
 
-	public constructor() {
+	public constructor(state: ICollectibleList<T> = null) {
 		super();
 
-		this.state = {
-			contents: []
-		}
+		this.state = (state) ? state : { contents: [] };
 	}
 
     public get size(): number {

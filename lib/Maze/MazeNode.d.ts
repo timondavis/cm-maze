@@ -21,7 +21,7 @@ export declare class MazeNode extends SerializableModel {
     static debug: boolean;
     protected state: IMazeNode;
     private static indexIdCounter;
-    constructor(cardinality: Cardinality, id?: string, coordinates?: NodeLocation, maxConnections?: number);
+    constructor(cardinality: Cardinality, id?: string, coordinates?: NodeLocation, maxConnections?: number, neighbors?: string[]);
     get id(): string;
     private get indexId();
     set location(value: NodeLocation);

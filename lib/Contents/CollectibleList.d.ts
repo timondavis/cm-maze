@@ -9,7 +9,7 @@ export interface ICollectibleList<T> extends ISerializableModel {
  */
 export declare class CollectibleList<T extends Collectible> extends SerializableModel {
     protected state: ICollectibleList<T>;
-    constructor();
+    constructor(state?: ICollectibleList<T>);
     get size(): number;
     forEach(callback: (item: T, index: number, array: T[]) => void): void;
     insert(item: T): void;

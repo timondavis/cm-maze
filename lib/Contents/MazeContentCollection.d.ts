@@ -3,7 +3,7 @@ import { Collectible } from "./Collectible";
 import { CollectibleList } from "./CollectibleList";
 import { ISerializableModel, SerializableModel } from "cm-domain-utilities";
 export interface IMazeContentCollection extends ISerializableModel {
-    nodeContent: Map<MazeNode, CollectibleList<Collectible>>;
+    nodeContent: Map<string, CollectibleList<Collectible>>;
     collectibleResidency: Map<Collectible, MazeNode>;
     subCollectionEntities: Map<string, CollectibleList<Collectible>>;
     entitySubCollectionIndex: Map<string, string>;

@@ -4,7 +4,7 @@ import {CollectibleList} from "./CollectibleList";
 import {ISerializableModel, SerializableModel} from "cm-domain-utilities";
 
 export interface IMazeContentCollection extends ISerializableModel {
-	nodeContent: Map<MazeNode, CollectibleList<Collectible>>;
+	nodeContent: Map<string, CollectibleList<Collectible>>;
 	collectibleResidency: Map<Collectible, MazeNode>;
 	subCollectionEntities: Map<string, CollectibleList<Collectible>>;
 	entitySubCollectionIndex: Map<string, string>;
@@ -20,13 +20,13 @@ export class MazeContentCollection<T extends Collectible> extends SerializableMo
     	this.state = {
 			collectibleResidency: new Map<T, MazeNode>(),
 			collectionName: collectionName,
-			nodeContent: new Map<MazeNode, CollectibleList<T>>(),
+			nodeContent: new Map<string, CollectibleList<T>>(),
 			subCollectionEntities : new Map<string, CollectibleList<T>>(),
 			entitySubCollectionIndex: new Map<string, string>(),
 		};
 
     	maze.getNodesArray().forEach((node: MazeNode) => {
-			this.state.nodeContent.set(node, new CollectibleList());
+			this.state.nodeContent.set(node.id, new CollectibleList());
 		});
 	}
 
@@ -70,7 +70,7 @@ export class MazeContentCollection<T extends Collectible> extends SerializableMo
 	}
 
     public getItemFromNode(itemId: string, mazeNode: MazeNode) : T {
-		let contentList = this.state.nodeContent.get(mazeNode) as CollectibleList<T>;
+		let contentList = this.state.nodeContent.get(mazeNode.id) as CollectibleList<T>;
 		if (!contentList.hasItemWithId(itemId)) { return null; }
 		return contentList.findItemWithId(itemId);
     }
@@ -93,7 +93,7 @@ export class MazeContentCollection<T extends Collectible> extends SerializableMo
 			this.addItemToCollection(item, subCollectionName);
 		}
 
-		let nodeCollection = this.state.nodeContent.get(mazeNode);
+		let nodeCollection = this.state.nodeContent.get(mazeNode.id);
 		nodeCollection.insert(item);
 
 		this.state.collectibleResidency.set(item, mazeNode);
@@ -127,7 +127,7 @@ export class MazeContentCollection<T extends Collectible> extends SerializableMo
 	public getItemsFromNode(node: MazeNode, subCollectionName: string = null, isolateSubCollection: boolean = false): T[] {
     	subCollectionName = this.formatSubCollectionName(subCollectionName);
 
-		let foundList = this.state.nodeContent.get(node) as CollectibleList<T>;
+		let foundList = this.state.nodeContent.get(node.id) as CollectibleList<T>;
 		let returnList = new CollectibleList<T>();
 
 		foundList.forEach((item: T) => {
@@ -167,7 +167,7 @@ export class MazeContentCollection<T extends Collectible> extends SerializableMo
 
     public removeItemFromNode(item: T, mazeNode: MazeNode) {
 		let collection = this.state.nodeContent;
-		let nodeCollection = collection.get(mazeNode);
+		let nodeCollection = collection.get(mazeNode.id);
 		nodeCollection.delete(item);
 
 		this.removeItemFromCollection(item);
@@ -235,7 +235,7 @@ export class MazeContentCollection<T extends Collectible> extends SerializableMo
 
 		if (node) {
 			let collection = this.state.nodeContent;
-			let nodeCollection = collection.get(node);
+			let nodeCollection = collection.get(node.id);
 			nodeCollection.delete(item);
 		}
 
