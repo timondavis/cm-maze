@@ -26,4 +26,10 @@ export class MazeContentAtlas {
         this.contentCollections.set(collectionName, new MazeContentCollection<T>(collectionName, this.maze));
         return this.contentCollections.get(collectionName) as MazeContentCollection<T>;
     }
+
+    public deleteCollection(collectionName: string) {
+        if (this.collectionExists(collectionName)) {
+            this.contentCollections.delete(collectionName);
+        }
+    }
 }

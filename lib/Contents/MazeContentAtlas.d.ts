@@ -8,4 +8,5 @@ export declare class MazeContentAtlas {
     collectionExists(collectionName: string): boolean;
     getCollection<T extends Collectible>(collectionName: string): MazeContentCollection<T>;
     createCollection<T extends Collectible>(collectionName: string): MazeContentCollection<T>;
+    deleteCollection(collectionName: string): void;
 }

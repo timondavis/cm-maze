@@ -25,7 +25,7 @@ export class MazeNode extends SerializableModel {
 	protected state: IMazeNode;
 	private static indexIdCounter: number = 0;
 
-    public constructor(cardinality: Cardinality, id: string = null, coordinates? : NodeLocation, maxConnections: number = null) {
+    public constructor(cardinality: Cardinality, id: string = null, coordinates? : NodeLocation, maxConnections: number = null, neighbors: string[] =  null) {
 		super();
     	this.state = {
 			cardinality: cardinality,
@@ -37,6 +37,10 @@ export class MazeNode extends SerializableModel {
 			name: "",
 			neighbors: new Array<string>(cardinality.getConnectionPointCount())
 		};
+
+    	if (neighbors) {
+    	    this.state.neighbors = neighbors;
+        }
     }
 
     public get id(): string {
